@@ -29,7 +29,7 @@ const PRECACHE_URLS = [
   '/js/photo-uploader.js',
   '/js/photo-finder.js',
 
-  '/assets/images/logo.svg',
+  '/assets/images/logo.jpg',
   '/assets/images/hero-bg.svg',
   '/manifest.json'
 ];

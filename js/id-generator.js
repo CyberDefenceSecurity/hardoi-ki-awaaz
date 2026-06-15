@@ -180,7 +180,7 @@ class IDCardGenerator {
     preview.innerHTML = `
       <div id="generated-card" class="id-card holographic" style="margin:0 auto;">
         <div class="id-card-header">
-          <div class="id-card-logo"><img src="assets/images/logo.svg" alt="HKA" style="width:32px;height:32px;border-radius:50%;"></div>
+          <div class="id-card-logo"><img src="assets/images/logo.jpg" alt="HKA" style="width:32px;height:32px;border-radius:50%;"></div>
           <div class="id-card-title">हरदोई की आवाज़</div>
           <div class="id-card-badge">⭐ OFFICIAL</div>
         </div>
@@ -197,7 +197,7 @@ class IDCardGenerator {
         </div>
         <div class="id-card-hologram">✅ Verified Member</div>
         <div class="id-card-footer">Hardoi ki Awaaz • Hardoi, UP</div>
-        <div class="id-card-qr"><img src="assets/images/logo.svg" alt="HKA" style="width:40px;height:40px;border-radius:50%;"></div>
+        <div class="id-card-qr"><img src="assets/images/logo.jpg" alt="HKA" style="width:40px;height:40px;border-radius:50%;"></div>
         ${card.tag ? `<div class="id-card-tag">${card.tag}</div>` : ''}
       </div>
       <p style="text-align:center;font-size:0.7rem;color:var(--text-light);margin-top:0.5rem;">🖱️ Card par hover karein 3D effect ke liye</p>

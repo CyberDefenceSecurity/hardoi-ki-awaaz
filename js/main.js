@@ -25,18 +25,58 @@ function initMobileMenu() {
   const navLinks = document.querySelector('.nav-links');
   if (!hamburger || !navLinks) return;
 
+  function openMenu() {
+    hamburger.classList.add('active');
+    navLinks.classList.add('active');
+    document.body.classList.add('nav-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('active');
+    document.body.classList.remove('nav-open');
+    document.body.style.overflow = '';
+  }
+
   hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navLinks.classList.toggle('active');
-    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    if (navLinks.classList.contains('active')) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
   });
 
+  // Close menu when clicking a nav link
   navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      navLinks.classList.remove('active');
-      document.body.style.overflow = '';
-    });
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close menu when clicking outside the nav drawer (backdrop)
+  document.addEventListener('click', (e) => {
+    if (!navLinks.contains(e.target) && !hamburger.contains(e.target) && document.body.classList.contains('nav-open')) {
+      closeMenu();
+    }
+  });
+
+  // Close menu on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+      closeMenu();
+    }
+  });
+
+  // Add a close (X) button inside the nav drawer
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'nav-close-btn';
+  closeBtn.innerHTML = '×';
+  closeBtn.setAttribute('aria-label', 'Close menu');
+  closeBtn.addEventListener('click', closeMenu);
+  navLinks.prepend(closeBtn);
+
+  // Prevent backdrop click events on nav drawer clicks
+  navLinks.addEventListener('click', (e) => {
+    e.stopPropagation();
   });
 }
 
