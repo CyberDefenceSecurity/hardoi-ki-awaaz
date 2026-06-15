@@ -282,28 +282,7 @@
       btn.style.borderColor = 'var(--success)';
       btn.style.color = '#fff';
       btn.innerHTML = '✅ Supported (' + actualCount + ')';
-      showThankYou();
-    }
-
-    function showThankYou() {
-      const existing = document.getElementById('thank-you-modal');
-      if (existing) existing.remove();
-      const modal = document.createElement('div');
-      modal.id = 'thank-you-modal';
-      modal.className = 'modal-overlay';
-      modal.innerHTML = `
-        <div class="modal-content thank-you-modal">
-          <div class="modal-animation"><div class="heart-animation">❤️</div></div>
-          <h2>🙏 धन्यवाद!</h2>
-          <p class="thank-you-msg">आपके support के लिए शुक्रिया।</p>
-          <p class="thank-you-sub">हम जल्द ही बेहतर होंगे! 💪</p>
-          <p class="thank-you-detail">आपका सहयोग अनमोल है। Hardoi ki Awaaz आपके साथ है।</p>
-          <button class="cta-btn primary" onclick="this.closest('.modal-overlay').remove()" style="margin-top:1rem;">🙏 बंद करें</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
-      setTimeout(() => modal.classList.add('active'), 100);
-      setTimeout(() => { if (document.getElementById('thank-you-modal')) { modal.classList.remove('active'); setTimeout(() => modal.remove(), 300); } }, 5000);
+      showThankYouStandard();
     }
 
     function shareIssue(id) {
@@ -312,6 +291,35 @@
       if (navigator.share) { navigator.share({ title: 'Hardoi ki Awaaz', text, url }); }
       else { window.open('https://wa.me/?text=' + encodeURIComponent(text)); }
     }
+
+    // Reply functions for predefined issues (if needed)
+    window.toggleReplyForm = window.toggleReplyForm || function(issueId) {
+      const section = document.getElementById('replies-' + issueId);
+      if (section) section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    };
+
+    window.submitReply = window.submitReply || async function(issueId) {
+      const section = document.getElementById('replies-' + issueId);
+      if (!section) return;
+      const nameInput = section.querySelector('.reply-name-input');
+      const textInput = section.querySelector('.reply-text-input');
+      if (!textInput.value.trim()) { showToast('कृपया जवाब लिखें!', 'error'); return; }
+      try {
+        const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId + '/reply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: nameInput.value.trim() || 'Anonymous', text: textInput.value.trim() })
+        });
+        const data = await resp.json();
+        if (data.success) {
+          textInput.value = '';
+          if (window.photoUploader) window.photoUploader.loadUserIssues();
+          showToast('✅ आपका जवाब भेज दिया गया!', 'success');
+        }
+      } catch(e) {
+        showToast('जवाब भेजने में समस्या हुई।', 'error');
+      }
+    };
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {

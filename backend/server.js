@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
 const net = require('net');
 const { execSync } = require('child_process');
 
@@ -94,7 +95,7 @@ app.use('/api/refresh', refreshLimiter);
 // CORS — restrict in production
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
-  methods: ['GET'],
+  methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Accept']
 }));
 
@@ -105,7 +106,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.use(express.json({ limit: '1mb' })); // limit body size
+app.use(express.json({ limit: '10mb' })); // limit body size (increased for photo uploads)
 
 // ============================================
 // STATE
@@ -117,6 +118,148 @@ let cachedProtests = null;
 let cachedManifesto = null;
 let lastFetchTime = { news: null, issues: null, protests: null, manifesto: null };
 let isFetching = { news: false, issues: false, protests: false, manifesto: false };
+
+// ============================================
+// USER-SUBMITTED ISSUES STORAGE (File-based)
+// ============================================
+const USER_ISSUES_FILE = path.join(__dirname, 'user-issues-data.json');
+
+function loadUserIssues() {
+  try {
+    if (fs.existsSync(USER_ISSUES_FILE)) {
+      const raw = fs.readFileSync(USER_ISSUES_FILE, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('⚠️ Could not load user issues file:', err.message);
+  }
+  return [];
+}
+
+function saveUserIssues(issues) {
+  try {
+    fs.writeFileSync(USER_ISSUES_FILE, JSON.stringify(issues, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('⚠️ Could not save user issues file:', err.message);
+  }
+}
+
+let userIssues = loadUserIssues();
+
+// ============================================
+// USER ISSUES API
+// ============================================
+
+// GET /api/issues/user — Get all user-submitted issues (public)
+app.get('/api/issues/user', (req, res) => {
+  res.json({ success: true, issues: userIssues });
+});
+
+// POST /api/issues/user — Submit a new issue
+app.post('/api/issues/user', (req, res) => {
+  try {
+    const { name, category, message, location, photos } = req.body;
+    
+    if (!message || message.trim().length < 10) {
+      return res.status(400).json({ success: false, error: 'Message too short (min 10 chars)' });
+    }
+
+    const issue = {
+      id: 'ISS-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+      name: name || 'Anonymous',
+      category: category || 'other',
+      message: message.trim(),
+      location: location || 'Hardoi',
+      photos: photos || [],
+      date: new Date().toLocaleDateString('hi-IN'),
+      timestamp: Date.now(),
+      supporters: 0,
+      supporterIds: [],
+      status: 'active',
+      replies: []
+    };
+
+    userIssues.unshift(issue);
+    saveUserIssues(userIssues);
+
+    console.log(`📝 New issue submitted: ${issue.id} — ${issue.message.substring(0, 50)}...`);
+    res.json({ success: true, issue });
+  } catch (err) {
+    console.error('❌ Error submitting issue:', err.message);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// POST /api/issues/user/:id/support — Support an issue
+app.post('/api/issues/user/:id/support', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { supporterId } = req.body;
+    const issue = userIssues.find(i => i.id === id);
+    
+    if (!issue) {
+      return res.status(404).json({ success: false, error: 'Issue not found' });
+    }
+
+    if (supporterId && issue.supporterIds.includes(supporterId)) {
+      return res.json({ success: true, supporters: issue.supporters, alreadySupported: true });
+    }
+
+    issue.supporters = (issue.supporters || 0) + 1;
+    if (supporterId) {
+      issue.supporterIds.push(supporterId);
+    }
+    saveUserIssues(userIssues);
+
+    res.json({ success: true, supporters: issue.supporters });
+  } catch (err) {
+    console.error('❌ Error supporting issue:', err.message);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// POST /api/issues/user/:id/reply — Reply to an issue
+app.post('/api/issues/user/:id/reply', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, text } = req.body;
+    
+    if (!text || text.trim().length < 1) {
+      return res.status(400).json({ success: false, error: 'Reply text required' });
+    }
+
+    const issue = userIssues.find(i => i.id === id);
+    if (!issue) {
+      return res.status(404).json({ success: false, error: 'Issue not found' });
+    }
+
+    const reply = {
+      id: 'REP-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+      name: name || 'Anonymous',
+      text: text.trim(),
+      date: new Date().toLocaleDateString('hi-IN'),
+      timestamp: Date.now()
+    };
+
+    issue.replies.push(reply);
+    saveUserIssues(userIssues);
+
+    console.log(`💬 Reply added to ${issue.id}: ${reply.text.substring(0, 50)}...`);
+    res.json({ success: true, reply });
+  } catch (err) {
+    console.error('❌ Error replying to issue:', err.message);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// GET /api/issues/user/:id — Get a single issue with all replies
+app.get('/api/issues/user/:id', (req, res) => {
+  const issue = userIssues.find(i => i.id === req.params.id);
+  if (!issue) {
+    return res.status(404).json({ success: false, error: 'Issue not found' });
+  }
+  res.json({ success: true, issue });
+});
 
 // ============================================
 // STATIC FILES

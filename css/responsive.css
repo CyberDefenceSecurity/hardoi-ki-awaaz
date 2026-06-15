@@ -140,11 +140,12 @@
   .id-card-photo { width: 60px; height: 70px; }
   .id-card-title { font-size: 0.85rem; }
   .id-card-info .name { font-size: 0.9rem; }
-  .id-card-badge { font-size: 0.5rem; padding: 2px 8px; top: 12px; right: 12px; }
-  .id-card-logo { width: 34px; height: 34px; font-size: 1rem; }
-  .id-card-qr { width: 40px; height: 40px; font-size: 1rem; bottom: 12px; right: 12px; }
-  .id-card-footer { font-size: 0.5rem; bottom: 12px; left: 14px; }
-  .id-card-hologram { font-size: 0.5rem; bottom: 16px; right: 60px; }
+  .id-card-badge { font-size: 0.4rem; padding: 1px 5px; top: 6px; right: 6px; max-width: 55px; }
+  .id-card-logo { width: 30px; height: 30px; font-size: 0.85rem; }
+  .id-card-qr { width: 32px; height: 32px; bottom: 6px; right: 6px; }
+  .id-card-footer { font-size: 0.4rem; bottom: 6px; left: 10px; max-width: 40%; }
+  .id-card-hologram { font-size: 0.35rem; bottom: 10px; right: 48px; max-width: calc(100% - 90px); }
+  .id-card-tag { bottom: 38px; font-size: 0.4rem; max-width: 60%; padding: 1px 5px; }
   .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
   .step-item { padding: 1.2rem; }
   .generated-cards-section h2 { font-size: 1.3rem; }
@@ -248,10 +249,11 @@
   .id-card-photo { width: 50px; height: 60px; }
   .id-card-info .name { font-size: 0.8rem; }
   .id-card-info .detail { font-size: 0.6rem; }
-  .id-card-badge { font-size: 0.45rem; padding: 2px 6px; top: 10px; right: 10px; }
-  .id-card-qr { width: 34px; height: 34px; font-size: 0.85rem; bottom: 10px; right: 10px; }
-  .id-card-footer { font-size: 0.45rem; bottom: 10px; left: 12px; }
-  .id-card-hologram { font-size: 0.45rem; bottom: 13px; right: 50px; }
+  .id-card-badge { font-size: 0.35rem; padding: 1px 4px; top: 5px; right: 5px; max-width: 48px; }
+  .id-card-qr { width: 26px; height: 26px; bottom: 5px; right: 5px; }
+  .id-card-footer { font-size: 0.35rem; bottom: 5px; left: 8px; max-width: 35%; }
+  .id-card-hologram { font-size: 0.3rem; bottom: 8px; right: 38px; max-width: calc(100% - 72px); }
+  .id-card-tag { bottom: 32px; font-size: 0.35rem; max-width: 55%; padding: 1px 4px; line-height: 1.1; }
   .id-card-display .id-card { width: 100%; }
   .id-card-section { margin: -1.5rem auto 1.5rem; }
   .form-panel, .preview-panel { padding: 1rem; }

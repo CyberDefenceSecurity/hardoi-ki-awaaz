@@ -2,6 +2,48 @@
    Hardoi ki Awaaz - Main JavaScript
    ============================================ */
 
+// === CACHE BUSTER: Clear old caches on version change ===
+(function() {
+  const APP_VERSION = '1.0.1'; // Increment this to force cache clear on all browsers
+  const storedVersion = localStorage.getItem('hka_app_version');
+  
+  if (storedVersion !== APP_VERSION) {
+    // Clear all service worker caches
+    if ('caches' in window) {
+      caches.keys().then(function(cacheNames) {
+        return Promise.all(
+          cacheNames.map(function(cacheName) {
+            if (cacheName.startsWith('hka-cache-')) {
+              console.log('🧹 Clearing old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }).catch(function(err) {
+        console.warn('Cache clear error:', err);
+      });
+      
+      // Unregister old service workers
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          registrations.forEach(function(reg) {
+            reg.unregister();
+            console.log('🔁 Unregistered old service worker');
+          });
+        });
+      }
+    }
+    
+    // Force reload from server once (clear browser cache via no-cache)
+    // Only do this if coming from an older version, not on every refresh
+    if (storedVersion !== null && storedVersion !== APP_VERSION) {
+      console.log('🔄 App version changed: ' + storedVersion + ' → ' + APP_VERSION + '. Reloading fresh content.');
+    }
+    
+    localStorage.setItem('hka_app_version', APP_VERSION);
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initMobileMenu();

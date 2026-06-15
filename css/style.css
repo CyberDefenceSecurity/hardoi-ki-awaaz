@@ -589,38 +589,49 @@ body {
 .id-card-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .id-card-logo {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .id-card-title {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   font-family: var(--font-hindi);
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .id-card-badge {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 8px;
+  right: 8px;
   background: var(--accent);
   color: var(--primary-dark);
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 12px;
+  font-size: 0.5rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.3px;
+  z-index: 3;
+  max-width: 65px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
 .id-card-body {
@@ -667,43 +678,48 @@ body {
 
 .id-card-qr {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 46px;
-  height: 46px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 8px;
+  bottom: 8px;
+  right: 8px;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 2;
 }
 
 .id-card-footer {
   position: absolute;
-  bottom: 12px;
-  left: 15px;
-  font-size: 0.55rem;
-  color: rgba(255, 255, 255, 0.5);
-  z-index: 1;
+  bottom: 8px;
+  left: 12px;
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.45);
+  z-index: 2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 55%;
+  max-width: 40%;
+  line-height: 1.2;
 }
 
 .id-card-hologram {
   position: absolute;
-  bottom: 12px;
-  right: 65px;
-  font-size: 0.5rem;
+  bottom: 8px;
+  right: 60px;
+  font-size: 0.4rem;
   color: var(--accent);
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
   animation: hologram-shimmer 3s infinite;
   z-index: 1;
   white-space: nowrap;
+  max-width: calc(100% - 110px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 @keyframes hologram-shimmer {

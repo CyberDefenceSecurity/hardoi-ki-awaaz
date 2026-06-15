@@ -174,30 +174,30 @@ class IDCardGenerator {
     if (!preview) return;
 
     const photoHTML = card.photo
-      ? `<img src="${card.photo}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);">`
-      : `<div style="width:80px;height:80px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid var(--accent);">👤</div>`;
+      ? `<img src="${card.photo}" style="width:100%;height:100%;object-fit:cover;">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">👤</div>`;
 
     preview.innerHTML = `
       <div id="generated-card" class="id-card holographic" style="margin:0 auto;">
         <div class="id-card-header">
-          <div class="id-card-logo"><img src="assets/images/logo.jpg" alt="HKA" style="width:32px;height:32px;border-radius:50%;"></div>
-          <div class="id-card-title">हरदोई की आवाज़</div>
+          <div class="id-card-logo"><img src="assets/images/logo.jpg" alt="HKA" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+          <div class="id-card-title" style="flex:1;min-width:0;">हरदोई की आवाज़</div>
           <div class="id-card-badge">⭐ OFFICIAL</div>
         </div>
-        <div style="font-size:0.55rem;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:6px;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">HARDOI KI AWAAZ — जनता की पहचान</div>
+        <div style="font-size:0.55rem;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:4px;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">HARDOI KI AWAAZ — जनता की पहचान</div>
         <div class="id-card-body">
-          <div class="id-card-photo">${card.photo ? `<img src="${card.photo}" alt="Photo">` : '👤'}</div>
+          <div class="id-card-photo">${card.photo ? `<img src="${card.photo}" alt="Photo">` : '<span style="font-size:1.5rem;">👤</span>'}</div>
           <div class="id-card-info">
             <div class="name">${card.name}</div>
             <div class="detail">📱 ${card.mobile}</div>
             <div class="detail">📍 ${card.area}</div>
-            <div class="detail" style="margin-top:2px;">🆔 ${card.id}</div>
+            <div class="detail" style="margin-top:1px;">🆔 ${card.id}</div>
             <div class="detail">📅 ${card.issueDate}</div>
           </div>
         </div>
-        <div class="id-card-hologram">✅ Verified Member</div>
+        <div class="id-card-hologram">✅ Verified</div>
         <div class="id-card-footer">Hardoi ki Awaaz • Hardoi, UP</div>
-        <div class="id-card-qr"><img src="assets/images/logo.jpg" alt="HKA" style="width:40px;height:40px;border-radius:50%;"></div>
+        <div class="id-card-qr"><img src="assets/images/logo.jpg" alt="HKA" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
         ${card.tag ? `<div class="id-card-tag">${card.tag}</div>` : ''}
       </div>
       <p style="text-align:center;font-size:0.7rem;color:var(--text-light);margin-top:0.5rem;">🖱️ Card par hover karein 3D effect ke liye</p>

@@ -28,3 +28,6 @@ npm-debug.log*
 
 # Render
 render.yaml  # Only if it contains secrets
+
+# User-submitted issues data (contains user photos)
+backend/user-issues-data.json

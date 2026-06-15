@@ -3,7 +3,7 @@
    PWA: caches core files for offline access
    ============================================ */
 
-const CACHE_NAME = 'hka-cache-v3';
+const CACHE_NAME = 'hka-cache-v4';
 
 // Core files to cache immediately on install
 const PRECACHE_URLS = [
