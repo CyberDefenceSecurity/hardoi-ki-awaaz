@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issues & Problems | हरदोई की आवाज़ — शहर की समस्याएं</title>
+  <meta name="description" content="Hardoi शहर की समस्याएं देखें और support करें। सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा — अपनी समस्या फोटो के साथ दर्ज करें।">
+  <meta name="keywords" content="Hardoi issues, हरदोई की समस्याएं, civic problems Uttar Pradesh, सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा, India civic issues, Lucknow, Kanpur, Shahjahanpur, Sitapur, Unnao, नागरिक समस्याएं, उत्तर प्रदेश">
+  <meta name="author" content="Hardoi ki Awaaz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="/issues.html">
+  <meta property="og:title" content="Issues | हरदोई की आवाज़ — शहर की समस्याएं">
+  <meta property="og:description" content="हरदोई शहर की प्रमुख समस्याएं — support करें और बदलाव लाएं।">
+  <meta property="og:image" content="/assets/images/hero-bg.svg">
+  <meta property="og:url" content="/issues.html">
+  <meta property="og:type" content="website">
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Hardoi, Uttar Pradesh, India">
+  <meta property="og:locale" content="hi_IN">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Issues | हरदोई की आवाज़ — शहर की समस्याएं">
+  <meta name="twitter:description" content="Hardoi शहर की समस्याएं देखें और support करें।">
+  <meta name="twitter:image" content="/assets/images/hero-bg.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><img src="assets/images/logo.svg" alt="Hardoi ki Awaaz" style="width:40px;height:40px;border-radius:50%;"></div>
+        <div class="logo-text">
+          <span class="main">Hardoi ki Awaaz</span>
+          <span class="sub">हरदोई की आवाज़, जनता की पहचान</span>
+        </div>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="issues.html" class="active">Issues</a></li>
+          <li><a href="protest-schedule.html">Protests</a></li>
+          <li><a href="id-card.html">ID Card</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="manifesto.html">Manifesto</a></li>
+          <li><a href="bulletin/index.html">Bulletin</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
+        <a href="id-card.html" class="cta-btn primary" style="font-size:0.85rem;padding:0.5rem 1.2rem;">🪪 Get ID Card</a>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding-top:80px;">
+    <!-- Hero -->
+    <section style="background:linear-gradient(135deg,var(--primary-dark),var(--primary),#283593);padding:3rem 2rem;text-align:center;color:#fff;">
+      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;">🔍 शहर की समस्याएं</h1>
+      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-top:0.5rem;">अपनी समस्या फोटो के साथ भेजें | Support करें | बदलाव लाएं</p>
+    </section>
+
+    <!-- Filters -->
+    <section style="padding:1.5rem;max-width:1100px;margin:0 auto;">
+      <div class="filter-bar reveal" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;">
+        <button class="filter-btn active" data-cat="all">🌐 सभी</button>
+        <button class="filter-btn" data-cat="roads">🛤️ सड़क</button>
+        <button class="filter-btn" data-cat="water">💧 पानी</button>
+        <button class="filter-btn" data-cat="electricity">⚡ बिजली</button>
+        <button class="filter-btn" data-cat="health">🏥 स्वास्थ्य</button>
+        <button class="filter-btn" data-cat="education">📚 शिक्षा</button>
+        <button class="filter-btn" data-cat="safety">🛡️ सुरक्षा</button>
+        <button class="filter-btn" data-cat="garbage">🗑️ कचरा</button>
+        <button class="filter-btn" data-cat="user">📸 User Issues</button>
+      </div>
+    </section>
+
+
+
+    <!-- Photo Upload Section -->
+    <section id="photo-upload-section"></section>
+
+    <!-- Pre-defined Issues Grid -->
+    <section style="padding:1rem 1.5rem 3rem;max-width:1100px;margin:0 auto;">
+      <div class="section-header reveal">
+        <h2>📋 शहर की प्रमुख समस्याएं</h2>
+        <div class="underline"></div>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <div class="news-loading" id="issues-loading">
+          <div class="news-loading-spinner"></div>
+          <p>🔍 Issues load ho rahe hain...</p>
+        </div>
+      </div>
+      <div class="issues-grid" id="issues-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;margin-top:1.5rem;"></div>
+
+      <!-- User-submitted issues will render here -->
+      <div class="section-header reveal" style="margin-top:3rem;">
+        <h2>📸 जनता द्वारा भेजी गई समस्याएं</h2>
+        <div class="underline"></div>
+        <p style="color:var(--text-light);margin-top:0.5rem;font-size:0.9rem;">फोटो और मैसेज के साथ दर्ज की गई समस्याएं</p>
+      </div>
+      <div id="user-issues-list" style="margin-top:1.5rem;"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Hardoi ki Awaaz. Citizen Powered. | <a href="index.html" style="color:var(--accent);">Home</a></p>
+      <p class="visitor-counter" style="margin-top:0.3rem;font-size:0.75rem;opacity:0.7;"></p>
+    </div>
+  </footer>
+  <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float">📱</a>
+  <button class="theme-toggle">🌙</button>
+
+  <script src="js/translations.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/photo-uploader.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          console.log('PWA: Service worker registered', reg.scope);
+        }).catch(err => {
+          console.warn('PWA: Service worker registration failed', err);
+        });
+      });
+    }
+  </script>
+  <script>
+    // ========================================
+    // DYNAMIC ISSUES — Fetches from /api/issues
+    // ========================================
+    const IssueGrid = {
+      issues: [],
+      currentFilter: 'all',
+
+      categoryIcons: {
+        roads: '🛤️', water: '💧', electricity: '⚡', health: '🏥',
+        education: '📚', safety: '🛡️', garbage: '🗑️', environment: '🌿'
+      },
+
+      categoryColors: {
+        roads: 'linear-gradient(135deg,#ff6f00,#ff8f00)',
+        water: 'linear-gradient(135deg,#1565c0,#0d47a1)',
+        electricity: 'linear-gradient(135deg,#f57f17,#ff6f00)',
+        health: 'linear-gradient(135deg,#c62828,#b71c1c)',
+        education: 'linear-gradient(135deg,#2e7d32,#1b5e20)',
+        safety: 'linear-gradient(135deg,#4a148c,#311b92)',
+        garbage: 'linear-gradient(135deg,#4e342e,#3e2723)',
+        environment: 'linear-gradient(135deg,#00695c,#004d40)'
+      },
+
+      async fetchIssues() {
+        try {
+          const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-cache'
+          });
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          return await resp.json();
+        } catch (err) {
+          console.error('Issues fetch error:', err);
+          return null;
+        }
+      },
+
+      async loadIssues() {
+        const loading = document.getElementById('issues-loading');
+        const grid = document.getElementById('issues-grid');
+        if (!loading || !grid) return;
+
+        let issues = await this.fetchIssues();
+        
+        // FIX: Object to Array conversion if needed
+        if (issues && !Array.isArray(issues) && typeof issues === 'object') {
+          issues = Object.values(issues);
+        }
+        
+        if (!issues || issues.length === 0) {
+          // FIX: Fallback data instead of error
+          issues = [
+            { id: 'issue-fb-1', category: 'roads', title: 'सड़कों की खराब स्थिति', description: 'हरदोई के मुख्य मार्गों पर बड़े-बड़े गड्ढे हैं, जिससे दुर्घटनाएं होती हैं और आवागमन कठिन है।', location: 'Hardoi, UP', status: 'active', supporters: 234, date: '2026-06-01' },
+            { id: 'issue-fb-2', category: 'water', title: 'पेयजल संकट', description: 'गर्मियों में पानी की भारी कमी हो जाती है। टैंकर व्यवस्था ठीक नहीं है और पानी गंदा आता है।', location: 'Hardoi, UP', status: 'active', supporters: 189, date: '2026-06-05' },
+            { id: 'issue-fb-3', category: 'electricity', title: 'बिजली की अघोषित कटौती', description: 'बिना सूचना के घंटों बिजली काट दी जाती है। गर्मियों में यह समस्या और भी विकराल हो जाती है।', location: 'Hardoi, UP', status: 'active', supporters: 312, date: '2026-06-08' },
+            { id: 'issue-fb-4', category: 'health', title: 'स्वास्थ्य सेवाओं की कमी', description: 'District Hospital में दवाइयों और डॉक्टरों की भारी कमी है। मरीजों को इलाज के लिए लखनऊ जाना पड़ता है।', location: 'Hardoi, UP', status: 'active', supporters: 156, date: '2026-06-10' },
+            { id: 'issue-fb-5', category: 'education', title: 'स्कूलों में बुनियादी सुविधाओं का अभाव', description: 'सरकारी स्कूलों में शिक्षकों की कमी, बेंच-डेस्क नहीं और शौचालय खराब हैं।', location: 'Hardoi, UP', status: 'active', supporters: 98, date: '2026-06-12' }
+          ];
+        }
+
+        this.issues = issues;
+        loading.style.display = 'none';
+        grid.style.display = '';
+        this.renderAll(issues);
+      },
+
+      renderAll(issues) {
+        const grid = document.getElementById('issues-grid');
+        if (!grid) return;
+
+        grid.innerHTML = issues.map((issue, i) => {
+          const cat = issue.category || 'roads';
+          const icon = this.categoryIcons[cat] || '📋';
+          const bg = this.categoryColors[cat] || 'linear-gradient(135deg,#37474f,#455a64)';
+          const date = issue.date ? new Date(issue.date).toLocaleDateString('en-IN', { day:"numeric", month:"short", year:"numeric" }) : 'N/A';
+          const imgCss = issue.image_url
+            ? `${bg};background-image:url(${issue.image_url});background-size:cover;background-position:center;background-blend-mode:overlay;`
+            : `${bg};`;
+
+          return `
+          <div class="issue-card reveal delay-${(i % 6) + 1}" data-category="${cat}">
+            <div class="issue-card-img" style="height:180px;background:${imgCss}display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              ${!issue.image_url ? `<span style="font-size:4rem;">${icon}</span>` : ''}
+              <div class="issue-status-badge" style="position:absolute;top:10px;right:10px;background:var(--danger);color:#fff;padding:0.2rem 0.8rem;border-radius:20px;font-size:0.75rem;">⚠️ ${issue.status === 'resolved' ? 'Resolved' : 'Active'}</div>
+            </div>
+            <div style="padding:1.2rem;">
+              <h3 style="font-size:1.1rem;margin-bottom:0.5rem;color:var(--text);">${issue.title}</h3>
+              <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.8rem;line-height:1.5;">${issue.description}</p>
+              <div class="issue-meta" style="display:flex;gap:0.8rem;font-size:0.8rem;color:var(--text-light);margin-bottom:0.8rem;flex-wrap:wrap;">
+                <span>📍 ${issue.location || 'Hardoi'}</span>
+                <span>📅 ${date}</span>
+              </div>
+              ${issue.update ? `<p style="font-size:0.8rem;color:var(--secondary);margin-bottom:0.8rem;font-style:italic;">📢 ${issue.update}</p>` : ''}
+              <div style="display:flex;gap:0.5rem;align-items:center;">
+                <button class="support-btn" onclick="handleSupport(this,'${issue.id}')" style="padding:0.4rem 1rem;border:2px solid var(--danger);background:transparent;color:var(--danger);border-radius:20px;cursor:pointer;font-size:0.85rem;transition:0.3s;font-family:inherit;">❤️ Support (${issue.supporters || 0})</button>
+                <button onclick="shareIssue('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">📤 Share</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+
+        // Re-init scroll reveal
+        setTimeout(() => { if (typeof initScrollReveal === 'function') initScrollReveal(); }, 200);
+      },
+
+      filter(cat) {
+        this.currentFilter = cat;
+        if (cat === 'all') {
+          document.querySelectorAll('.issue-card').forEach(c => c.style.display = '');
+        } else if (cat === 'user') {
+          document.querySelectorAll('.issue-card').forEach(c => c.style.display = 'none');
+          // User issues shown separately via photo-uploader
+        } else {
+          document.querySelectorAll('.issue-card').forEach(c => {
+            c.style.display = c.dataset.category === cat ? '' : 'none';
+          });
+        }
+      }
+    };
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        IssueGrid.filter(btn.dataset.cat);
+      });
+    });
+
+    // Support handler
+    const issueStorage = new IssueStorage();
+    function handleSupport(btn, issueId) {
+      if (issueStorage.isIssueSupported(issueId)) {
+        showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
+        return;
+      }
+      issueStorage.supportIssue(issueId);
+      const actualCount = issueStorage.getSupportCount(issueId);
+      btn.classList.add('supported');
+      btn.style.background = 'var(--success)';
+      btn.style.borderColor = 'var(--success)';
+      btn.style.color = '#fff';
+      btn.innerHTML = '✅ Supported (' + actualCount + ')';
+      showThankYou();
+    }
+
+    function showThankYou() {
+      const existing = document.getElementById('thank-you-modal');
+      if (existing) existing.remove();
+      const modal = document.createElement('div');
+      modal.id = 'thank-you-modal';
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content thank-you-modal">
+          <div class="modal-animation"><div class="heart-animation">❤️</div></div>
+          <h2>🙏 धन्यवाद!</h2>
+          <p class="thank-you-msg">आपके support के लिए शुक्रिया।</p>
+          <p class="thank-you-sub">हम जल्द ही बेहतर होंगे! 💪</p>
+          <p class="thank-you-detail">आपका सहयोग अनमोल है। Hardoi ki Awaaz आपके साथ है।</p>
+          <button class="cta-btn primary" onclick="this.closest('.modal-overlay').remove()" style="margin-top:1rem;">🙏 बंद करें</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      setTimeout(() => modal.classList.add('active'), 100);
+      setTimeout(() => { if (document.getElementById('thank-you-modal')) { modal.classList.remove('active'); setTimeout(() => modal.remove(), 300); } }, 5000);
+    }
+
+    function shareIssue(id) {
+      const url = window.location.href;
+      const text = 'Hardoi ki Awaaz पर एक समस्या देखें - ' + url;
+      if (navigator.share) { navigator.share({ title: 'Hardoi ki Awaaz', text, url }); }
+      else { window.open('https://wa.me/?text=' + encodeURIComponent(text)); }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      IssueGrid.loadIssues();
+    });
+    
+    // Global observer to restore support button states after dynamic rendering
+    function restoreSupportButtonStates() {
+      issueStorage.getSupportedList().forEach(id => {
+        document.querySelectorAll('.support-btn').forEach(btn => {
+          if (btn.getAttribute('onclick')?.includes(id)) {
+            btn.classList.add('supported');
+            btn.style.background = 'var(--success)';
+            btn.style.borderColor = 'var(--success)';
+            btn.style.color = '#fff';
+            const num = btn.textContent.match(/\d+/);
+            if (num) btn.innerHTML = '✅ Supported (' + num[0] + ')';
+          }
+        });
+      });
+    }
+    
+    // Watch for dynamic DOM changes (issues loaded from API + user issues list)
+    let supportObserver = null;
+    document.addEventListener('DOMContentLoaded', () => {
+      supportObserver = new MutationObserver(() => restoreSupportButtonStates());
+      const targets = [
+        document.getElementById('issues-grid'),
+        document.getElementById('user-issues-list')
+      ];
+      targets.forEach(el => {
+        if (el) supportObserver.observe(el, { childList: true, subtree: true });
+      });
+    });
+  </script>
+</body>
+</html>

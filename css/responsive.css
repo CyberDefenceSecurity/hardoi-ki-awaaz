@@ -1,0 +1,257 @@
+/* ============================================
+   Hardoi ki Awaaz - Responsive Styles
+   ============================================ */
+
+/* === TABLET / 1024px === */
+@media (max-width: 1024px) {
+  .nav-links { gap: 1rem; }
+  .nav-actions .cta-btn { font-size: 0.75rem !important; padding: 0.4rem 0.8rem !important; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .stats-container { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 2.8rem; }
+  .id-card-hero-section { padding: 3rem 1.5rem; }
+  .id-card-hero-section h1 { font-size: 2rem; }
+  .id-card-grid { gap: 1.5rem; }
+  .generated-cards-section h2 { font-size: 1.3rem; }
+  .protest-gallery { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: repeat(2, 1fr); }
+  .manifesto-card { padding: 1.5rem; }
+  .id-card-form { padding: 2rem; }
+}
+
+/* === MOBILE / 768px === */
+@media (max-width: 768px) {
+  /* Header */
+  .hamburger { display: flex; }
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    background: var(--primary-dark);
+    flex-direction: column;
+    padding: 5rem 2rem 2rem;
+    gap: 1rem;
+    transition: var(--transition);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+    overflow-y: auto;
+  }
+  .nav-links.active { right: 0; }
+  .nav-links a { font-size: 1.1rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .nav-socials { display: none; }
+  .header { padding: 0.6rem 1rem; }
+  .header.scrolled { padding: 0.4rem 1rem; }
+  .logo-text .main { font-size: 1rem; }
+  .logo-text .sub { font-size: 0.55rem; }
+  .logo-icon { width: 40px; height: 40px; }
+  .logo-icon img { width: 34px !important; height: 34px !important; }
+  .nav-actions .cta-btn { font-size: 0.7rem !important; padding: 0.35rem 0.7rem !important; }
+
+  /* Hero */
+  .hero { min-height: 90vh; padding-top: 80px; }
+  .hero h1 { font-size: 2rem; }
+  .hero .tagline { font-size: 1rem; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .hero-buttons .cta-btn { width: 100%; max-width: 280px; justify-content: center; }
+  .hero-badge { font-size: 0.75rem; padding: 0.4rem 1rem; }
+  .stats-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .stat-item { padding: 0.8rem; }
+  .stat-number { font-size: 1.5rem; }
+  .stat-label { font-size: 0.65rem; }
+
+  /* General Sections */
+  .section { padding: 2.5rem 1rem; }
+  .section-header { margin-bottom: 2rem; }
+  .section-header h2 { font-size: 1.6rem; }
+  .section-header .hindi-subtitle { font-size: 0.85rem; }
+  .channels-grid { grid-template-columns: 1fr; }
+  .channel-card { padding: 1.5rem; }
+  .issues-grid { grid-template-columns: 1fr; }
+  .demands-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .demand-card { padding: 1.5rem; }
+  .demand-icon { width: 54px; height: 54px; font-size: 1.5rem; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .footer { padding: 2.5rem 1.2rem 1.5rem; }
+  .footer h3 { font-size: 1rem; }
+  .footer a { font-size: 0.8rem; }
+
+  /* ID Card */
+  .id-card-hero-section { padding: 2.5rem 1rem; }
+  .id-card-hero-section h1 { font-size: 1.6rem; }
+  .id-card-hero-section .subtitle { font-size: 0.9rem; }
+  .id-card-section { margin: -2rem auto 2rem; padding: 0 1rem; }
+  .id-card-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .id-card { width: 100%; max-width: 340px; height: auto; min-height: 214px; padding: 14px; }
+  .id-card-form { padding: 1.5rem; margin: 0 0.5rem; }
+  .form-panel { padding: 1.5rem; }
+  .form-panel h2 { font-size: 1.2rem; }
+  .preview-panel { padding: 1.5rem; }
+  .preview-panel h2 { font-size: 1.2rem; }
+  .id-card-body { gap: 12px; }
+  .id-card-photo { width: 60px; height: 70px; }
+  .id-card-title { font-size: 0.85rem; }
+  .id-card-info .name { font-size: 0.9rem; }
+  .id-card-badge { font-size: 0.5rem; padding: 2px 8px; top: 12px; right: 12px; }
+  .id-card-logo { width: 34px; height: 34px; font-size: 1rem; }
+  .id-card-qr { width: 40px; height: 40px; font-size: 1rem; bottom: 12px; right: 12px; }
+  .id-card-footer { font-size: 0.5rem; bottom: 12px; left: 14px; }
+  .id-card-hologram { font-size: 0.5rem; bottom: 16px; right: 60px; }
+  .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .step-item { padding: 1.2rem; }
+  .generated-cards-section h2 { font-size: 1.3rem; }
+  .cards-grid { grid-template-columns: 1fr; }
+
+  /* Manifesto */
+  .manifesto-grid { grid-template-columns: 1fr; }
+  .manifesto-card { padding: 1.2rem; }
+
+  /* Protest Timeline */
+  .timeline::before { left: 20px; }
+  .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+  .timeline-content { width: 100%; padding: 1.2rem; }
+  .timeline-dot { left: 20px; }
+  .protest-gallery { grid-template-columns: 1fr; }
+
+  /* Issues page */
+  .issue-card-img { height: 150px !important; }
+  #photo-upload-section, #live-photos-section { padding: 2rem 1rem; }
+  .upload-card { padding: 1.5rem; }
+  .upload-dropzone { padding: 1.5rem; }
+  .photo-preview-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Contact page */
+  .contact-grid { grid-template-columns: 1fr; }
+
+  /* Bulletin */
+  .bulletin-card { padding: 1.2rem; }
+
+  /* Misc */
+  .filter-bar { padding: 0.8rem; }
+  .filter-btn { font-size: 0.75rem; padding: 0.35rem 0.8rem; }
+  .user-issue-card .issue-photos img { height: 180px; }
+  .modal-content { padding: 1.8rem; }
+  .issue-support-section { flex-wrap: wrap; }
+
+  /* Live Photos */
+  .live-photos-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .skeleton-loader { grid-template-columns: repeat(2, 1fr); }
+  .live-photo-img { height: 160px; }
+  .live-photo-info h4 { font-size: 0.8rem; }
+
+  /* What's different sections */
+  .id-card-hero { padding: 3rem 1rem; }
+  .id-card-hero h1 { font-size: 2rem; }
+}
+
+/* === SMALL MOBILE / 480px === */
+@media (max-width: 480px) {
+  /* Hero */
+  .hero h1 { font-size: 1.5rem; }
+  .hero .tagline { font-size: 0.85rem; }
+  .hero-content { padding: 1rem; }
+  .hero-badge { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
+  .stat-number { font-size: 1.2rem; }
+  .stat-label { font-size: 0.6rem; }
+  .stats-container { gap: 0.5rem; }
+  .stat-item { padding: 0.6rem; }
+
+  /* Sections */
+  .section-header h2 { font-size: 1.3rem; }
+  .demands-grid { grid-template-columns: 1fr; }
+  .demand-card { padding: 1.2rem; }
+  .channel-card { padding: 1.2rem; }
+
+  /* ID Card */
+  .id-card { max-width: 290px; padding: 10px; min-height: 180px; }
+  .id-card-header { gap: 6px; margin-bottom: 8px; }
+  .id-card-logo { width: 28px; height: 28px; font-size: 0.85rem; }
+  .id-card-title { font-size: 0.75rem; }
+  .id-card-body { gap: 10px; margin-top: 6px; }
+  .id-card-photo { width: 50px; height: 60px; }
+  .id-card-info .name { font-size: 0.8rem; }
+  .id-card-info .detail { font-size: 0.6rem; }
+  .id-card-badge { font-size: 0.45rem; padding: 2px 6px; top: 10px; right: 10px; }
+  .id-card-qr { width: 34px; height: 34px; font-size: 0.85rem; bottom: 10px; right: 10px; }
+  .id-card-footer { font-size: 0.45rem; bottom: 10px; left: 12px; }
+  .id-card-hologram { font-size: 0.45rem; bottom: 13px; right: 50px; }
+  .id-card-display .id-card { width: 100%; }
+  .id-card-section { margin: -1.5rem auto 1.5rem; }
+  .form-panel, .preview-panel { padding: 1rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group input, .form-group select { padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+  .download-btn { font-size: 0.75rem; padding: 0.5rem 1rem; }
+
+  /* Buttons */
+  .cta-btn { padding: 0.45rem 1rem; font-size: 0.75rem; }
+  .cta-btn.primary { font-size: 0.85rem; padding: 0.6rem 1.2rem; }
+  .hero-buttons .cta-btn { font-size: 0.85rem; padding: 0.6rem 1.2rem; }
+
+  /* Floating elements */
+  .whatsapp-float { width: 46px; height: 46px; font-size: 1.3rem; bottom: 14px; right: 14px; }
+  .theme-toggle { bottom: 14px; left: 14px; width: 38px; height: 38px; font-size: 1rem; }
+
+  /* Footer */
+  .footer-bottom { font-size: 0.7rem; }
+
+  /* Toast */
+  .toast { font-size: 0.8rem; padding: 0.6rem 1rem; bottom: 70px; }
+
+  /* Gallery */
+  .live-photos-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+  .skeleton-loader { grid-template-columns: 1fr; }
+  .photo-preview-grid { grid-template-columns: repeat(2, 1fr); }
+  .live-photo-img { height: 140px; }
+  .issue-meta { flex-direction: column; gap: 0.3rem; }
+
+  /* Contact cards */
+  .contact-card { padding: 1rem; }
+  .contact-card h3 { font-size: 0.9rem; }
+
+  /* Upload */
+  .upload-card { padding: 1rem; }
+  .upload-dropzone { padding: 1.2rem; }
+  .upload-icon { font-size: 2rem; }
+  .dropzone-icon { font-size: 2rem; }
+
+  /* Protest */
+  .protest-photo-card { margin-bottom: 0.5rem; }
+  .protest-photo-card [style*="height:200px"] { height: 150px !important; }
+
+  /* Manifesto demand cards */
+  [style*="display:flex;gap:1.5rem;align-items:flex-start;padding:2rem"] {
+    flex-direction: column !important;
+    padding: 1.2rem !important;
+    gap: 1rem !important;
+  }
+
+  /* Modal */
+  .modal-content { padding: 1.5rem; }
+  .thank-you-modal h2 { font-size: 1.4rem; }
+}
+
+/* ============================================
+   Mobile Landscape
+   ============================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero { min-height: auto; padding: 6rem 1rem 3rem; }
+  .hero h1 { font-size: 1.8rem; }
+  .stats-container { grid-template-columns: repeat(4, 1fr); }
+  .id-card-grid { grid-template-columns: 1fr 1fr; }
+  .nav-links { max-height: 100vh; overflow-y: auto; }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  .header, .footer, .whatsapp-float, .theme-toggle, .hamburger, .nav-actions {
+    display: none !important;
+  }
+  body { padding: 0; margin: 0; background: #fff; }
+  .id-card { box-shadow: none; border: 2px solid #ddd; }
+  .hero { min-height: auto; padding: 2rem; }
+}

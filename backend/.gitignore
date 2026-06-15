@@ -1,0 +1,12 @@
+# ============================================
+# Backend .gitignore
+# ============================================
+
+# CRITICAL: Contains GEMINI_API_KEY — NEVER commit!
+.env
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log

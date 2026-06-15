@@ -1,0 +1,6 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://hardoi-ki-awaaz.onrender.com/sitemap.xml

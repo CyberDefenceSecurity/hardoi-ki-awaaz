@@ -1,0 +1,23 @@
+{
+  "name": "हरदोई की आवाज़ — Hardoi ki Awaaz",
+  "short_name": "Hardoi Awaaz",
+  "description": "हरदोई शहर के नागरिकों का स्वतंत्र मंच — समस्याएं दर्ज करें, ID Card बनवाएं, प्रदर्शनों में शामिल हों",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1642",
+  "theme_color": "#1a237e",
+  "lang": "hi",
+  "dir": "ltr",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["news", "social", "civics"],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

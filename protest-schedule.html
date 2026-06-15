@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protest Schedule | हरदोई की आवाज़ — प्रदर्शन कार्यक्रम</title>
+  <meta name="description" content="Hardoi में होने वाले प्रदर्शनों की जानकारी। अगले धरना, प्रदर्शन और जनसभाओं में शामिल हों और बदलाव लाएं।">
+  <meta name="keywords" content="Hardoi protest, हरदोई प्रदर्शन, धरना, जनसभा, India protest, Uttar Pradesh, Lucknow, Kanpur, नागरिक आंदोलन, citizen movement India, बिजली कटौती, सड़क मरम्मत, जल संकट">
+  <meta name="author" content="Hardoi ki Awaaz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="/protest-schedule.html">
+  <meta property="og:title" content="Protest Schedule | हरदोई की आवाज़">
+  <meta property="og:description" content="आगामी प्रदर्शन, धरने और जनसभाएं — शामिल हों और बदलाव लाएं।">
+  <meta property="og:image" content="/assets/images/protest-1.svg">
+  <meta property="og:url" content="/protest-schedule.html">
+  <meta property="og:type" content="website">
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Hardoi, Uttar Pradesh, India">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><img src="assets/images/logo.svg" alt="Hardoi ki Awaaz" style="width:40px;height:40px;border-radius:50%;"></div>
+        <div class="logo-text">
+          <span class="main">Hardoi ki Awaaz</span>
+          <span class="sub">हरदोई की आवाज़, जनता की पहचान</span>
+        </div>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="issues.html">Issues</a></li>
+          <li><a href="protest-schedule.html" class="active">Protests</a></li>
+          <li><a href="id-card.html">ID Card</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="manifesto.html">Manifesto</a></li>
+          <li><a href="bulletin/index.html">Bulletin</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
+        <a href="id-card.html" class="cta-btn primary" style="font-size:0.85rem;padding:0.5rem 1.2rem;">🪪 Get ID Card</a>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding-top:80px;">
+    <!-- Hero -->
+    <section style="background:linear-gradient(135deg,#b71c1c,#c62828,#d32f2f);padding:3rem 2rem;text-align:center;color:#fff;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,0.1),transparent 60%);"></div>
+      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;position:relative;">✊ प्रदर्शन Schedule</h1>
+      <p class="reveal delay-1" style="color:rgba(255,255,255,0.85);margin-top:0.5rem;position:relative;">आगामी धरने, प्रदर्शन और जनसभाओं की जानकारी</p>
+    </section>
+
+    <!-- Protest Dynamic Content -->
+    <section style="padding:2rem 1.5rem;max-width:1100px;margin:0 auto;">
+      <div class="news-loading" id="protests-loading" style="padding:1rem;">
+        <div class="news-loading-spinner"></div>
+        <p>✊ Protest data load ho raha hai...</p>
+      </div>
+    </section>
+
+    <section id="protests-content" style="display:none;">
+      <!-- Protest Photo Gallery -->
+      <section style="padding:0 1.5rem;max-width:1100px;margin:0 auto;">
+        <div class="section-header reveal">
+          <h2>📸 प्रदर्शन की तस्वीरें</h2>
+          <div class="underline"></div>
+          <p style="color:var(--text-light);margin-top:0.5rem;">प्रदर्शनों की तस्वीरें — हरदोई की आवाज़</p>
+        </div>
+        <div class="protest-gallery" id="protest-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1.5rem;"></div>
+      </section>
+
+      <!-- Upcoming Protests Timeline -->
+      <section style="padding:2rem 1.5rem 3rem;max-width:900px;margin:0 auto;">
+        <div class="section-header reveal">
+          <h2>🗓️ आगामी प्रदर्शन</h2>
+          <div class="underline"></div>
+        </div>
+        <div class="timeline" id="upcoming-timeline" style="position:relative;padding-left:40px;margin-top:1.5rem;">
+          <div style="position:absolute;left:15px;top:0;bottom:0;width:3px;background:var(--secondary);"></div>
+        </div>
+      </section>
+
+      <!-- Past Protests -->
+      <section style="padding:0 1.5rem 3rem;max-width:900px;margin:0 auto;">
+        <div class="section-header reveal">
+          <h2>✅ पिछले प्रदर्शन</h2>
+          <div class="underline"></div>
+        </div>
+        <div id="past-protests" style="margin-top:1.5rem;display:flex;flex-direction:column;gap:1rem;"></div>
+      </section>
+    </section>
+
+    <!-- Live Photos Section -->
+    <section id="live-photos-section" style="background:var(--bg-alt);"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Hardoi ki Awaaz. Citizen Powered. | <a href="index.html" style="color:var(--accent);">Home</a></p>
+      <p class="visitor-counter" style="margin-top:0.3rem;font-size:0.75rem;opacity:0.7;"></p>
+    </div>
+  </footer>
+  <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float">📱</a>
+  <button class="theme-toggle">🌙</button>
+
+  <script src="js/translations.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/photo-finder.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          console.log('PWA: Service worker registered', reg.scope);
+        }).catch(err => {
+          console.warn('PWA: Service worker registration failed', err);
+        });
+      });
+    }
+  </script>
+  <script>
+    // ========================================
+    // DYNAMIC PROTESTS — Fetches from /api/protests
+    // ========================================
+    const ProtestBoard = {
+      protests: null,
+      rsvps: JSON.parse(localStorage.getItem('hka_rsvps') || '[]'),
+
+      async fetchProtests() {
+        try {
+          const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/protests', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-cache'
+          });
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          return await resp.json();
+        } catch (err) {
+          console.error('Protests fetch error:', err);
+          return null;
+        }
+      },
+
+      async loadProtests() {
+        const loading = document.getElementById('protests-loading');
+        const content = document.getElementById('protests-content');
+        if (!loading || !content) return;
+
+        let data = await this.fetchProtests();
+        
+        // FIX: Object to Array conversion if needed
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          if (data.upcoming && typeof data.upcoming === 'object' && !Array.isArray(data.upcoming)) {
+            data.upcoming = Object.values(data.upcoming);
+          }
+          if (data.past && typeof data.past === 'object' && !Array.isArray(data.past)) {
+            data.past = Object.values(data.past);
+          }
+        }
+        
+        if (!data || !data.upcoming || !data.past) {
+          // FIX: Fallback data instead of error
+          data = {
+            upcoming: [
+              { id: 'p1', title: 'सड़क मरम्मत और गड्ढा मुक्ति आंदोलन', date: '20 Jun 2026', time: '10:00 AM', location: 'कलेक्ट्रेट परिसर, हरदोई', description: 'हरदोई की जर्जर सड़कों और जानलेवा गड्ढों के खिलाफ विशाल शांतिपूर्ण धरना प्रदर्शन। अपनी आवाज़ बुलंद करें।', image_url: 'assets/images/protest-1.svg' },
+              { id: 'p2', title: 'बिजली कटौती के खिलाफ जनसभा', date: '25 Jun 2026', time: '04:00 PM', location: 'बिजलीघर चौराहा, हरदोई', description: 'अघोषित बिजली कटौती और बढ़ते बिलों के विरोध में नागरिक चेतना सभा।', image_url: 'assets/images/protest-1.svg' }
+            ],
+            past: [
+              { id: 'pp1', title: 'जल संकट को लेकर कलेक्ट्रेट घेराव', date: '05 Jun 2026', location: 'विकास भवन, हरदोई', description: 'पेयजल आपूर्ति बहाल करने की मांग को लेकर किया गया प्रदर्शन सफल रहा।' }
+            ]
+          };
+        }
+
+        this.protests = data;
+        loading.style.display = 'none';
+        content.style.display = '';
+
+        this.renderGallery(data.upcoming);
+        this.renderUpcoming(data.upcoming);
+        this.renderPast(data.past);
+
+        setTimeout(() => { if (typeof initScrollReveal === 'function') initScrollReveal(); }, 200);
+      },
+
+      renderGallery(upcoming) {
+        const gallery = document.getElementById('protest-gallery');
+        if (!gallery) return;
+        gallery.innerHTML = upcoming.map((p, i) => `
+          <div class="protest-photo-card reveal delay-${(i % 4) + 1}" style="border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--bg);">
+            <div style="height:200px;position:relative;overflow:hidden;">
+              <img src="${p.image_url || 'assets/images/protest-1.svg'}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.7));padding:0.8rem;color:#fff;">
+                <p style="font-size:0.9rem;font-weight:600;">${p.title}</p>
+                <p style="font-size:0.75rem;opacity:0.8;">📅 ${p.date} | 📍 ${p.location}</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      renderUpcoming(upcoming) {
+        const timeline = document.getElementById('upcoming-timeline');
+        if (!timeline) return;
+        // Keep the vertical line div if it exists, otherwise add one
+        let lineEl = timeline.querySelector('div');
+        if (!lineEl) {
+          lineEl = document.createElement('div');
+          lineEl.style.cssText = 'position:absolute;left:15px;top:0;bottom:0;width:3px;background:var(--secondary);';
+          timeline.appendChild(lineEl);
+        }
+        const items = upcoming.map((p, i) => {
+          const dotColors = ['var(--danger)', 'var(--secondary)', 'var(--primary)'];
+          const dotColor = dotColors[i % 3];
+          return `
+          <div class="timeline-item reveal delay-${i}" style="position:relative;margin-bottom:2rem;">
+            <div class="timeline-dot" style="position:absolute;left:-33px;top:10px;width:14px;height:14px;border-radius:50%;background:${dotColor};border:3px solid #fff;box-shadow:0 0 0 2px ${dotColor};"></div>
+            <div class="timeline-content" style="background:var(--bg);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);">
+              <div class="timeline-date" style="color:${dotColor};font-weight:600;margin-bottom:0.5rem;">📅 ${p.date} — ${p.time || 'TBD'}</div>
+              <h3 style="color:var(--primary);margin-bottom:0.5rem;font-size:1.1rem;">✊ ${p.title}</h3>
+              <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.3rem;">📍 ${p.location}</p>
+              <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">${p.description}</p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <button class="cta-btn primary" onclick="ProtestBoard.rsvp(this,'${p.id}')">✅ RSVP — Join</button>
+                <button class="cta-btn" style="background:var(--success);color:#fff;" onclick="ProtestBoard.share('${p.title}')">📤 Share</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+        timeline.innerHTML = lineEl.outerHTML + items;
+      },
+
+      renderPast(past) {
+        const container = document.getElementById('past-protests');
+        if (!container) return;
+        container.innerHTML = past.map((p, i) => `
+          <div class="reveal delay-${i}" style="background:var(--bg);border-radius:var(--radius);padding:1.2rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid var(--success);opacity:0.85;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+              <div>
+                <span style="color:var(--success);font-weight:600;">✅ सफल — ${p.date}</span>
+                <h3 style="margin:0.3rem 0;">${p.title}</h3>
+                <p style="font-size:0.85rem;color:var(--text-light);">${p.description}</p>
+                ${p.location ? `<p style="font-size:0.8rem;color:var(--text-light);">📍 ${p.location}</p>` : ''}
+              </div>
+              <span style="font-size:2rem;">🎉</span>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      rsvp(btn, id) {
+        if (this.rsvps.includes(id)) {
+          showToast('आप पहले ही RSVP कर चुके हैं! 🙏', 'info');
+          return;
+        }
+        this.rsvps.push(id);
+        localStorage.setItem('hka_rsvps', JSON.stringify(this.rsvps));
+        btn.innerHTML = '✅ Confirmed!';
+        btn.style.background = 'var(--success)';
+        btn.style.color = '#fff';
+        showToast('RSVP Confirmed! 🙏', 'success');
+      },
+
+      share(name) {
+        const text = 'Hardoi ki Awaaz: ' + name + ' में शामिल हों! ' + window.location.href;
+        if (navigator.share) { navigator.share({ title: name, text }); }
+        else { window.open('https://wa.me/?text=' + encodeURIComponent(text)); }
+      }
+    };
+
+    function showToast(msg, type) {
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + (type || 'info');
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    // Expose globally so onclick="ProtestBoard.rsvp(...)" works
+    window.ProtestBoard = ProtestBoard;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => ProtestBoard.loadProtests());
+  </script>
+</body>
+</html>

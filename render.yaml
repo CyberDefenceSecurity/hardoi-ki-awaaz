@@ -1,0 +1,37 @@
+# ============================================
+# Render Deployment Configuration
+# Hardoi ki Awaaz — One-click deploy
+# ============================================
+# 1. Push this repo to GitHub
+# 2. Create account at https://render.com (NO credit card needed)
+# 3. Click "New +" → "Blueprint" → Connect your GitHub repo
+# 4. Set GEMINI_API_KEY as environment variable
+# 5. Deploy!
+# ============================================
+
+services:
+  # Backend Web Service (Node.js Express)
+  - type: web
+    name: hardoi-ki-awaaz-backend
+    runtime: node
+    repo: https://github.com/YOUR_USERNAME/hardoi-ki-awaaz
+    plan: free
+    branch: main
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    healthCheckPath: /api/status
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false  # User must set this manually in Render dashboard
+      - key: GEMINI_API_KEY_2
+        sync: false  # Optional backup key
+      - key: GOOGLE_API_KEY
+        sync: false  # Google Custom Search API key (images)
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: https://hardoi-ki-awaaz.onrender.com
+      - key: REFRESH_INTERVAL_MINUTES
+        value: "60"

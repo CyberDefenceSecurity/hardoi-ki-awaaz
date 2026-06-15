@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ID Card Generator | हरदोई की आवाज़ — अपना Official ID Card बनाएं</title>
+  <meta name="description" content="Hardoi ki Awaaz का Official ID Card मुफ्त में बनवाएं। अपनी पहचान बनाएं और हरदोई के नागरिक आंदोलन का हिस्सा बनें। डाउनलोड और शेयर करें।">
+  <meta name="keywords" content="Hardoi ID Card, हरदोई ID कार्ड, digital identity India, Hardoi ki Awaaz membership, Uttar Pradesh, नागरिक पहचान पत्र, India citizen card, free ID card online, UP digital identity">
+  <meta name="author" content="Hardoi ki Awaaz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="/id-card.html">
+  <meta property="og:title" content="ID Card Generator | हरदोई की आवाज़">
+  <meta property="og:description" content="मुफ्त Official ID Card बनवाएं और हरदोई की आवाज़ का हिस्सा बनें।">
+  <meta property="og:image" content="/assets/images/logo.svg">
+  <meta property="og:url" content="/id-card.html">
+  <meta property="og:type" content="website">
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Hardoi, Uttar Pradesh, India">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/id-card.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><img src="assets/images/logo.svg" alt="Hardoi ki Awaaz" style="width:40px;height:40px;border-radius:50%;"></div>
+        <div class="logo-text">
+          <span class="main">Hardoi ki Awaaz</span>
+          <span class="sub">हरदोई की आवाज़, जनता की पहचान</span>
+        </div>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="issues.html">Issues</a></li>
+          <li><a href="protest-schedule.html">Protests</a></li>
+          <li><a href="id-card.html" class="active">ID Card</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="manifesto.html">Manifesto</a></li>
+          <li><a href="bulletin/index.html">Bulletin</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
+        <a href="id-card.html" class="cta-btn primary" style="font-size:0.85rem;padding:0.5rem 1.2rem;">🪪 Get ID Card</a>
+        <button class="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="id-card-page">
+    <section class="id-card-hero-section">
+      <h1 class="reveal">🪪 ID Card Generator</h1>
+      <p class="subtitle reveal delay-1">Hardoi ki Awaaz — Apna Official ID Card Banayein aur Member Banein</p>
+    </section>
+
+    <section class="id-card-section">
+      <div class="id-card-grid">
+        <!-- Form Panel -->
+        <div class="form-panel reveal">
+          <h2><span class="icon">📝</span> Apni Jankari Bharein</h2>
+          <form id="id-form">
+            <div class="form-group">
+              <label>Pura Naam / Full Name</label>
+              <input type="text" id="id-name" placeholder="Apna naam likhein" required>
+            </div>
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="tel" id="id-mobile" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label>Ilaka / Area</label>
+              <select id="id-area" required>
+                <option value="">Apna ilaka chunein</option>
+                <option value="City Center">City Center</option>
+                <option value="Bilgram">Bilgram</option>
+                <option value="Sandi">Sandi</option>
+                <option value="Balamau">Balamau</option>
+                <option value="Pihani">Pihani</option>
+                <option value="Shahabad">Shahabad</option>
+                <option value="Hardoi Bypass">Hardoi Bypass</option>
+                <option value="Naraini">Naraini</option>
+                <option value="Gopamau">Gopamau</option>
+                <option value="Kachhauna">Kachhauna</option>
+                <option value="Ahirori">Ahirori</option>
+                <option value="Bawan">Bawan</option>
+                <option value="Hariyawan">Hariyawan</option>
+                <option value="Todarpur">Todarpur</option>
+                <option value="Kampil">Kampil</option>
+                <option value="Bisauli">Bisauli</option>
+                <option value="Purwa Bazar">Purwa Bazar</option>
+                <option value="Chattamau">Chattamau</option>
+                <option value="Gulariya">Gulariya</option>
+                <option value="Lawesingh Nagar">Lawesingh Nagar</option>
+                <option value="Kotwali">Kotwali</option>
+                <option value="Civil Lines">Civil Lines</option>
+                <option value="Model Town">Model Town</option>
+                <option value="Subhash Nagar">Subhash Nagar</option>
+                <option value="Gandhi Nagar">Gandhi Nagar</option>
+                <option value="Nehru Nagar">Nehru Nagar</option>
+                <option value="Jawahar Nagar">Jawahar Nagar</option>
+                <option value="Station Road">Station Road</option>
+                <option value="Sadar Bazaar">Sadar Bazaar</option>
+                <option value="Mall Road">Mall Road</option>
+                <option value="Ram Nagar">Ram Nagar</option>
+                <option value="Katra">Katra</option>
+                <option value="Ismailganj">Ismailganj</option>
+                <option value="Azimabad">Azimabad</option>
+                <option value="Shivpuri">Shivpuri</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+            <div class="form-group" id="custom-area-group" style="display:none;">
+              <label>Other Area</label>
+              <input type="text" id="id-custom-area" placeholder="Apna ilaka ka naam">
+            </div>
+            <div class="form-group">
+              <label>Your Tag / Hashtag (Optional)</label>
+              <input type="text" id="id-tag" placeholder="#HardoiRising" maxlength="50">
+              <p style="font-size:0.75rem;color:var(--text-light);margin-top:0.2rem;">Apna hashtag ya slogan likhen jo ID Card par dikhega</p>
+            </div>
+            <div class="form-group">
+              <label>Photo (Optional)</label>
+              <div class="photo-upload" style="cursor:pointer;">
+                <div class="photo-preview" id="id-photo-preview" style="display:none;">
+                  <img src="" alt="Preview">
+                </div>
+                <div id="id-photo-placeholder" style="flex:1;">
+                  <p style="color:var(--text-light);margin:0;">📷 Click ya drag photo here</p>
+                </div>
+              </div>
+              <input type="file" id="id-photo-input" accept="image/*" style="display:none;">
+              <p style="font-size:0.75rem;color:var(--text-light);margin-top:0.3rem;">JPG, PNG, WebP up to 5MB</p>
+            </div>
+            <button type="submit" class="cta-btn primary" style="width:100%;padding:1rem;font-size:1.1rem;">🎫 ID Card Banayein</button>
+          </form>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel reveal delay-1">
+          <h2>🪪 Aapka ID Card</h2>
+          <div class="id-card-display" id="id-card-preview">
+            <div style="padding:3rem 1rem;text-align:center;color:var(--text-light);">
+              <span style="font-size:3rem;display:block;margin-bottom:0.5rem;">🪪</span>
+              <p>Form bharein aur ID Card yaha dikhega</p>
+            </div>
+          </div>
+          <div class="download-actions" id="id-card-actions" style="display:none;">
+            <button class="download-btn png" onclick="downloadIDCard('png')">📥 Download PNG</button>
+            <button class="download-btn share" onclick="downloadIDCard('share')">📤 Share</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="steps-section">
+      <div class="section-header reveal">
+        <h2>📋 ID Card Kaise Banayein?</h2>
+        <div class="underline"></div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item reveal delay-1">
+          <div class="step-number">1</div>
+          <h3>📝 Form Bharein</h3>
+          <p>Apna naam, mobile aur ilaka form mein daalein</p>
+        </div>
+        <div class="step-item reveal delay-2">
+          <div class="step-number">2</div>
+          <h3>📸 Photo Lagayein</h3>
+          <p>Optional photo upload karein (ya avatar use hoga)</p>
+        </div>
+        <div class="step-item reveal delay-3">
+          <div class="step-number">3</div>
+          <h3>⬇️ Download Karein</h3>
+          <p>Apna official ID Card download karein</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Cards -->
+    <section class="generated-cards-section">
+      <h2 class="reveal">📂 Apne Saved Cards</h2>
+      <div id="saved-cards-grid" class="cards-grid">
+        <p style="text-align:center;color:var(--text-light);grid-column:1/-1;">Koi card save nahi hai. Pehla card banayein! 🎉</p>
+      </div>
+    </section>
+
+    <!-- ID Card Verification -->
+    <section class="verification-section">
+      <div class="section-header reveal">
+        <h2>✅ ID Card Verification</h2>
+        <div class="underline"></div>
+        <p style="color:var(--text-light);margin-top:0.5rem;">Apne ID Card ko Verify karein — Number daalke Check karein</p>
+      </div>
+      <div class="verification-card reveal delay-1">
+        <div class="verify-icon">🔍</div>
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem;">ID Card par likha hua ID Number (e.g., HKA-2026-1234) daalein</p>
+        <div class="verify-form">
+          <input type="text" id="verify-input" placeholder="HKA-2026-XXXX" maxlength="20" style="flex:1;padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:1rem;font-family:inherit;background:var(--bg);color:var(--text);">
+          <button onclick="verifyIDCard()" class="cta-btn primary" style="padding:0.8rem 1.5rem;white-space:nowrap;">✅ Verify</button>
+        </div>
+        <div id="verify-result" style="margin-top:1rem;display:none;"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Hardoi ki Awaaz. Citizen Powered. | <a href="index.html" style="color:var(--accent);">Home</a></p>
+      <p class="visitor-counter" style="margin-top:0.3rem;font-size:0.75rem;opacity:0.7;"></p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float">📱</a>
+  <button class="theme-toggle">🌙</button>
+
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/id-generator.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          console.log('PWA: Service worker registered', reg.scope);
+        }).catch(err => {
+          console.warn('PWA: Service worker registration failed', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

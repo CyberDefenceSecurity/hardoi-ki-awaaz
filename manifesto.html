@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manifesto & Demands | हरदोई की आवाज़ — हमारी मांगें</title>
+  <meta name="description" content="Hardoi ki Awaaz की 5 प्रमुख मांगें — सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा। हरदोई के विकास के लिए हमारा एजेंडा पढ़ें और समर्थन करें।">
+  <meta name="keywords" content="Hardoi manifesto, हरदोई मांगें, citizen demands India, Uttar Pradesh, सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा, India civic agenda, Lucknow, Kanpur, UP development, नागरिक एजेंडा">
+  <meta name="author" content="Hardoi ki Awaaz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="/manifesto.html">
+  <meta property="og:title" content="Manifesto | हरदोई की आवाज़ — हमारी मांगें">
+  <meta property="og:description" content="हरदोई के विकास के लिए 5 प्रमुख मांगें — पढ़ें और समर्थन करें।">
+  <meta property="og:image" content="/assets/images/hero-bg.svg">
+  <meta property="og:url" content="/manifesto.html">
+  <meta property="og:type" content="website">
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Hardoi, Uttar Pradesh, India">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo"><div class="logo-icon"><img src="assets/images/logo.svg" alt="Hardoi ki Awaaz" style="width:40px;height:40px;border-radius:50%;"></div><div class="logo-text"><span class="main">Hardoi ki Awaaz</span><span class="sub">हरदोई की आवाज़, जनता की पहचान</span></div></a>
+      <nav><ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="news.html">News</a></li><li><a href="about.html">About</a></li><li><a href="issues.html">Issues</a></li><li><a href="protest-schedule.html">Protests</a></li><li><a href="id-card.html">ID Card</a></li><li><a href="contact.html">Contact</a></li><li><a href="manifesto.html">Manifesto</a></li><li><a href="bulletin/index.html">Bulletin</a></li></ul></nav>
+      <div class="nav-actions"><button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button><a href="id-card.html" class="cta-btn primary" style="font-size:0.85rem;padding:0.5rem 1.2rem;">🪪 Get ID Card</a><div class="hamburger"><span></span><span></span><span></span></div></div>
+    </div>
+  </header>
+
+  <main style="padding-top:80px;">
+    <section style="background:linear-gradient(135deg,var(--primary-dark),var(--primary),#283593);padding:3rem 2rem;text-align:center;color:#fff;">
+      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;">📜 हमारी मांगें — Manifesto</h1>
+      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-top:0.5rem;">हरदोई के विकास के लिए हमारी बढ़ती मांगें — समाचार के अनुसार अपडेट होती रहती हैं 📈</p>
+    </section>
+
+    <section style="padding:3rem 1.5rem;max-width:900px;margin:0 auto;">
+      <div class="news-loading" id="manifesto-loading" style="padding:3rem;">
+        <div class="news-loading-spinner"></div>
+        <p>📜 Manifesto load ho raha hai...</p>
+      </div>
+      <div id="manifesto-demands" style="display:none;"></div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding:3rem 2rem;text-align:center;background:var(--bg-alt);">
+      <h2 class="reveal" style="font-size:1.8rem;">✊ इन मांगों का समर्थन करें!</h2>
+      <p class="reveal delay-1" style="color:var(--text-light);margin:0.5rem 0 1.5rem;">ID Card बनवाएं और बदलाव का हिस्सा बनें</p>
+      <a href="id-card.html" class="cta-btn primary reveal delay-2" style="font-size:1rem;padding:0.8rem 2.5rem;">🪪 ID Card बनाएं</a>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="footer-bottom"><p>© 2026 Hardoi ki Awaaz. Citizen Powered. | <a href="index.html" style="color:var(--accent);">Home</a></p><p class="visitor-counter" style="margin-top:0.3rem;font-size:0.75rem;opacity:0.7;"></p></div></footer>
+  <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float">📱</a>
+  <button class="theme-toggle">🌙</button>
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          console.log('PWA: Service worker registered', reg.scope);
+        }).catch(err => {
+          console.warn('PWA: Service worker registration failed', err);
+        });
+      });
+    }
+  </script>
+  <script>
+    // ========================================
+    // DYNAMIC MANIFESTO — Fetches from /api/manifesto
+    // Grows automatically as news accumulates
+    // ========================================
+    const ManifestoBoard = {
+      demands: [],
+
+      categoryColors: {
+        roads: { bg: 'linear-gradient(135deg,var(--secondary),#ffa040)', color: 'var(--secondary)' },
+        water: { bg: 'linear-gradient(135deg,#1565c0,#1976d2)', color: '#1565c0' },
+        electricity: { bg: 'linear-gradient(135deg,#f57f17,#ff8f00)', color: '#f57f17' },
+        health: { bg: 'linear-gradient(135deg,#c62828,#e53935)', color: '#c62828' },
+        education: { bg: 'linear-gradient(135deg,#2e7d32,#43a047)', color: '#2e7d32' },
+        safety: { bg: 'linear-gradient(135deg,#4a148c,#7b1fa2)', color: '#4a148c' },
+        garbage: { bg: 'linear-gradient(135deg,#4e342e,#5d4037)', color: '#4e342e' },
+        environment: { bg: 'linear-gradient(135deg,#00695c,#00897b)', color: '#00695c' },
+        transport: { bg: 'linear-gradient(135deg,#37474f,#455a64)', color: '#37474f' },
+        development: { bg: 'linear-gradient(135deg,#0d47a1,#1976d2)', color: '#0d47a1' }
+      },
+
+      async fetchManifesto() {
+        try {
+          const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/manifesto', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-cache'
+          });
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          return await resp.json();
+        } catch (err) {
+          console.error('Manifesto fetch error:', err);
+          return null;
+        }
+      },
+
+      async loadManifesto() {
+        const loading = document.getElementById('manifesto-loading');
+        const container = document.getElementById('manifesto-demands');
+        if (!loading || !container) return;
+
+        let data = await this.fetchManifesto();
+        
+        // FIX: Object to Array conversion if needed
+        if (data && !Array.isArray(data) && typeof data === 'object') {
+          data = Object.values(data);
+        }
+        
+        if (!data || data.length === 0) {
+          // FIX: Fallback data instead of error
+          data = [
+            { category: 'water', icon: '💧', order: 1, title: 'शुद्ध पेयजल — हर घर में स्वच्छ पानी', description: 'हर घर में शुद्ध पीने का पानी हो। RO plants लगें।', progress: 45 },
+            { category: 'roads', icon: '🛤️', order: 2, title: 'सड़कें — गड्ढा मुक्त शहर', description: 'हरदोई की हर मुख्य सड़क और गली गड्ढा मुक्त हो।', progress: 34 },
+            { category: 'electricity', icon: '⚡', order: 3, title: '24/7 बिजली — अघोषित कटौती बंद', description: 'शहर में 24 घंटे बिजली। बिजली कटौती का शेड्यूल पारदर्शी हो।', progress: 35 },
+            { category: 'health', icon: '🏥', order: 4, title: 'स्वास्थ्य सेवा — हर नागरिक का अधिकार', description: 'District Hospital में सभी दवाइयाँ उपलब्ध हों।', progress: 22 },
+            { category: 'education', icon: '📚', order: 5, title: 'शिक्षा — बच्चों का भविष्य', description: 'सरकारी स्कूलों में पर्याप्त शिक्षक, Labs और Libraries।', progress: 47 }
+          ];
+        }
+
+        this.demands = data;
+        loading.style.display = 'none';
+        container.style.display = '';
+        this.renderDemands(data);
+
+        setTimeout(() => { if (typeof initScrollReveal === 'function') initScrollReveal(); }, 200);
+      },
+
+      renderDemands(demands) {
+        const container = document.getElementById('manifesto-demands');
+        if (!container) return;
+
+        container.innerHTML = demands.map((d, i) => {
+          const catStyle = this.categoryColors[d.category] || { bg: 'linear-gradient(135deg,var(--secondary),#ffa040)', color: 'var(--secondary)' };
+          const icon = d.icon || '📋';
+          return `
+          <div class="reveal delay-${(i % 5)}" style="display:flex;gap:1.5rem;align-items:flex-start;padding:2rem;background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:1.5rem;">
+            <div style="flex-shrink:0;width:70px;height:70px;border-radius:50%;background:${catStyle.bg};display:flex;align-items:center;justify-content:center;font-size:2rem;">${icon}</div>
+            <div style="flex:1;">
+              <h2 style="font-size:1.3rem;color:var(--primary);margin-bottom:0.5rem;">${d.order || (i+1)}. ${d.title}</h2>
+              <p style="font-size:0.95rem;line-height:1.7;color:var(--text);margin-bottom:1rem;">${d.description}</p>
+              <div style="background:var(--bg-alt);border-radius:8px;padding:0.6rem 1rem;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:0.85rem;color:var(--text-light);">प्रगति</span>
+                <div style="flex:1;margin:0 1rem;height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;">
+                  <div style="width:${d.progress}%;height:100%;background:${catStyle.color};border-radius:4px;"></div>
+                </div>
+                <span style="font-size:0.85rem;font-weight:600;color:${catStyle.color};">${d.progress}%</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => ManifestoBoard.loadManifesto());
+  </script>
+</body>
+</html>
