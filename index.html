@@ -1,31 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <title>Test Page</title>
-    <style>
-        #navbar { display: flex; gap: 10px; }
-        .hidden { display: none; }
-        #stats { margin-top: 20px; height: 1000px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===== PRIMARY META ===== -->
+  <title>हरदोई की आवाज़ — Hardoi ki Awaaz | नागरिक मंच, हरदोई की आवाज़</title>
+  <meta name="description" content="Hardoi ki Awaaz — हरदोई शहर के नागरिकों का स्वतंत्र मंच। ID Card बनवाएं, समस्याएं दर्ज करें, प्रदर्शनों में शामिल हों, और शहर के विकास में अपना योगदान दें। हरदोई की आवाज़, हरदोई की असलियत।">
+  <meta name="keywords" content="Hardoi ki awaaz, Hardoi ki asliyat, hardoi-ki-awaaz, hardoi-ki-asliyat, Hardoi news, हरदोई की आवाज़, हरदोई की असलियत, Hardoi, Uttar Pradesh, उत्तर प्रदेश, नागरिक मंच, citizen platform India, Hardoi ID card, हरदोई समाचार, Hardoi protest, civic issues India, Lucknow, Kanpur, Shahjahanpur, Sitapur">
+  <meta name="author" content="Hardoi ki Awaaz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://hardoi-ki-awaaz.onrender.com/">
+
+  <!-- ===== HREFLANG ===== -->
+  <link rel="alternate" hreflang="hi" href="https://hardoi-ki-awaaz.onrender.com/">
+  <link rel="alternate" hreflang="en" href="https://hardoi-ki-awaaz.onrender.com/">
+  <link rel="alternate" hreflang="x-default" href="https://hardoi-ki-awaaz.onrender.com/">
+
+  <!-- ===== OPEN GRAPH ===== -->
+  <meta property="og:title" content="हरदोई की आवाज़ — Hardoi ki Awaaz | नागरिक मंच">
+  <meta property="og:description" content="हरदोई के नागरिकों का स्वतंत्र मंच — ID Card बनवाएं, समस्याएं दर्ज करें, प्रदर्शनों में शामिल हों। Hardoi ki Awaaz, Hardoi ki Asliyat।">
+  <meta property="og:image" content="https://hardoi-ki-awaaz.onrender.com/assets/images/logo.jpg">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:url" content="https://hardoi-ki-awaaz.onrender.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="हरदोई की आवाज़ — Hardoi ki Awaaz">
+  <meta property="og:locale" content="hi_IN">
+
+  <!-- ===== TWITTER ===== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="हरदोई की आवाज़ — Hardoi ki Awaaz">
+  <meta name="twitter:description" content="हरदोई शहर के नागरिकों का स्वतंत्र मंच। आज ही जुड़ें और बदलाव का हिस्सा बनें।">
+  <meta name="twitter:image" content="https://hardoi-ki-awaaz.onrender.com/assets/images/logo.jpg">
+
+  <!-- ===== GEO META ===== -->
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Hardoi, Uttar Pradesh, India">
+  <meta name="geo.position" content="27.3939;80.1323">
+  <meta name="ICBM" content="27.3939, 80.1323">
+
+  <!-- ===== JSON-LD STRUCTURED DATA ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "हरदोई की आवाज़ — Hardoi ki Awaaz",
+    "alternateName": "Hardoi ki Asliyat",
+    "url": "https://hardoi-ki-awaaz.onrender.com/",
+    "logo": "https://hardoi-ki-awaaz.onrender.com/assets/images/logo.jpg",
+    "description": "हरदोई शहर के नागरिकों का स्वतंत्र मंच — किसी भी राजनीतिक दल से संबद्ध नहीं।",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Hardoi",
+      "addressRegion": "Uttar Pradesh",
+      "addressCountry": "IN"
+    },
+    "sameAs": [
+      "https://instagram.com/hardoi_ki_asliyat",
+      "https://t.me/HardoiKiAsliyat",
+      "https://youtube.com/@hardoikiasliyat",
+      "https://discord.gg/7fdrSaFRA",
+      "https://whatsapp.com/channel/0029VbCgTjLLtOjKqHvqm72m"
+    ],
+    "foundingDate": "2025",
+    "areaServed": {
+      "@type": "City",
+      "name": "Hardoi",
+      "sameAs": "https://en.wikipedia.org/wiki/Hardoi"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "हरदोई की आवाज़ — Hardoi ki Awaaz",
+    "url": "https://hardoi-ki-awaaz.onrender.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://hardoi-ki-awaaz.onrender.com/news.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "inLanguage": ["hi", "en"]
+  }
+  </script>
+
+  <!-- ===== STYLES ===== -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+
+  <!-- ===== PWA ===== -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="assets/images/logo.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="assets/images/logo.jpg">
 </head>
 <body>
-    <div id="navbar">
-        <button id="menu-btn">Menu</button>
-        <a href="#about">About</a>
-        <button id="lang-toggle">EN</button>
+  <!-- ===== HEADER (same as other pages) ===== -->
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><img src="assets/images/logo.jpg" alt="Hardoi ki Awaaz Logo" style="width:40px;height:40px;border-radius:50%;"></div>
+        <div class="logo-text">
+          <span class="main">Hardoi ki Awaaz</span>
+          <span class="sub">हरदोई की आवाज़, जनता की पहचान</span>
+        </div>
+      </a>
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="issues.html">Issues</a></li>
+          <li><a href="protest-schedule.html">Protests</a></li>
+          <li><a href="id-card.html">ID Card</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="manifesto.html">Manifesto</a></li>
+          <li><a href="bulletin/index.html">Bulletin</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
+        <button class="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
-    <div id="menu" class="hidden">Links</div>
-    <div id="stats">
-        <span id="counter">0</span>
+  </header>
+
+  <!-- ===== HERO SECTION ===== -->
+  <main>
+    <section class="hero-section" style="background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 40%,#283593 70%,var(--secondary-dark) 100%);padding:6rem 2rem 4rem;text-align:center;color:#fff;position:relative;overflow:hidden;min-height:60vh;display:flex;align-items:center;justify-content:center;">
+      <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 30% 50%,rgba(255,111,0,0.12),transparent 50%),radial-gradient(circle at 70% 80%,rgba(255,255,255,0.05),transparent 40%);"></div>
+      <div style="position:relative;max-width:800px;">
+        <h1 class="reveal" style="font-size:clamp(2rem,5vw,3.2rem);font-weight:900;line-height:1.2;margin-bottom:1rem;">
+          हरदोई की आवाज़ — <span style="color:var(--accent);">Hardoi ki Awaaz</span>
+        </h1>
+        <p class="reveal delay-1" style="font-size:clamp(1rem,2.5vw,1.3rem);color:rgba(255,255,255,0.85);max-width:650px;margin:0 auto 2rem;line-height:1.7;font-family:var(--font-hindi);">
+          हरदोई शहर के नागरिकों का स्वतंत्र मंच — ID Card बनवाएं, समस्याएं दर्ज करें, प्रदर्शनों में शामिल हों, और शहर के विकास में अपना योगदान दें।
+        </p>
+        <div class="reveal delay-2" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+          <a href="id-card.html" class="cta-btn primary" style="font-size:1rem;padding:0.9rem 2rem;">🪪 ID Card बनाएं</a>
+          <a href="issues.html" class="cta-btn" style="font-size:1rem;padding:0.9rem 2rem;background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.3);">📢 समस्या दर्ज करें</a>
+          <a href="news.html" class="cta-btn" style="font-size:1rem;padding:0.9rem 2rem;background:rgba(255,255,255,0.1);color:#fff;border:2px solid rgba(255,255,255,0.2);">📰 खबरें पढ़ें</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATS COUNTER SECTION ===== -->
+    <section class="stats-section" style="padding:3rem 1.5rem;background:var(--bg-alt);">
+      <div class="section-header reveal">
+        <h2>📊 हमारी ताकत — हमारे आंकड़े</h2>
+        <div class="underline"></div>
+        <p style="color:var(--text-light);margin-top:0.5rem;">Hardoi ki Awaaz की बढ़ती ताकत — हर महीने बढ़ रहे हैं आंकड़े 📈</p>
+      </div>
+      <div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;max-width:900px;margin:2rem auto 0;">
+        <div class="stat-card reveal delay-1" style="text-align:center;padding:2rem 1rem;background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:0.3s;">
+          <span style="font-size:2.5rem;">🪪</span>
+          <div class="stat-number" id="stat-id-cards" data-count="12847" style="font-size:2rem;font-weight:800;color:var(--primary);margin:0.5rem 0;">0</div>
+          <p style="font-size:0.9rem;color:var(--text-light);">ID Cards Generated</p>
+        </div>
+        <div class="stat-card reveal delay-2" style="text-align:center;padding:2rem 1rem;background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:0.3s;">
+          <span style="font-size:2.5rem;">❤️</span>
+          <div class="stat-number" id="stat-supporters" data-count="25000" style="font-size:2rem;font-weight:800;color:var(--secondary);margin:0.5rem 0;">0</div>
+          <p style="font-size:0.9rem;color:var(--text-light);">Supporters</p>
+        </div>
+        <div class="stat-card reveal delay-3" style="text-align:center;padding:2rem 1rem;background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:0.3s;">
+          <span style="font-size:2.5rem;">📋</span>
+          <div class="stat-number" id="stat-issues" data-count="340" style="font-size:2rem;font-weight:800;color:var(--danger);margin:0.5rem 0;">0</div>
+          <p style="font-size:0.9rem;color:var(--text-light);">Issues Raised</p>
+        </div>
+        <div class="stat-card reveal delay-4" style="text-align:center;padding:2rem 1rem;background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:0.3s;">
+          <span style="font-size:2.5rem;">📍</span>
+          <div class="stat-number" id="stat-coverage" data-count="35" style="font-size:2rem;font-weight:800;color:var(--success);margin:0.5rem 0;">0</div>
+          <p style="font-size:0.9rem;color:var(--text-light);">City Coverage %</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NEWS TEASER ===== -->
+    <section style="padding:3rem 1.5rem;max-width:1200px;margin:0 auto;">
+      <div id="home-news-teaser"></div>
+    </section>
+
+    <!-- ===== FEATURES / QUICK LINKS ===== -->
+    <section style="padding:3rem 1.5rem;background:var(--bg-alt);">
+      <div class="section-header reveal">
+        <h2>🚀 हमारी सुविधाएं</h2>
+        <div class="underline"></div>
+        <p style="color:var(--text-light);margin-top:0.5rem;">Hardoi ki Awaaz — आपकी आवाज़, आपकी पहचान</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:1100px;margin:2rem auto 0;">
+        <a href="id-card.html" class="reveal delay-1" style="text-decoration:none;background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);text-align:center;transition:0.3s;border-top:4px solid var(--primary);">
+          <span style="font-size:3rem;">🪪</span>
+          <h3 style="margin:0.8rem 0 0.4rem;color:var(--primary);">ID Card Generator</h3>
+          <p style="font-size:0.85rem;color:var(--text-light);line-height:1.5;">Hardoi ki Awaaz का Official ID Card मुफ्त में बनवाएं। अपनी पहचान बनाएं और आंदोलन का हिस्सा बनें।</p>
+        </a>
+        <a href="issues.html" class="reveal delay-2" style="text-decoration:none;background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);text-align:center;transition:0.3s;border-top:4px solid var(--danger);">
+          <span style="font-size:3rem;">📢</span>
+          <h3 style="margin:0.8rem 0 0.4rem;color:var(--danger);">समस्या दर्ज करें</h3>
+          <p style="font-size:0.85rem;color:var(--text-light);line-height:1.5;">शहर की समस्याएं देखें, support करें, और अपनी समस्या फोटो के साथ दर्ज करें।</p>
+        </a>
+        <a href="news.html" class="reveal delay-3" style="text-decoration:none;background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);text-align:center;transition:0.3s;border-top:4px solid var(--secondary);">
+          <span style="font-size:3rem;">📰</span>
+          <h3 style="margin:0.8rem 0 0.4rem;color:var(--secondary);">ताज़ा खबरें</h3>
+          <p style="font-size:0.85rem;color:var(--text-light);line-height:1.5;">Hardoi और UP की लेटेस्ट अपडेट्स, खबरें, और सफलताएं एक ही जगह पढ़ें।</p>
+        </a>
+        <a href="protest-schedule.html" class="reveal delay-4" style="text-decoration:none;background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);text-align:center;transition:0.3s;border-top:4px solid #b71c1c;">
+          <span style="font-size:3rem;">✊</span>
+          <h3 style="margin:0.8rem 0 0.4rem;color:#b71c1c;">प्रदर्शन Schedule</h3>
+          <p style="font-size:0.85rem;color:var(--text-light);line-height:1.5;">आगामी धरने, प्रदर्शन और जनसभाओं की जानकारी — शामिल हों और बदलाव लाएं।</p>
+        </a>
+        <a href="manifesto.html" class="reveal delay-1" style="text-decoration:none;background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);text-align:center;transition:0.3s;border-top:4px solid #2e7d32;">
+          <span style="font-size:3rem;">📜</span>
+          <h3 style="margin:0.8rem 0 0.4rem;color:#2e7d32;">हमारा Manifesto</h3>
+          <p style="font-size:0.85rem;color:var(--text-light);line-height:1.5;">हमारी मांगें और प्रगति — सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा के लिए हमारा एजेंडा।</p>
+        </a>
+        <a href="about.html" class="reveal delay-2" style="text-decoration:none;background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);text-align:center;transition:0.3s;border-top:4px solid var(--accent);">
+          <span style="font-size:3rem;">🎯</span>
+          <h3 style="margin:0.8rem 0 0.4rem;color:var(--accent);">हमारा मिशन</h3>
+          <p style="font-size:0.85rem;color:var(--text-light);line-height:1.5;">हम कौन हैं, हम क्या करते हैं — हरदोई की आवाज़ के बारे में जानें और जुड़ें।</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== SOCIAL MEDIA SECTION ===== -->
+    <section style="padding:3rem 1.5rem;max-width:900px;margin:0 auto;text-align:center;">
+      <div class="section-header reveal">
+        <h2>📱 हमसे जुड़ें — Social Media</h2>
+        <div class="underline"></div>
+        <p style="color:var(--text-light);margin-top:0.5rem;">हरदोई की असलियत जानने के लिए फॉलो करें</p>
+      </div>
+      <div class="reveal delay-1" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;">
+        <a href="https://instagram.com/hardoi_ki_asliyat" target="_blank" rel="noopener" class="cta-btn" style="background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff;font-size:1rem;padding:0.8rem 1.5rem;">📸 Instagram</a>
+        <a href="https://t.me/HardoiKiAsliyat" target="_blank" rel="noopener" class="cta-btn" style="background:#0088cc;color:#fff;font-size:1rem;padding:0.8rem 1.5rem;">✈️ Telegram</a>
+        <a href="https://youtube.com/@hardoikiasliyat?si=GDWGjxs3TuUSGqIF" target="_blank" rel="noopener" class="cta-btn" style="background:#FF0000;color:#fff;font-size:1rem;padding:0.8rem 1.5rem;">▶️ YouTube</a>
+        <a href="https://discord.gg/7fdrSaFRA" target="_blank" rel="noopener" class="cta-btn" style="background:#5865f2;color:#fff;font-size:1rem;padding:0.8rem 1.5rem;">💬 Discord</a>
+        <a href="https://whatsapp.com/channel/0029VbCgTjLLtOjKqHvqm72m" target="_blank" rel="noopener" class="cta-btn" style="background:#25d366;color:#fff;font-size:1rem;padding:0.8rem 1.5rem;">📱 WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <h3>🎙️ हरदोई की आवाज़</h3>
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:1rem;font-family:var(--font-hindi);">
+          हरदोई शहर के नागरिकों की आवाज़ — Hardoi ki Awaaz, Hardoi ki Asliyat। हम बदलाव के लिए एक साथ खड़े हैं। स्वतंत्र नागरिक मंच, किसी भी राजनीतिक दल से संबद्ध नहीं।
+        </p>
+        <div class="footer-socials">
+          <a href="https://discord.gg/7fdrSaFRA" target="_blank" rel="noopener" aria-label="Discord">💬</a>
+          <a href="https://instagram.com/hardoi_ki_asliyat" target="_blank" rel="noopener" aria-label="Instagram">📸</a>
+          <a href="https://t.me/HardoiKiAsliyat" target="_blank" rel="noopener" aria-label="Telegram">✈️</a>
+          <a href="https://whatsapp.com/channel/0029VbCgTjLLtOjKqHvqm72m" target="_blank" rel="noopener" aria-label="WhatsApp">📱</a>
+          <a href="https://youtube.com/@hardoikiasliyat?si=GDWGjxs3TuUSGqIF" target="_blank" rel="noopener" aria-label="YouTube">▶️</a>
+        </div>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About Us</a>
+        <a href="issues.html">Issues</a>
+        <a href="protest-schedule.html">Protest Schedule</a>
+        <a href="manifesto.html">Manifesto</a>
+      </div>
+      <div>
+        <h3>Services</h3>
+        <a href="id-card.html">ID Card Generator</a>
+        <a href="contact.html">Report Problem</a>
+        <a href="bulletin/index.html">Bulletin</a>
+      </div>
+      <div>
+        <h3>Follow Us</h3>
+        <p style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-bottom:0.5rem;">Hardoi ki Asliyat — Social Media</p>
+        <a href="https://instagram.com/hardoi_ki_asliyat" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7);display:block;margin-bottom:0.3rem;">📸 @hardoi_ki_asliyat</a>
+        <a href="https://t.me/HardoiKiAsliyat" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7);display:block;margin-bottom:0.3rem;">✈️ @HardoiKiAsliyat</a>
+        <a href="https://youtube.com/@hardoikiasliyat" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7);display:block;">▶️ @hardoikiasliyat</a>
+      </div>
     </div>
-    <script>
-        console.log("Page loaded");
-        document.getElementById('menu-btn').onclick = () => document.getElementById('menu').classList.toggle('hidden');
-        document.getElementById('lang-toggle').onclick = (e) => {
-            e.target.innerText = e.target.innerText === 'EN' ? 'HI' : 'EN';
-        };
-        setTimeout(() => { document.getElementById('counter').innerText = '100'; }, 1000);
-    </script>
+    <div class="footer-bottom">
+      <p>© 2026 Hardoi ki Awaaz — Hardoi ki Asliyat. Citizen Powered. | Independent citizen platform — not affiliated to any political party.</p>
+      <p class="visitor-counter" style="margin-top:0.3rem;font-size:0.75rem;opacity:0.7;"></p>
+    </div>
+  </footer>
+
+  <!-- ===== FLOATING BUTTONS ===== -->
+  <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float" title="WhatsApp Contact">📱</a>
+  <button class="theme-toggle" title="Toggle Dark Mode">🌙</button>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/counter.js"></script>
+  <script src="js/news.js"></script>
+  <script src="js/analytics.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          console.log('PWA: Service worker registered', reg.scope);
+        }).catch(err => {
+          console.warn('PWA: Service worker registration failed', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
