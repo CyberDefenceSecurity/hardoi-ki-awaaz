@@ -29,7 +29,6 @@ class PhotoUploader {
   init() {
     this.createUploadSection();
     this.populateLocationSelect();
-    this.setupLocationButton();
     this.loadUserIssues();
   }
 
@@ -71,39 +70,7 @@ class PhotoUploader {
     });
   }
 
-  setupLocationButton() {
-    const btn = document.getElementById('issue-upload-gps-btn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      if (typeof shareCurrentLocation === 'function') {
-        shareCurrentLocation((locationName) => {
-          const select = document.getElementById('issue-upload-location');
-          const customInput = document.getElementById('issue-upload-location-custom');
-          const customGroup = document.getElementById('issue-upload-location-custom-group');
-          const locLower = locationName.toLowerCase();
-          // Try to match with a village value or English name
-          let found = false;
-          for (let i = 0; i < select.options.length; i++) {
-            const opt = select.options[i];
-            if (!opt.value || opt.value === '') continue;
-            const labelEng = opt.textContent.split('(')[0].trim().toLowerCase();
-            if (locLower.includes(opt.value.toLowerCase()) || locLower.includes(labelEng)) {
-              select.value = opt.value;
-              if (customGroup) customGroup.style.display = 'none';
-              found = true;
-              break;
-            }
-          }
-          if (!found && customInput) {
-            select.value = 'others';
-            if (customGroup) customGroup.style.display = 'block';
-            customInput.value = locationName;
-          }
-          this.showToast('✅ लोकेशन मिल गई: ' + locationName, 'success');
-        });
-      }
-    });
-  }
+  /* setupLocationButton removed — location share feature हटा दिया गया है */
 
   createUploadSection() {
     const container = document.getElementById('photo-upload-section');
@@ -148,7 +115,7 @@ class PhotoUploader {
               <input type="text" id="issue-upload-location-custom" placeholder="अपने गाँव/इलाके का नाम लिखें" class="form-input">
             </div>
             <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
-              <button type="button" id="issue-upload-gps-btn" class="cta-btn" style="padding:0.35rem 0.7rem;font-size:0.75rem;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;flex:1;">📍 अपनी लोकेशन शेयर करें</button>
+              <button type="button" onclick="openMapPicker()" style="padding:0.4rem 0.8rem;font-size:0.8rem;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;flex:1;transition:0.3s;">🗺️ मैप से लोकेशन चुनें</button>
               <button type="button" onclick="document.getElementById('issue-upload-location').value='others';document.getElementById('issue-upload-location-custom-group').style.display='block';" style="padding:0.35rem 0.7rem;font-size:0.75rem;background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:var(--radius);cursor:pointer;">✏️ खुद लिखें</button>
             </div>
             <div id="moderation-check-box" style="margin:0.5rem 0;">
@@ -490,97 +457,124 @@ class PhotoUploader {
     return div.innerHTML;
   }
 
+  renderIssuesList(issues, container) {
+    const supportedInStorage = this.storage.getSupportedList();
+
+    const categoryIcons = {
+      roads: '🛤️', water: '💧', electricity: '⚡', health: '🏥',
+      education: '📚', safety: '🛡️', garbage: '🗑️', other: '📝'
+    };
+    const categoryNames = {
+      roads: 'सड़क/रास्ते', water: 'पानी/नाली', electricity: 'बिजली',
+      health: 'स्वास्थ्य', education: 'शिक्षा', safety: 'सुरक्षा',
+      garbage: 'कचरा/सफाई', other: 'अन्य'
+    };
+    const statusEmoji = {
+      active: '🟡', 'in-progress': '🟠', resolved: '✅'
+    };
+    const statusText = {
+      active: 'सक्रिय', 'in-progress': 'प्रगति में', resolved: 'हल हो गई'
+    };
+
+    if (issues.length === 0) {
+      container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:2rem;">अभी तक कोई समस्या दर्ज नहीं हुई। पहले व्यक्ति बनें! 💪</p>';
+      return;
+    }
+
+    container.innerHTML = issues.map(issue => {
+      const isSupported = supportedInStorage.includes(issue.id);
+      const photoHTML = issue.photos && issue.photos.length > 0
+        ? `<div class="issue-photos" style="cursor:pointer;" onclick="expandIssuePhoto(this)"><img src="${issue.photos[0]}" alt="Issue Photo" loading="lazy" style="max-height:250px;width:100%;object-fit:cover;border-radius:12px;">${issue.photos.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:12px;font-size:0.75rem;">+${issue.photos.length - 1}</span>` : ''}</div>`
+        : '';
+      const status = issue.status || 'active';
+      const replies = issue.replies || [];
+      const totalComments = this.countTotalReplies(replies);
+      const supporterCount = Math.max(issue.supporters || 0, this.storage.getSupportCount(issue.id));
+
+      return `
+      <div class="user-issue-card" data-id="${issue.id}">
+        ${photoHTML}
+        <div class="user-issue-content">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+            <div class="issue-category-badge">
+              ${categoryIcons[issue.category] || '📝'} ${categoryNames[issue.category] || issue.category}
+            </div>
+            <span style="font-size:0.75rem;padding:0.15rem 0.6rem;border-radius:12px;background:${status === 'resolved' ? 'rgba(76,175,80,0.15)' : status === 'in-progress' ? 'rgba(255,152,0,0.15)' : 'rgba(244,67,54,0.1)'};color:${status === 'resolved' ? 'var(--success)' : status === 'in-progress' ? '#e65100' : 'var(--danger)'};font-weight:500;">
+              ${statusEmoji[status] || '🟡'} ${statusText[status] || 'सक्रिय'}
+            </span>
+          </div>
+          <h4 style="font-size:1rem;line-height:1.5;">${this.escapeHtml(issue.message)}</h4>
+          <div class="issue-meta">
+            <span>📍 ${this.escapeHtml(issue.location)}</span>
+            <span>👤 ${this.escapeHtml(issue.name)}</span>
+            <span>📅 ${issue.date}</span>
+            <span>❤️ ${supporterCount}</span>
+            <span>💬 ${totalComments}</span>
+          </div>
+          <div class="issue-support-section">
+            <button class="support-btn ${isSupported ? 'supported' : ''}" onclick="window.supportUserIssue('${issue.id}')" data-id="${issue.id}">
+              ${isSupported ? '✅ Supported (' + supporterCount + ')' : '❤️ Support (' + supporterCount + ')'}
+            </button>
+            <button class="share-issue-btn" onclick="shareIssue('${issue.id}')">📤 Share</button>
+            <button class="reply-toggle-btn" onclick="toggleReplySection('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.8rem;color:var(--text);font-family:inherit;">💬 टिप्पणियाँ (${totalComments})</button>
+          </div>
+          <!-- Replies Section (Threaded) -->
+          <div class="replies-section" id="replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
+            <div class="replies-list" id="replies-list-${issue.id}">
+              ${this.renderReplies(replies, issue.id, 0)}
+            </div>
+            <!-- Top-level comment form -->
+            <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.04);">
+              <input type="text" class="reply-name-input" placeholder="आपका नाम" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+              <input type="text" class="reply-text-input" placeholder="इस समस्या पर अपनी टिप्पणी लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+              <button class="cta-btn primary" onclick="submitReply('${issue.id}')" style="padding:0.4rem 0.8rem;font-size:0.75rem;">➡️ भेजें</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    }).join('');
+  }
+
   async loadUserIssues(callback) {
     const container = document.getElementById('user-issues-list');
     if (!container) return;
 
     container.innerHTML = '<div class="news-loading"><div class="news-loading-spinner"></div><p>Issues load ho rahe hain...</p></div>';
 
+    let issues = [];
+    let fromServer = false;
+
+    // Step 1: Try fetching from server
     try {
       const resp = await fetch(this.apiBase + '/issues/user', { cache: 'no-cache' });
       const data = await resp.json();
       
-      if (!data.success || !data.issues || data.issues.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:2rem;">अभी तक कोई समस्या दर्ज नहीं हुई। पहले व्यक्ति बनें! 💪</p>';
-        return;
+      if (data.success && data.issues && data.issues.length > 0) {
+        issues = data.issues;
+        fromServer = true;
       }
-
-      const issues = data.issues;
-      const supportedInStorage = this.storage.getSupportedList();
-
-      const categoryIcons = {
-        roads: '🛤️', water: '💧', electricity: '⚡', health: '🏥',
-        education: '📚', safety: '🛡️', garbage: '🗑️', other: '📝'
-      };
-      const categoryNames = {
-        roads: 'सड़क/रास्ते', water: 'पानी/नाली', electricity: 'बिजली',
-        health: 'स्वास्थ्य', education: 'शिक्षा', safety: 'सुरक्षा',
-        garbage: 'कचरा/सफाई', other: 'अन्य'
-      };
-      const statusEmoji = {
-        active: '🟡', 'in-progress': '🟠', resolved: '✅'
-      };
-      const statusText = {
-        active: 'सक्रिय', 'in-progress': 'प्रगति में', resolved: 'हल हो गई'
-      };
-
-      container.innerHTML = issues.map(issue => {
-        const isSupported = supportedInStorage.includes(issue.id);
-        const photoHTML = issue.photos && issue.photos.length > 0
-          ? `<div class="issue-photos" style="cursor:pointer;" onclick="expandIssuePhoto(this)"><img src="${issue.photos[0]}" alt="Issue Photo" loading="lazy" style="max-height:250px;width:100%;object-fit:cover;border-radius:12px;">${issue.photos.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:12px;font-size:0.75rem;">+${issue.photos.length - 1}</span>` : ''}</div>`
-          : '';
-        const status = issue.status || 'active';
-        const replies = issue.replies || [];
-        const totalComments = this.countTotalReplies(replies);
-
-        return `
-        <div class="user-issue-card" data-id="${issue.id}">
-          ${photoHTML}
-          <div class="user-issue-content">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
-              <div class="issue-category-badge">
-                ${categoryIcons[issue.category] || '📝'} ${categoryNames[issue.category] || issue.category}
-              </div>
-              <span style="font-size:0.75rem;padding:0.15rem 0.6rem;border-radius:12px;background:${status === 'resolved' ? 'rgba(76,175,80,0.15)' : status === 'in-progress' ? 'rgba(255,152,0,0.15)' : 'rgba(244,67,54,0.1)'};color:${status === 'resolved' ? 'var(--success)' : status === 'in-progress' ? '#e65100' : 'var(--danger)'};font-weight:500;">
-                ${statusEmoji[status] || '🟡'} ${statusText[status] || 'सक्रिय'}
-              </span>
-            </div>
-            <h4 style="font-size:1rem;line-height:1.5;">${this.escapeHtml(issue.message)}</h4>
-            <div class="issue-meta">
-              <span>📍 ${this.escapeHtml(issue.location)}</span>
-              <span>👤 ${this.escapeHtml(issue.name)}</span>
-              <span>📅 ${issue.date}</span>
-              <span>❤️ ${issue.supporters || 0}</span>
-              <span>💬 ${totalComments}</span>
-            </div>
-            <div class="issue-support-section">
-              <button class="support-btn ${isSupported ? 'supported' : ''}" onclick="window.supportUserIssue('${issue.id}')" data-id="${issue.id}">
-                ${isSupported ? '✅ Supported' : '❤️ Support (' + (issue.supporters || 0) + ')'}
-              </button>
-              <button class="share-issue-btn" onclick="shareIssue('${issue.id}')">📤 Share</button>
-              <button class="reply-toggle-btn" onclick="toggleReplySection('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.8rem;color:var(--text);font-family:inherit;">💬 टिप्पणियाँ (${totalComments})</button>
-            </div>
-            <!-- Replies Section (Threaded) -->
-            <div class="replies-section" id="replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
-              <div class="replies-list" id="replies-list-${issue.id}">
-                ${this.renderReplies(replies, issue.id, 0)}
-              </div>
-              <!-- Top-level comment form -->
-              <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.04);">
-                <input type="text" class="reply-name-input" placeholder="आपका नाम" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                <input type="text" class="reply-text-input" placeholder="इस समस्या पर अपनी टिप्पणी लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                <button class="cta-btn primary" onclick="submitReply('${issue.id}')" style="padding:0.4rem 0.8rem;font-size:0.75rem;">➡️ भेजें</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      }).join('');
     } catch (err) {
-      console.error('Error loading user issues:', err);
-      container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:2rem;">सर्वर से कनेक्ट नहीं हो पाया। बाद में पुनः प्रयास करें।</p>';
+      console.warn('⚠️ Server fetch failed, using localStorage:', err.message);
     }
     
+    // Step 2: If server failed, merge with localStorage issues so they're still visible
+    const localIssues = this.storage.getAllIssues();
+    if (!fromServer && localIssues.length > 0) {
+      issues = localIssues;
+    } else if (fromServer && localIssues.length > 0) {
+      // Merge: add local issues that aren't in server response
+      const serverIds = new Set(issues.map(i => i.id));
+      localIssues.forEach(li => {
+        if (!serverIds.has(li.id)) {
+          issues.unshift(li);
+          serverIds.add(li.id);
+        }
+      });
+    }
+
+    this.renderIssuesList(issues, container);
+
     // Run callback after DOM is updated
     if (typeof callback === 'function') {
       setTimeout(callback, 100);
@@ -605,6 +599,10 @@ class PhotoUploader {
       return;
     }
 
+    // Save locally FIRST
+    this.storage.supportIssue(issueId);
+
+    // Try API in background
     try {
       const resp = await fetch(this.apiBase + '/issues/user/' + issueId + '/support', {
         method: 'POST',
@@ -612,24 +610,12 @@ class PhotoUploader {
         body: JSON.stringify({ supporterId })
       });
       const data = await resp.json();
-
-      if (data.alreadySupported) {
-        this.showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
-        return;
-      }
-
-      // Save locally too (for quick check next time)
-      this.storage.supportIssue(issueId);
-
-      this.showThankYouModal();
-      this.loadUserIssues();
     } catch (err) {
-      console.error('Support error:', err);
-      // Fallback to local-only support
-      this.storage.supportIssue(issueId);
-      this.showThankYouModal();
-      this.loadUserIssues();
+      console.warn('Support API error (local only):', err.message);
     }
+
+    this.showThankYouModal();
+    this.loadUserIssues();
   }
 
   showThankYouModal() {
@@ -673,7 +659,8 @@ class PhotoUploader {
   }
 }
 
-// Global support handler for user issues (works via API)
+// ======== GLOBAL SUPPORT FUNCTION — Enhanced with proper localStorage handling ========
+
 window.supportUserIssue = async function(issueId) {
   const storage = new IssueStorage();
   
@@ -682,6 +669,7 @@ window.supportUserIssue = async function(issueId) {
     return;
   }
 
+  // Get or create supporter ID
   let supporterId = localStorage.getItem('hka_supporter_id');
   if (!supporterId) {
     supporterId = 'SUP-' + Date.now() + '-' + Math.random().toString(36).substr(2, 8);
@@ -690,6 +678,17 @@ window.supportUserIssue = async function(issueId) {
 
   const btn = document.querySelector(`.support-btn[data-id="${issueId}"]`);
 
+  // Save support locally FIRST — works even if backend is down
+  storage.supportIssue(issueId);
+  const localCount = storage.getSupportCount(issueId);
+
+  // Update button immediately with local count
+  if (btn) {
+    btn.classList.add('supported');
+    btn.innerHTML = '✅ Supported (' + localCount + ')';
+  }
+
+  // Try API in background — don't block UX
   try {
     const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId + '/support', {
       method: 'POST',
@@ -698,27 +697,13 @@ window.supportUserIssue = async function(issueId) {
     });
     const data = await resp.json();
 
-    if (data.alreadySupported) {
-      showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
-      return;
-    }
-
-    // Mark as supported locally
-    storage.supportIssue(issueId);
-
-    // Update button
-    if (btn) {
-      btn.classList.add('supported');
-      btn.innerHTML = '✅ Supported (' + (data.supporters || 0) + ')';
+    // Update with server count if higher
+    if (data.supporters && data.supporters > localCount && btn) {
+      btn.innerHTML = '✅ Supported (' + data.supporters + ')';
     }
   } catch (err) {
-    console.error('Support API error:', err);
-    // Fallback: local only
-    storage.supportIssue(issueId);
-    if (btn) {
-      btn.classList.add('supported');
-      btn.innerHTML = '✅ Supported';
-    }
+    console.warn('Support API error (local only):', err.message);
+    // Already saved locally above — no need to show error
   }
 
   // Always show thank you
@@ -889,6 +874,227 @@ document.addEventListener('DOMContentLoaded', () => {
     window.photoUploader = new PhotoUploader();
   }
 });
+
+// ======== MAP LOCATION PICKER — WhatsApp-style ========
+
+window.openMapPicker = function() {
+  // Remove existing map modal if any
+  const existing = document.getElementById('map-picker-modal');
+  if (existing) existing.remove();
+
+  // Hardoi, UP center coordinates
+  const defaultLat = 27.3939;
+  const defaultLng = 80.1323;
+
+  // Create modal
+  const modal = document.createElement('div');
+  modal.id = 'map-picker-modal';
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:10001;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;transition:opacity 0.3s ease;';
+  
+  modal.innerHTML = `
+    <div class="map-picker-container" style="background:var(--bg);border-radius:20px;overflow:hidden;width:90%;max-width:600px;max-height:90vh;box-shadow:0 25px 80px rgba(0,0,0,0.4);transform:scale(0.9);transition:transform 0.3s ease;">
+      <!-- Header -->
+      <div style="padding:1rem 1.2rem;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:600;font-size:1rem;">🗺️ अपनी लोकेशन चुनें</span>
+        <button onclick="closeMapPicker()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <!-- Map container -->
+      <div id="map-picker-map" style="height:400px;width:100%;"></div>
+      <!-- Info + Actions -->
+      <div style="padding:1rem 1.2rem;">
+        <div id="map-picker-info" style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.8rem;text-align:center;">
+          🖱️ मैप पर क्लिक करके अपनी लोकेशन चुनें
+        </div>
+        <div style="display:flex;gap:0.5rem;">
+          <button id="map-picker-locate-btn" onclick="locateOnMap()" style="flex:1;padding:0.6rem;border:2px solid var(--primary);background:transparent;color:var(--primary);border-radius:12px;cursor:pointer;font-size:0.85rem;font-family:inherit;font-weight:600;transition:0.3s;">📍 मेरी लोकेशन</button>
+          <button id="map-picker-confirm-btn" onclick="confirmMapLocation()" style="flex:1;padding:0.6rem;background:var(--primary);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:0.85rem;font-family:inherit;font-weight:600;transition:0.3s;" disabled>✅ चुनें</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Animate in
+  setTimeout(() => {
+    modal.style.opacity = '1';
+    const container = modal.querySelector('.map-picker-container');
+    if (container) container.style.transform = 'scale(1)';
+  }, 50);
+
+  // Store selected coordinates
+  window._mapPickerState = {
+    lat: null,
+    lng: null,
+    locationName: '',
+    marker: null
+  };
+
+  // Initialize Leaflet map after a short delay to ensure container is rendered
+  setTimeout(() => {
+    const mapEl = document.getElementById('map-picker-map');
+    if (!mapEl || typeof L === 'undefined') {
+      document.getElementById('map-picker-info').textContent = '⚠️ मैप लोड नहीं हो पाया। कृपया पुनः प्रयास करें।';
+      return;
+    }
+
+    const map = L.map('map-picker-map', {
+      center: [defaultLat, defaultLng],
+      zoom: 13,
+      zoomControl: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Store map reference
+    window._mapPickerState.map = map;
+
+    // Add click handler to place marker
+    map.on('click', function(e) {
+      const { lat, lng } = e.latlng;
+      placeMapMarker(lat, lng);
+    });
+
+    // Force map to invalidate size after animation
+    setTimeout(() => map.invalidateSize(), 300);
+  }, 200);
+};
+
+// Place/set marker on the map and reverse geocode
+window.placeMapMarker = function(lat, lng) {
+  const state = window._mapPickerState;
+  if (!state) return;
+
+  state.lat = lat;
+  state.lng = lng;
+
+  // Remove old marker
+  if (state.marker) {
+    state.map.removeLayer(state.marker);
+  }
+
+  // Add new marker
+  state.marker = L.marker([lat, lng], {
+    draggable: true
+  }).addTo(state.map);
+
+  // Update on drag
+  state.marker.on('dragend', function(e) {
+    const pos = e.target.getLatLng();
+    placeMapMarker(pos.lat, pos.lng);
+  });
+
+  // Show loading
+  const info = document.getElementById('map-picker-info');
+  const confirmBtn = document.getElementById('map-picker-confirm-btn');
+  if (info) info.textContent = '⏳ लोकेशन की जानकारी लाई जा रही है...';
+  if (confirmBtn) confirmBtn.disabled = true;
+
+  // Reverse geocode via Nominatim
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=hi`, {
+    headers: { 'User-Agent': 'HardoiKiAwaaz/1.0' }
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      let locationName = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      if (data && data.display_name) {
+        const parts = data.display_name.split(',');
+        // Take the most specific parts (area, village, city)
+        locationName = parts.slice(0, 3).join(',').trim();
+      }
+      state.locationName = locationName;
+      
+      if (info) info.textContent = '📍 ' + locationName;
+      if (confirmBtn) confirmBtn.disabled = false;
+    })
+    .catch(() => {
+      const fallbackName = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      state.locationName = fallbackName;
+      if (info) info.textContent = '📍 ' + fallbackName;
+      if (confirmBtn) confirmBtn.disabled = false;
+    });
+};
+
+// Get user's current location and zoom to it
+window.locateOnMap = function() {
+  const state = window._mapPickerState;
+  if (!state || !state.map) return;
+
+  if (!navigator.geolocation) {
+    showToast('आपके ब्राउज़र में GPS की सुविधा नहीं है।', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('map-picker-locate-btn');
+  if (btn) { btn.textContent = '⏳ खोज रहा है...'; btn.disabled = true; }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+      state.map.setView([latitude, longitude], 16);
+      placeMapMarker(latitude, longitude);
+      if (btn) { btn.textContent = '📍 मेरी लोकेशन'; btn.disabled = false; }
+    },
+    (error) => {
+      let msg = 'लोकेशन नहीं मिल पाई। GPS चालू करें या मैप पर क्लिक करें।';
+      if (error.code === error.PERMISSION_DENIED) {
+        msg = '📍 लोकेशन की अनुमति नहीं दी गई। कृपया मैप पर क्लिक करके लोकेशन चुनें।';
+      }
+      showToast(msg, 'error');
+      if (btn) { btn.textContent = '📍 मेरी लोकेशन'; btn.disabled = false; }
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+};
+
+// Confirm selected location and fill it in the form
+window.confirmMapLocation = function() {
+  const state = window._mapPickerState;
+  if (!state || !state.lat) {
+    showToast('कृपया मैप पर अपनी लोकेशन चुनें!', 'error');
+    return;
+  }
+
+  const locationName = state.locationName || `${state.lat.toFixed(4)}, ${state.lng.toFixed(4)}`;
+
+  // Fill the location in the form
+  const locSelect = document.getElementById('issue-upload-location');
+  const customGroup = document.getElementById('issue-upload-location-custom-group');
+  const customInput = document.getElementById('issue-upload-location-custom');
+
+  if (locSelect) locSelect.value = 'others';
+  if (customGroup) customGroup.style.display = 'block';
+  if (customInput) customInput.value = locationName;
+
+  showToast('✅ लोकेशन चुन ली गई: ' + locationName, 'success');
+  
+  // Close the map
+  closeMapPicker();
+};
+
+// Close map picker modal
+window.closeMapPicker = function() {
+  const modal = document.getElementById('map-picker-modal');
+  if (modal) {
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      modal.remove();
+      window._mapPickerState = null;
+    }, 300);
+  }
+};
+
+// Close map on Escape key (only on pages with the upload form)
+if (document.getElementById('photo-upload-section')) {
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeMapPicker();
+    }
+  });
+}
 
 function shareIssue(issueId) {
   const url = window.location.href;

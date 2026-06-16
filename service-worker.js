@@ -28,6 +28,9 @@ const PRECACHE_URLS = [
   '/js/id-generator.js',
   '/js/photo-uploader.js',
   '/js/photo-finder.js',
+  '/js/translations.js',
+  '/js/hardoi-villages.js',
+  '/js/google-cse.js',
 
   '/assets/images/logo.jpg',
   '/assets/images/hero-bg.svg',
