@@ -20,10 +20,65 @@ const MODELS = [
 
 const GOOGLE_CX = '137070bc808794021';  // From search-id.txt
 
-/* ---------- Unsplash API ---------- */
+/* ---------- Unsplash API with caching + rate limiting ----------
+   Demo mode: 50 requests/hour. We cache results by query and
+   only search for NEWS (not issues/protests) to save quota. */
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || 'Fekm_IoqEggHTdVJAl2grSd5cbY0XZzLaK85gPn5jzw';
 
+// In-memory cache: query → { url, credit }
+const unsplashCache = new Map();
+const UNSPLASH_MAX_CACHE = 100;
+
+// Rate limiter: max 40 requests per hour (leave buffer for demo 50/hr limit)
+const unsplashQueue = [];
+let unsplashProcessing = false;
+
+async function processUnsplashQueue() {
+  if (unsplashProcessing || unsplashQueue.length === 0) return;
+  unsplashProcessing = true;
+  
+  while (unsplashQueue.length > 0) {
+    const { query, resolve, reject } = unsplashQueue.shift();
+    try {
+      const result = await doUnsplashSearch(query);
+      resolve(result);
+    } catch (err) {
+      reject(err);
+    }
+    // Delay between requests: 1.5 seconds to stay under 50/hr
+    await new Promise(r => setTimeout(r, 1500));
+  }
+  
+  unsplashProcessing = false;
+}
+
 async function searchUnsplashImage(query) {
+  if (!UNSPLASH_ACCESS_KEY) return null;
+  
+  // Check cache first
+  const cacheKey = query.substring(0, 100).trim().toLowerCase();
+  if (unsplashCache.has(cacheKey)) {
+    return unsplashCache.get(cacheKey);
+  }
+  
+  // Queue the request through rate limiter
+  return new Promise((resolve, reject) => {
+    unsplashQueue.push({
+      query,
+      resolve: (result) => {
+        // Cache the result (even nulls, to avoid re-querying failed queries)
+        if (unsplashCache.size < UNSPLASH_MAX_CACHE) {
+          unsplashCache.set(cacheKey, result);
+        }
+        resolve(result);
+      },
+      reject
+    });
+    processUnsplashQueue();
+  });
+}
+
+async function doUnsplashSearch(query) {
   if (!UNSPLASH_ACCESS_KEY) return null;
   const q = encodeURIComponent(query.replace(/[<>"']/g, ' ').substring(0, 100));
   const url = `https://api.unsplash.com/search/photos?query=${q}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&lang=en`;
@@ -34,8 +89,7 @@ async function searchUnsplashImage(query) {
     });
     if (!resp.ok) {
       if (resp.status === 403 || resp.status === 429) {
-        console.warn('⚠️  Unsplash API rate limited or forbidden');
-        return null;
+        return null; // Silently fallback — no need to spam logs
       }
       throw new Error(`Unsplash: HTTP ${resp.status}`);
     }
@@ -58,8 +112,7 @@ async function searchUnsplashImage(query) {
     }
     return null;
   } catch (err) {
-    console.warn(`⚠️  Unsplash search failed: ${err.message.substring(0, 100)}`);
-    return null;
+    return null; // Silently fallback
   }
 }
 
@@ -729,9 +782,10 @@ async function parseIssues(text) {
   }));
   
   await Promise.allSettled(base.map(async (a, i) => {
+    // Use Unsplash for issues too, but no credit shown (only news gets attribution)
     const imgResult = await findImageForContent(a.category, a.title, a.location, a.description, i);
     a.image_url = imgResult.url || null;
-    a.image_credit = imgResult.credit || '';
+    a.image_credit = ''; // No attribution for issues
   }));
   
   return base;
@@ -780,7 +834,7 @@ async function parseProtests(text) {
   if (!data.upcoming || !data.past) throw new Error('Missing upcoming/past arrays');
   const now = Date.now();
   
-  // Fetch images with Unsplash for protests
+  // Use Unsplash for protests too, but no credit shown
   const upcoming = await Promise.all(data.upcoming.map(async (a, i) => {
     const imgResult = await findImageForContent('Protest', a.title, a.location, 'protest rally demonstration', i);
     return {
@@ -788,7 +842,7 @@ async function parseProtests(text) {
       title: String(a.title || ''),
       description: String(a.description || ''),
       image_url: imgResult.url || null,
-      image_credit: imgResult.credit || '',
+      image_credit: '', // No attribution for protests
       location: String(a.location || 'Hardoi'),
       date: String(a.date || ''),
       time: String(a.time || '10:00 AM'),
@@ -804,7 +858,7 @@ async function parseProtests(text) {
       title: String(a.title || ''),
       description: String(a.description || ''),
       image_url: imgResult.url || null,
-      image_credit: imgResult.credit || '',
+      image_credit: '', // No attribution for protests
       location: String(a.location || 'Hardoi'),
       date: String(a.date || ''),
       category: String(a.category || 'roads'),
