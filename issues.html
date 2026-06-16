@@ -314,7 +314,7 @@
 
     // Support handler
     const issueStorage = new IssueStorage();
-    function handleSupport(btn, issueId) {
+    window.handleSupport = function(btn, issueId) {
       if (issueStorage.isIssueSupported(issueId)) {
         if (typeof showToast === 'function') {
           showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
@@ -350,7 +350,7 @@
       }
     }
 
-    function shareIssue(id) {
+    window.shareIssue = function(id) {
       const url = window.location.href;
       const text = 'Hardoi ki Awaaz पर एक समस्या देखें - ' + url;
       if (navigator.share) { navigator.share({ title: 'Hardoi ki Awaaz', text, url }); }
@@ -358,7 +358,7 @@
     }
 
     // Reply functions for predefined issues
-    window.togglePrefinedReplySection = function(issueId) {
+    window.togglePredefinedReplySection = window.togglePrefinedReplySection = function(issueId) {
       const section = document.getElementById('predefined-replies-' + issueId);
       if (!section) return;
       section.style.display = section.style.display === 'none' ? 'block' : 'none';
@@ -370,7 +370,7 @@
     };
 
     // Load replies for a predefined issue from localStorage
-    function loadPredefinedReplies(issueId) {
+    window.loadPredefinedReplies = function(issueId) {
       const list = document.getElementById('predefined-replies-list-' + issueId);
       if (!list) return;
       let allReplies = {};
@@ -422,20 +422,28 @@
       loadPredefinedReplies(issueId);
     };
 
-    function escapeHtml(text) {
+    window.escapeHtml = function(text) {
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
-    }
-
-    // Initialize
+    }    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      IssueGrid.loadIssues();
+      IssueGrid.loadIssues().then(() => {
+        // Restore support button states after issues are loaded
+        if (typeof restoreSupportButtonStates === 'function') {
+          restoreSupportButtonStates();
+        }
+      }).catch(function(err) {
+        console.error('IssueGrid load failed:', err);
+      });
     });
     
-    // Global observer to restore support button states after dynamic rendering
+    // Restore support button states after dynamic rendering
+    // NOTE: Called manually after loadIssues — no MutationObserver to avoid infinite recursion
     function restoreSupportButtonStates() {
-      issueStorage.getSupportedList().forEach(id => {
+      const supportedIds = issueStorage.getSupportedList();
+      if (!supportedIds.length) return;
+      supportedIds.forEach(id => {
         document.querySelectorAll('.support-btn').forEach(btn => {
           if (btn.getAttribute('onclick')?.includes(id)) {
             btn.classList.add('supported');
@@ -453,19 +461,6 @@
         });
       });
     }
-    
-    // Watch for dynamic DOM changes (issues loaded from API + user issues list)
-    let supportObserver = null;
-    document.addEventListener('DOMContentLoaded', () => {
-      supportObserver = new MutationObserver(() => restoreSupportButtonStates());
-      const targets = [
-        document.getElementById('issues-grid'),
-        document.getElementById('user-issues-list')
-      ];
-      targets.forEach(el => {
-        if (el) supportObserver.observe(el, { childList: true, subtree: true });
-      });
-    });
   </script>
 </body>
 </html>

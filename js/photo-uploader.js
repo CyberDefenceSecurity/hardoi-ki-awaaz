@@ -875,7 +875,7 @@ window.expandIssuePhoto = function(el) {
 };
 
 // Standard thank you function (used by both predefined and user issues)
-function showThankYouStandard() {
+window.showThankYouStandard = function() {
   const existing = document.getElementById('thank-you-modal');
   if (existing) existing.remove();
   const modal = document.createElement('div');
@@ -983,12 +983,22 @@ window.openMapPicker = function() {
 
     // Add click handler to place marker
     map.on('click', function(e) {
-      const { lat, lng } = e.latlng;
-      placeMapMarker(lat, lng);
+      try {
+        const latlng = e.latlng;
+        if (latlng && typeof latlng.lat === 'number' && typeof latlng.lng === 'number') {
+          if (typeof window.placeMapMarker === 'function') {
+            window.placeMapMarker(latlng.lat, latlng.lng);
+          }
+        }
+      } catch(err) {
+        console.error('Map click handler error:', err);
+      }
     });
 
     // Force map to invalidate size after animation
-    setTimeout(() => map.invalidateSize(), 300);
+    setTimeout(() => {
+      try { map.invalidateSize(); } catch(e) { /* ignore */ }
+    }, 300);
   }, 200);
 };
 
@@ -1127,15 +1137,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-function shareIssue(issueId) {
-  const url = window.location.href;
-  const text = 'Hardoi ki Awaaz पर एक समस्या देखें - ' + url;
-  if (navigator.share) {
-    navigator.share({ title: 'Hardoi ki Awaaz', text, url });
-  } else {
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
-  }
-}
+// shareIssue is now defined in issues.html as window.shareIssue
+// Removing duplicate from here to avoid confusion
 
 // ======== DELETE USER ISSUE ========
 window.deleteUserIssue = async function(issueId) {
