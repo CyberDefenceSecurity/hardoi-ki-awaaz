@@ -309,6 +309,11 @@
   .thank-you-modal h2 { font-size: 1.4rem; }
 }
 
+/* --- Hide nav close button on desktop (added only for mobile) --- */
+@media (min-width: 769px) {
+  .nav-links .nav-close-btn { display: none !important; }
+}
+
 /* ============================================
    Mobile Landscape
    ============================================ */

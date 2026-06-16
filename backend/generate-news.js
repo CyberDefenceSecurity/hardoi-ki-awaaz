@@ -34,7 +34,7 @@ async function searchGoogleImage(apiKey, query) {
   return data?.items?.[0]?.link || null;
 }
 
-/* Main image search — Google → Picsum fallback */
+/* Main image search — Google → null (frontend shows category gradient + emoji) */
 async function findImageForContent(category, title, location, extraKeywords, index) {
   const searchQuery = [title, location, extraKeywords, 'Hardoi Uttar Pradesh India']
     .filter(Boolean).join(' ').replace(/[<>"']/g, ' ').trim().substring(0, 200);
@@ -49,9 +49,8 @@ async function findImageForContent(category, title, location, extraKeywords, ind
     }
   }
   
-  // Picsum fallback — always works, no key needed
-  const seed = encodeURIComponent((category || 'news') + '-' + (index || 0) + '-' + Date.now());
-  return `https://picsum.photos/seed/${seed}/800/600`;
+  // Return null — frontend will show category-relevant gradient + emoji instead of random image
+  return null;
 }
 
 /* ============================================

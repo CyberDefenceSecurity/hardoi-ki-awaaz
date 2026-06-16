@@ -76,18 +76,8 @@ class IDCardGenerator {
       });
     }
 
-    // Area selector - show custom area field when "Others" is selected
-    const areaSelect = document.getElementById('id-area');
-    const customAreaGroup = document.getElementById('custom-area-group');
-    if (areaSelect && customAreaGroup) {
-      areaSelect.addEventListener('change', () => {
-        if (areaSelect.value === 'Others') {
-          customAreaGroup.style.display = 'block';
-        } else {
-          customAreaGroup.style.display = 'none';
-        }
-      });
-    }
+    // Area selector change is now handled in id-card.html init code
+    // (custom area group toggling for 'others' value)
   }
 
   handlePhotoSelect(event) {
@@ -125,7 +115,7 @@ class IDCardGenerator {
 
     let area = areaSelect?.value;
     const tag = document.getElementById("id-tag")?.value?.trim() || "";
-    if (area === 'Others') {
+    if (area === 'others') {
       area = customArea?.value?.trim() || 'Others';
     }
 

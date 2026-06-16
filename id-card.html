@@ -53,7 +53,6 @@
       </nav>
       <div class="nav-actions">
         <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
-        <a href="id-card.html" class="cta-btn primary" style="font-size:0.85rem;padding:0.5rem 1.2rem;">🪪 Get ID Card</a>
         <button class="hamburger" aria-label="Menu">
           <span></span><span></span><span></span>
         </button>
@@ -85,104 +84,18 @@
               <label>Ilaka / Area</label>
               <select id="id-area" required>
                 <option value="">— अपना गाँव/इलाका चुनें —</option>
-                <optgroup label="हरदोई शहर">
-                  <option value="City Center">City Center</option>
-                  <option value="Civil Lines">Civil Lines</option>
-                  <option value="Model Town">Model Town</option>
-                  <option value="Subhash Nagar">Subhash Nagar</option>
-                  <option value="Gandhi Nagar">Gandhi Nagar</option>
-                  <option value="Nehru Nagar">Nehru Nagar</option>
-                  <option value="Jawahar Nagar">Jawahar Nagar</option>
-                  <option value="Station Road">Station Road</option>
-                  <option value="Sadar Bazaar">Sadar Bazaar</option>
-                  <option value="Mall Road">Mall Road</option>
-                  <option value="Ram Nagar">Ram Nagar</option>
-                  <option value="Katra">Katra</option>
-                  <option value="Ismailganj">Ismailganj</option>
-                  <option value="Azimabad">Azimabad</option>
-                  <option value="Shivpuri">Shivpuri</option>
-                  <option value="Kotwali">Kotwali</option>
-                  <option value="Hardoi Bypass">Hardoi Bypass</option>
-                  <option value="Kachhauna">Kachhauna</option>
-                  <option value="Pachdevra">Pachdevra</option>
-                </optgroup>
-                <optgroup label="बिलग्राम तहसील">
-                  <option value="Bilgram">Bilgram</option>
-                  <option value="Balamau">Balamau</option>
-                  <option value="Kachhla">Kachhla</option>
-                  <option value="Gopamau">Gopamau</option>
-                  <option value="Sarai Ayaz">Sarai Ayaz</option>
-                  <option value="Umarpur">Umarpur</option>
-                  <option value="Paigamberpur">Paigamberpur</option>
-                  <option value="Rohniya">Rohniya</option>
-                  <option value="Behenda">Behenda</option>
-                </optgroup>
-                <optgroup label="सांडी तहसील">
-                  <option value="Sandi">Sandi</option>
-                  <option value="Madhoganj">Madhoganj</option>
-                  <option value="Pali, Sandi">Pali</option>
-                  <option value="Rania">Rania</option>
-                  <option value="Kursath">Kursath</option>
-                  <option value="Hargaon">Hargaon</option>
-                  <option value="Pachdeora">Pachdeora</option>
-                  <option value="Karmasan">Karmasan</option>
-                </optgroup>
-                <optgroup label="शाहाबाद तहसील">
-                  <option value="Shahabad">Shahabad</option>
-                  <option value="Pihani">Pihani</option>
-                  <option value="Katiyari">Katiyari</option>
-                  <option value="Baran">Baran</option>
-                  <option value="Hamidpur">Hamidpur</option>
-                  <option value="Sawayajpur">Sawayajpur</option>
-                  <option value="Bharawan">Bharawan</option>
-                  <option value="Maudarpur">Maudarpur</option>
-                </optgroup>
-                <optgroup label="अन्य गाँव">
-                  <option value="Ahirori">Ahirori</option>
-                  <option value="Bawan">Bawan</option>
-                  <option value="Hariyawan">Hariyawan</option>
-                  <option value="Todarpur">Todarpur</option>
-                  <option value="Kampil">Kampil</option>
-                  <option value="Bisauli">Bisauli</option>
-                  <option value="Purwa Bazar">Purwa Bazar</option>
-                  <option value="Chattamau">Chattamau</option>
-                  <option value="Gulariya">Gulariya</option>
-                  <option value="Lawesingh Nagar">Lawesingh Nagar</option>
-                  <option value="Naraini">Naraini</option>
-                  <option value="Pachpora">Pachpora</option>
-                  <option value="Rasdhan">Rasdhan</option>
-                  <option value="Aurangabad">Aurangabad</option>
-                  <option value="Bahorwa">Bahorwa</option>
-                  <option value="Majhila">Majhila</option>
-                  <option value="Dhadhera">Dhadhera</option>
-                  <option value="Sikrora">Sikrora</option>
-                  <option value="Barauli">Barauli</option>
-                  <option value="Umrauli">Umrauli</option>
-                  <option value="Mahila">Mahila</option>
-                  <option value="Thiri">Thiri</option>
-                  <option value="Shuklapur">Shuklapur</option>
-                  <option value="Makhi">Makhi</option>
-                  <option value="Atwa">Atwa</option>
-                  <option value="Ajgain">Ajgain</option>
-                  <option value="Malhipur">Malhipur</option>
-                  <option value="Maholi">Maholi</option>
-                  <option value="Nasratpur">Nasratpur</option>
-                  <option value="Patan">Patan</option>
-                  <option value="Teliyani">Teliyani</option>
-                  <option value="Binauli">Binauli</option>
-                  <option value="Atrauli">Atrauli</option>
-                  <option value="Kaimah">Kaimah</option>
-                  <option value="Pirit">Pirit</option>
-                  <option value="Beniganj">Beniganj</option>
-                </optgroup>
-                <optgroup label="अन्य">
-                  <option value="Others">इसके अलावा — Others</option>
-                </optgroup>
               </select>
+              <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                <button type="button" id="id-share-location-btn" class="cta-btn" style="padding:0.4rem 0.8rem;font-size:0.8rem;flex:1;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;">📍 अपनी लोकेशन शेयर करें</button>
+                <button type="button" class="cta-btn" onclick="document.getElementById('id-area').value='others';document.getElementById('custom-area-group').style.display='block';" style="padding:0.4rem 0.8rem;font-size:0.8rem;background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:var(--radius);cursor:pointer;">✏️ खुद लिखें</button>
+              </div>
             </div>
             <div class="form-group" id="custom-area-group" style="display:none;">
-              <label>Other Area</label>
-              <input type="text" id="id-custom-area" placeholder="Apna ilaka ka naam">
+              <label>Other Area (खुद लिखें)</label>
+              <div style="display:flex;gap:0.5rem;">
+                <input type="text" id="id-custom-area" placeholder="अपने गाँव/इलाके का नाम लिखें" style="flex:1;">
+                <button type="button" id="id-custom-location-btn" class="cta-btn" style="padding:0.4rem 0.6rem;font-size:0.75rem;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;white-space:nowrap;">📍 GPS</button>
+              </div>
             </div>
             <div class="form-group">
               <label>Your Tag / Hashtag (Optional)</label>
@@ -288,8 +201,70 @@
   <script src="js/translations.js"></script>
   <script src="js/main.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/hardoi-villages.js"></script>
   <script src="js/id-generator.js"></script>
   <script src="js/analytics.js"></script>
+  <script>
+    // Populate area dropdown from HARDOI_VILLAGES
+    document.addEventListener('DOMContentLoaded', function() {
+      // Populate the select with all villages
+      if (typeof populateVillageSelect === 'function') {
+        populateVillageSelect('id-area', '— अपना गाँव/इलाका चुनें —');
+      }
+
+      // GPS Location Share button
+      const shareBtn = document.getElementById('id-share-location-btn');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+          if (typeof shareCurrentLocation === 'function') {
+            shareCurrentLocation(function(locationName, lat, lng) {
+              const select = document.getElementById('id-area');
+              // Try to find a matching village
+              let found = false;
+              for (let i = 0; i < select.options.length; i++) {
+                const opt = select.options[i];
+                if (opt.value && locationName.toLowerCase().includes(opt.value.toLowerCase())) {
+                  select.value = opt.value;
+                  found = true;
+                  document.getElementById('custom-area-group').style.display = 'none';
+                  break;
+                }
+              }
+              if (!found) {
+                // Set custom area with the detected location
+                select.value = 'others';
+                document.getElementById('custom-area-group').style.display = 'block';
+                document.getElementById('id-custom-area').value = locationName;
+              }
+              showToast('✅ लोकेशन मिल गई: ' + locationName, 'success');
+            });
+          }
+        });
+      }
+
+      // GPS button inside custom area
+      const customGpsBtn = document.getElementById('id-custom-location-btn');
+      if (customGpsBtn) {
+        customGpsBtn.addEventListener('click', function() {
+          if (typeof shareCurrentLocation === 'function') {
+            shareCurrentLocation(function(locationName) {
+              document.getElementById('id-custom-area').value = locationName;
+              showToast('✅ लोकेशन मिल गई: ' + locationName, 'success');
+            });
+          }
+        });
+      }
+
+      // Area select change handler for "others"
+      const areaSelect = document.getElementById('id-area');
+      const customAreaGroup = document.getElementById('custom-area-group');
+      if (areaSelect && customAreaGroup) {
+        areaSelect.addEventListener('change', function() {
+          customAreaGroup.style.display = this.value === 'others' ? 'block' : 'none';
+        });
+      }
+    });
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

@@ -108,13 +108,15 @@ function initMobileMenu() {
     }
   });
 
-  // Add a close (X) button inside the nav drawer
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'nav-close-btn';
-  closeBtn.innerHTML = '×';
-  closeBtn.setAttribute('aria-label', 'Close menu');
-  closeBtn.addEventListener('click', closeMenu);
-  navLinks.prepend(closeBtn);
+  // Only add close button (×) on mobile screens
+  if (window.innerWidth <= 768) {
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'nav-close-btn';
+    closeBtn.innerHTML = '×';
+    closeBtn.setAttribute('aria-label', 'Close menu');
+    closeBtn.addEventListener('click', closeMenu);
+    navLinks.prepend(closeBtn);
+  }
 
   // Prevent backdrop click events on nav drawer clicks
   navLinks.addEventListener('click', (e) => {

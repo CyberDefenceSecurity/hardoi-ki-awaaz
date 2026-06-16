@@ -176,7 +176,8 @@ app.post('/api/issues/user', (req, res) => {
       supporters: 0,
       supporterIds: [],
       status: 'active',
-      replies: []
+      replies: [],
+      commentCount: 0
     };
 
     userIssues.unshift(issue);
@@ -218,11 +219,11 @@ app.post('/api/issues/user/:id/support', (req, res) => {
   }
 });
 
-// POST /api/issues/user/:id/reply — Reply to an issue
+// POST /api/issues/user/:id/reply — Reply to an issue or to a comment (nested)
 app.post('/api/issues/user/:id/reply', (req, res) => {
   try {
     const { id } = req.params;
-    const { name, text } = req.body;
+    const { name, text, parentReplyId } = req.body;
     
     if (!text || text.trim().length < 1) {
       return res.status(400).json({ success: false, error: 'Reply text required' });
@@ -238,10 +239,37 @@ app.post('/api/issues/user/:id/reply', (req, res) => {
       name: name || 'Anonymous',
       text: text.trim(),
       date: new Date().toLocaleDateString('hi-IN'),
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      parentReplyId: parentReplyId || null,
+      replies: []
     };
 
-    issue.replies.push(reply);
+    if (parentReplyId) {
+      // Nested reply — find the parent reply and push into its replies array
+      const addNestedReply = (replies) => {
+        for (let r of replies) {
+          if (r.id === parentReplyId) {
+            r.replies = r.replies || [];
+            r.replies.push(reply);
+            return true;
+          }
+          if (r.replies && r.replies.length > 0) {
+            if (addNestedReply(r.replies)) return true;
+          }
+        }
+        return false;
+      };
+      
+      if (!addNestedReply(issue.replies)) {
+        // Parent not found in nested — fall back to top-level
+        reply.parentReplyId = null;
+        issue.replies.push(reply);
+      }
+    } else {
+      // Top-level reply
+      issue.replies.push(reply);
+    }
+
     saveUserIssues(userIssues);
 
     console.log(`💬 Reply added to ${issue.id}: ${reply.text.substring(0, 50)}...`);

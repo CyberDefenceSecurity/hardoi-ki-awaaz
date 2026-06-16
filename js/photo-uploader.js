@@ -16,7 +16,81 @@ class PhotoUploader {
 
   init() {
     this.createUploadSection();
+    this.populateLocationSelect();
+    this.setupLocationButton();
     this.loadUserIssues();
+  }
+
+  populateLocationSelect() {
+    if (typeof HARDOI_VILLAGES === 'undefined') return;
+    
+    // Get all unique values already in the select (to avoid duplicates)
+    const select = document.getElementById('issue-upload-location');
+    if (!select) return;
+    
+    // Clear all except first placeholder
+    while (select.options.length > 1) {
+      select.remove(1);
+    }
+    
+    // Add all villages using value keys (consistent with hardoi-villages.js)
+    const groups = [];
+    HARDOI_VILLAGES.forEach(v => {
+      if (!groups.includes(v.group)) groups.push(v.group);
+    });
+    const groupOrder = ['A','B','C & D','F & G','H','I & J','K','L','M','N','O & P','Q & R','S','T & U','V, W & Z','Others'];
+    groups.sort((a, b) => {
+      const ai = groupOrder.indexOf(a);
+      const bi = groupOrder.indexOf(b);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+    groups.forEach(group => {
+      const villages = HARDOI_VILLAGES.filter(v => v.group === group);
+      if (villages.length === 0) return;
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = group;
+      villages.forEach(v => {
+        const option = document.createElement('option');
+        option.value = v.value;  // Use value key, not label
+        option.textContent = v.label;
+        optgroup.appendChild(option);
+      });
+      select.appendChild(optgroup);
+    });
+  }
+
+  setupLocationButton() {
+    const btn = document.getElementById('issue-upload-gps-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      if (typeof shareCurrentLocation === 'function') {
+        shareCurrentLocation((locationName) => {
+          const select = document.getElementById('issue-upload-location');
+          const customInput = document.getElementById('issue-upload-location-custom');
+          const customGroup = document.getElementById('issue-upload-location-custom-group');
+          const locLower = locationName.toLowerCase();
+          // Try to match with a village value or English name
+          let found = false;
+          for (let i = 0; i < select.options.length; i++) {
+            const opt = select.options[i];
+            if (!opt.value || opt.value === '') continue;
+            const labelEng = opt.textContent.split('(')[0].trim().toLowerCase();
+            if (locLower.includes(opt.value.toLowerCase()) || locLower.includes(labelEng)) {
+              select.value = opt.value;
+              if (customGroup) customGroup.style.display = 'none';
+              found = true;
+              break;
+            }
+          }
+          if (!found && customInput) {
+            select.value = 'others';
+            if (customGroup) customGroup.style.display = 'block';
+            customInput.value = locationName;
+          }
+          this.showToast('✅ लोकेशन मिल गई: ' + locationName, 'success');
+        });
+      }
+    });
   }
 
   createUploadSection() {
@@ -57,98 +131,14 @@ class PhotoUploader {
             <textarea id="issue-upload-message" placeholder="अपनी समस्या विस्तार से बताएं... (कम से कम 10 शब्द)" rows="3" class="form-textarea"></textarea>
             <select id="issue-upload-location" class="form-select">
               <option value="">📍 समस्या का स्थान चुनें — गाँव/इलाका</option>
-              <optgroup label="हरदोई शहर">
-                <option value="Civil Lines, Hardoi">Civil Lines, Hardoi</option>
-                <option value="Model Town, Hardoi">Model Town, Hardoi</option>
-                <option value="Subhash Nagar, Hardoi">Subhash Nagar, Hardoi</option>
-                <option value="Gandhi Nagar, Hardoi">Gandhi Nagar, Hardoi</option>
-                <option value="Nehru Nagar, Hardoi">Nehru Nagar, Hardoi</option>
-                <option value="Jawahar Nagar, Hardoi">Jawahar Nagar, Hardoi</option>
-                <option value="Station Road, Hardoi">Station Road, Hardoi</option>
-                <option value="Sadar Bazaar, Hardoi">Sadar Bazaar, Hardoi</option>
-                <option value="Mall Road, Hardoi">Mall Road, Hardoi</option>
-                <option value="Katra, Hardoi">Katra, Hardoi</option>
-                <option value="Ismailganj, Hardoi">Ismailganj, Hardoi</option>
-                <option value="Azimabad, Hardoi">Azimabad, Hardoi</option>
-                <option value="Shivpuri, Hardoi">Shivpuri, Hardoi</option>
-                <option value="Kotwali, Hardoi">Kotwali, Hardoi</option>
-                <option value="Hardoi Bypass">Hardoi Bypass</option>
-                <option value="Kachhauna, Hardoi">Kachhauna, Hardoi</option>
-                <option value="Pachdevra, Hardoi">Pachdevra, Hardoi</option>
-              </optgroup>
-              <optgroup label="बिलग्राम तहसील">
-                <option value="Bilgram">Bilgram</option>
-                <option value="Balamau">Balamau</option>
-                <option value="Kachhla">Kachhla</option>
-                <option value="Gopamau">Gopamau</option>
-                <option value="Sarai Ayaz">Sarai Ayaz</option>
-                <option value="Umarpur">Umarpur</option>
-                <option value="Paigamberpur">Paigamberpur</option>
-                <option value="Rohniya">Rohniya</option>
-                <option value="Behenda">Behenda</option>
-              </optgroup>
-              <optgroup label="सांडी तहसील">
-                <option value="Sandi">Sandi</option>
-                <option value="Madhoganj">Madhoganj</option>
-                <option value="Pali, Sandi">Pali</option>
-                <option value="Rania">Rania</option>
-                <option value="Kursath">Kursath</option>
-                <option value="Hargaon">Hargaon</option>
-                <option value="Pachdeora">Pachdeora</option>
-                <option value="Karmasan">Karmasan</option>
-              </optgroup>
-              <optgroup label="शाहाबाद तहसील">
-                <option value="Shahabad">Shahabad</option>
-                <option value="Pihani">Pihani</option>
-                <option value="Katiyari">Katiyari</option>
-                <option value="Baran">Baran</option>
-                <option value="Hamidpur">Hamidpur</option>
-                <option value="Sawayajpur">Sawayajpur</option>
-                <option value="Bharawan">Bharawan</option>
-                <option value="Maudarpur">Maudarpur</option>
-              </optgroup>
-              <optgroup label="अन्य गाँव">
-                <option value="Ahirori">Ahirori</option>
-                <option value="Bawan">Bawan</option>
-                <option value="Hariyawan">Hariyawan</option>
-                <option value="Todarpur">Todarpur</option>
-                <option value="Kampil">Kampil</option>
-                <option value="Bisauli">Bisauli</option>
-                <option value="Purwa Bazar">Purwa Bazar</option>
-                <option value="Chattamau">Chattamau</option>
-                <option value="Gulariya">Gulariya</option>
-                <option value="Lawesingh Nagar">Lawesingh Nagar</option>
-                <option value="Naraini">Naraini</option>
-                <option value="Pachpora">Pachpora</option>
-                <option value="Rasdhan">Rasdhan</option>
-                <option value="Aurangabad, Hardoi">Aurangabad</option>
-                <option value="Bahorwa">Bahorwa</option>
-                <option value="Majhila">Majhila</option>
-                <option value="Dhadhera">Dhadhera</option>
-                <option value="Sikrora">Sikrora</option>
-                <option value="Barauli">Barauli</option>
-                <option value="Umrauli">Umrauli</option>
-                <option value="Mahila">Mahila</option>
-                <option value="Thiri">Thiri</option>
-                <option value="Shuklapur">Shuklapur</option>
-                <option value="Makhi">Makhi</option>
-                <option value="Atwa">Atwa</option>
-                <option value="Ajgain">Ajgain</option>
-                <option value="Malhipur">Malhipur</option>
-                <option value="Maholi">Maholi</option>
-                <option value="Nasratpur">Nasratpur</option>
-                <option value="Patan, Hardoi">Patan</option>
-                <option value="Teliyani">Teliyani</option>
-                <option value="Binauli">Binauli</option>
-                <option value="Atrauli">Atrauli</option>
-                <option value="Kaimah">Kaimah</option>
-                <option value="Pirit">Pirit</option>
-                <option value="Beniganj">Beniganj</option>
-              </optgroup>
-              <optgroup label="अन्य">
-                <option value="Others">इसके अलावा — Others</option>
-              </optgroup>
             </select>
+            <div id="issue-upload-location-custom-group" style="display:none;margin-top:0.3rem;">
+              <input type="text" id="issue-upload-location-custom" placeholder="अपने गाँव/इलाके का नाम लिखें" class="form-input">
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
+              <button type="button" id="issue-upload-gps-btn" class="cta-btn" style="padding:0.35rem 0.7rem;font-size:0.75rem;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;flex:1;">📍 अपनी लोकेशन शेयर करें</button>
+              <button type="button" onclick="document.getElementById('issue-upload-location').value='others';document.getElementById('issue-upload-location-custom-group').style.display='block';" style="padding:0.35rem 0.7rem;font-size:0.75rem;background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:var(--radius);cursor:pointer;">✏️ खुद लिखें</button>
+            </div>
             <div id="moderation-check-box" style="margin:0.5rem 0;">
               <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--text-light);">
                 <input type="checkbox" id="agree-check"> 
@@ -189,6 +179,15 @@ class PhotoUploader {
 
     if (form) {
       form.addEventListener('submit', (e) => this.handleSubmit(e));
+    }
+
+    // Toggle custom location input when 'others' is selected
+    const locSelect = document.getElementById('issue-upload-location');
+    const locCustomGroup = document.getElementById('issue-upload-location-custom-group');
+    if (locSelect && locCustomGroup) {
+      locSelect.addEventListener('change', () => {
+        locCustomGroup.style.display = locSelect.value === 'others' ? 'block' : 'none';
+      });
     }
   }
 
@@ -309,7 +308,13 @@ class PhotoUploader {
     const name = document.getElementById('issue-reporter-name')?.value || 'Anonymous';
     const category = document.getElementById('issue-upload-category')?.value;
     const message = document.getElementById('issue-upload-message')?.value;
-    const location = document.getElementById('issue-upload-location')?.value;
+    let location = document.getElementById('issue-upload-location')?.value;
+    const customLocation = document.getElementById('issue-upload-location-custom')?.value?.trim();
+
+    // If 'others' selected, use custom location value
+    if (location === 'others') {
+      location = customLocation || 'Others';
+    }
 
     if (!location) {
       this.showToast('कृपया समस्या का स्थान चुनें (गाँव/इलाका)!', 'error');
@@ -428,6 +433,51 @@ class PhotoUploader {
     return id;
   }
 
+  /** Render nested replies recursively with proper threading */
+  renderReplies(replies, issueId, depth = 0) {
+    if (!replies || replies.length === 0) {
+      return '<p style="font-size:0.8rem;color:var(--text-light);padding:0.5rem 0;">अभी तक कोई जवाब नहीं। पहले जवाब दें! 💬</p>';
+    }
+    
+    // Sort top-level by time
+    const sorted = [...replies].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    
+    return sorted.map(r => {
+      const marginLeft = Math.min(depth * 24, 96);
+      const borderColor = depth === 0 ? 'var(--primary)' : depth % 2 === 0 ? '#e0e0e0' : '#f0f0f0';
+      const fontSize = depth === 0 ? '0.85rem' : '0.82rem';
+      
+      return `
+        <div class="comment-thread" style="margin-left:${marginLeft}px;border-left:2px solid ${borderColor};padding-left:12px;margin-top:6px;margin-bottom:4px;">
+          <div class="reply-item" style="padding:0.4rem 0;background:rgba(0,0,0,0.02);border-radius:6px;padding:0.5rem 0.6rem;">
+            <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+              <strong style="font-size:0.8rem;color:var(--primary);">${this.escapeHtml(r.name)}</strong>
+              <span style="font-size:0.65rem;color:var(--text-light);">${r.date || ''}</span>
+              <button class="nested-reply-btn" onclick="event.stopPropagation();showNestedReplyForm('${issueId}', '${r.id}')" style="font-size:0.7rem;padding:0.15rem 0.5rem;border:none;background:rgba(26,35,126,0.08);color:var(--primary);border-radius:12px;cursor:pointer;margin-left:auto;font-family:inherit;">↩️ जवाब दें</button>
+            </div>
+            <p style="font-size:${fontSize};margin-top:0.3rem;color:var(--text);line-height:1.4;">${this.escapeHtml(r.text)}</p>
+          </div>
+          <!-- Nested reply form (hidden) -->
+          <div class="nested-reply-form" id="nested-reply-${issueId}-${r.id}" style="display:none;margin:4px 0 4px 8px;">
+            <div style="display:flex;gap:0.3rem;align-items:center;flex-wrap:wrap;">
+              <input type="text" class="nested-reply-name" placeholder="आपका नाम" style="flex:0 0 80px;padding:0.3rem 0.5rem;border:2px solid #e0e0e0;border-radius:6px;font-size:0.75rem;font-family:inherit;">
+              <input type="text" class="nested-reply-text" placeholder="जवाब लिखें..." style="flex:1;min-width:120px;padding:0.3rem 0.5rem;border:2px solid #e0e0e0;border-radius:6px;font-size:0.75rem;font-family:inherit;">
+              <button class="cta-btn primary" onclick="submitNestedReply('${issueId}', '${r.id}')" style="padding:0.3rem 0.6rem;font-size:0.7rem;">➡️ भेजें</button>
+            </div>
+          </div>
+          <!-- Recursive nested replies -->
+          ${r.replies && r.replies.length > 0 ? this.renderReplies(r.replies, issueId, depth + 1) : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   async loadUserIssues(callback) {
     const container = document.getElementById('user-issues-list');
     if (!container) return;
@@ -444,7 +494,6 @@ class PhotoUploader {
       }
 
       const issues = data.issues;
-      const supporterId = this.getSupporterId();
       const supportedInStorage = this.storage.getSupportedList();
 
       const categoryIcons = {
@@ -466,10 +515,11 @@ class PhotoUploader {
       container.innerHTML = issues.map(issue => {
         const isSupported = supportedInStorage.includes(issue.id);
         const photoHTML = issue.photos && issue.photos.length > 0
-          ? `<div class="issue-photos"><img src="${issue.photos[0]}" alt="Issue Photo" loading="lazy"></div>`
+          ? `<div class="issue-photos" style="cursor:pointer;" onclick="expandIssuePhoto(this)"><img src="${issue.photos[0]}" alt="Issue Photo" loading="lazy" style="max-height:250px;width:100%;object-fit:cover;border-radius:12px;">${issue.photos.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:12px;font-size:0.75rem;">+${issue.photos.length - 1}</span>` : ''}</div>`
           : '';
         const status = issue.status || 'active';
         const replies = issue.replies || [];
+        const totalComments = this.countTotalReplies(replies);
 
         return `
         <div class="user-issue-card" data-id="${issue.id}">
@@ -483,34 +533,30 @@ class PhotoUploader {
                 ${statusEmoji[status] || '🟡'} ${statusText[status] || 'सक्रिय'}
               </span>
             </div>
-            <h4>${issue.message.substring(0, 200)}${issue.message.length > 200 ? '...' : ''}</h4>
+            <h4 style="font-size:1rem;line-height:1.5;">${this.escapeHtml(issue.message)}</h4>
             <div class="issue-meta">
-              <span>📍 ${issue.location}</span>
-              <span>👤 ${issue.name}</span>
+              <span>📍 ${this.escapeHtml(issue.location)}</span>
+              <span>👤 ${this.escapeHtml(issue.name)}</span>
               <span>📅 ${issue.date}</span>
               <span>❤️ ${issue.supporters || 0}</span>
+              <span>💬 ${totalComments}</span>
             </div>
             <div class="issue-support-section">
               <button class="support-btn ${isSupported ? 'supported' : ''}" onclick="window.supportUserIssue('${issue.id}')" data-id="${issue.id}">
                 ${isSupported ? '✅ Supported' : '❤️ Support (' + (issue.supporters || 0) + ')'}
               </button>
               <button class="share-issue-btn" onclick="shareIssue('${issue.id}')">📤 Share</button>
-              <button class="reply-toggle-btn" onclick="toggleReplyForm('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.8rem;color:var(--text);font-family:inherit;">💬 Reply (${replies.length})</button>
+              <button class="reply-toggle-btn" onclick="toggleReplySection('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.8rem;color:var(--text);font-family:inherit;">💬 टिप्पणियाँ (${totalComments})</button>
             </div>
-            <!-- Replies Section -->
+            <!-- Replies Section (Threaded) -->
             <div class="replies-section" id="replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
               <div class="replies-list" id="replies-list-${issue.id}">
-                ${replies.length === 0 ? '<p style="font-size:0.8rem;color:var(--text-light);">अभी तक कोई जवाब नहीं। पहले जवाब दें! 💬</p>' : replies.map(r => `
-                  <div class="reply-item" style="padding:0.5rem 0;border-bottom:1px solid rgba(0,0,0,0.04);">
-                    <strong style="font-size:0.8rem;color:var(--primary);">${r.name}</strong>
-                    <span style="font-size:0.7rem;color:var(--text-light);margin-left:0.5rem;">${r.date}</span>
-                    <p style="font-size:0.85rem;margin-top:0.2rem;color:var(--text);">${r.text}</p>
-                  </div>
-                `).join('')}
+                ${this.renderReplies(replies, issue.id, 0)}
               </div>
-              <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;">
-                <input type="text" class="reply-name-input" placeholder="आपका नाम" style="flex:0 0 100px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                <input type="text" class="reply-text-input" placeholder="अपना जवाब लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+              <!-- Top-level comment form -->
+              <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.04);">
+                <input type="text" class="reply-name-input" placeholder="आपका नाम" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+                <input type="text" class="reply-text-input" placeholder="इस समस्या पर अपनी टिप्पणी लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
                 <button class="cta-btn primary" onclick="submitReply('${issue.id}')" style="padding:0.4rem 0.8rem;font-size:0.75rem;">➡️ भेजें</button>
               </div>
             </div>
@@ -527,6 +573,15 @@ class PhotoUploader {
     if (typeof callback === 'function') {
       setTimeout(callback, 100);
     }
+  }
+  
+  countTotalReplies(replies) {
+    if (!replies) return 0;
+    let count = replies.length;
+    for (const r of replies) {
+      if (r.replies) count += this.countTotalReplies(r.replies);
+    }
+    return count;
   }
 
   async supportIssue(issueId) {
@@ -658,14 +713,20 @@ window.supportUserIssue = async function(issueId) {
   showThankYouStandard();
 };
 
-// Reply functions (global)
-window.toggleReplyForm = function(issueId) {
+// ======== GLOBAL REPLY FUNCTIONS ========
+
+// Toggle the entire comments section for an issue
+window.toggleReplySection = function(issueId) {
   const section = document.getElementById('replies-' + issueId);
   if (section) {
     section.style.display = section.style.display === 'none' ? 'block' : 'none';
   }
 };
 
+// Keep backward compatibility
+window.toggleReplyForm = window.toggleReplySection;
+
+// Submit a top-level comment on an issue
 window.submitReply = async function(issueId) {
   const section = document.getElementById('replies-' + issueId);
   if (!section) return;
@@ -680,7 +741,8 @@ window.submitReply = async function(issueId) {
 
   const replyData = {
     name: nameInput.value.trim() || 'Anonymous',
-    text: textInput.value.trim()
+    text: textInput.value.trim(),
+    parentReplyId: null
   };
 
   try {
@@ -692,10 +754,8 @@ window.submitReply = async function(issueId) {
     const data = await resp.json();
 
     if (data.success) {
-      // Clear inputs
       textInput.value = '';
-      showToast('✅ आपका जवाब भेज दिया गया!', 'success');
-      // Reload and re-open replies section via callback
+      showToast('✅ आपकी टिप्पणी भेज दी गई!', 'success');
       if (window.photoUploader) {
         window.photoUploader.loadUserIssues(() => {
           const sec = document.getElementById('replies-' + issueId);
@@ -705,8 +765,87 @@ window.submitReply = async function(issueId) {
     }
   } catch (err) {
     console.error('Reply error:', err);
+    showToast('टिप्पणी भेजने में समस्या हुई। बाद में प्रयास करें।', 'error');
+  }
+};
+
+// Show the nested reply form for a specific comment
+window.showNestedReplyForm = function(issueId, replyId) {
+  // Hide all other nested reply forms first
+  document.querySelectorAll('.nested-reply-form').forEach(el => {
+    el.style.display = 'none';
+  });
+  const form = document.getElementById('nested-reply-' + issueId + '-' + replyId);
+  if (form) {
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    // Focus the text input
+    const input = form.querySelector('.nested-reply-text');
+    if (input && form.style.display === 'block') setTimeout(() => input.focus(), 200);
+  }
+};
+
+// Submit a nested reply (reply to a specific comment)
+window.submitNestedReply = async function(issueId, parentReplyId) {
+  const form = document.getElementById('nested-reply-' + issueId + '-' + parentReplyId);
+  if (!form) return;
+
+  const nameInput = form.querySelector('.nested-reply-name');
+  const textInput = form.querySelector('.nested-reply-text');
+  
+  if (!textInput.value.trim()) {
+    showToast('कृपया जवाब लिखें!', 'error');
+    return;
+  }
+
+  const replyData = {
+    name: nameInput.value.trim() || 'Anonymous',
+    text: textInput.value.trim(),
+    parentReplyId: parentReplyId
+  };
+
+  try {
+    const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId + '/reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(replyData)
+    });
+    const data = await resp.json();
+
+    if (data.success) {
+      textInput.value = '';
+      nameInput.value = '';
+      form.style.display = 'none';
+      showToast('✅ आपका जवाब भेज दिया गया!', 'success');
+      if (window.photoUploader) {
+        window.photoUploader.loadUserIssues(() => {
+          const sec = document.getElementById('replies-' + issueId);
+          if (sec) sec.style.display = 'block';
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Nested reply error:', err);
     showToast('जवाब भेजने में समस्या हुई। बाद में प्रयास करें।', 'error');
   }
+};
+
+// Expand issue photos (click to view fullscreen)
+window.expandIssuePhoto = function(el) {
+  const img = el.querySelector('img');
+  if (!img) return;
+  const existing = document.getElementById('photo-expand-overlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'photo-expand-overlay';
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width:90vw;max-height:90vh;text-align:center;background:transparent;box-shadow:none;">
+      <img src="${img.src}" alt="Issue Photo" style="max-width:100%;max-height:85vh;border-radius:12px;">
+      <button class="cta-btn primary" onclick="document.getElementById('photo-expand-overlay').remove()" style="margin-top:1rem;">✕ बंद करें</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.classList.add('active'), 100);
 };
 
 // Standard thank you function (used by both predefined and user issues)

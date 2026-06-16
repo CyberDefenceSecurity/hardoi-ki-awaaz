@@ -55,8 +55,7 @@
       </nav>
       <div class="nav-actions">
         <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
-        <a href="id-card.html" class="cta-btn primary" style="font-size:0.85rem;padding:0.5rem 1.2rem;">🪪 Get ID Card</a>
-        <div class="hamburger"><span></span><span></span><span></span></div>
+        <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </div>
   </header>
@@ -84,6 +83,17 @@
     </section>
 
 
+
+    <!-- Area/Location Filter -->
+    <section style="padding:0 1.5rem;max-width:1100px;margin:0 auto;">
+      <div class="location-filter-bar reveal" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;padding:0.8rem;background:var(--bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.05);">
+        <span style="font-size:0.85rem;font-weight:600;color:var(--text);">📍 इलाका / Area:</span>
+        <select id="issue-area-filter" style="flex:1;min-width:200px;max-width:350px;padding:0.5rem 0.8rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.85rem;font-family:inherit;background:var(--bg);color:var(--text);cursor:pointer;">
+          <option value="all">🌐 सभी इलाके</option>
+        </select>
+        <button type="button" id="issue-share-location-btn" class="cta-btn" style="padding:0.5rem 1rem;font-size:0.8rem;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;white-space:nowrap;">📍 Share Location</button>
+      </div>
+    </section>
 
     <!-- Photo Upload Section -->
     <section id="photo-upload-section"></section>
@@ -123,6 +133,7 @@
 
   <script src="js/translations.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/hardoi-villages.js"></script>
   <script src="js/photo-uploader.js"></script>
   <script src="js/main.js"></script>
   <script src="js/analytics.js"></script>
@@ -321,9 +332,99 @@
       }
     };
 
+    // Area Filter Logic — matches against both value keys and label portions
+    function filterIssuesByArea(filterValue) {
+      // Build search terms: try value key first, then extract English name from label
+      let searchTerms = [filterValue];
+      if (filterValue !== 'all') {
+        const village = typeof HARDOI_VILLAGES !== 'undefined' && HARDOI_VILLAGES.find(v => v.value === filterValue);
+        if (village) {
+          // Add the English portion (before parenthesis)
+          const engName = village.label.split('(')[0].trim().toLowerCase();
+          if (engName) searchTerms.push(engName);
+          // Also add the value itself
+          searchTerms.push(village.value);
+        }
+      }
+
+      const cards = document.querySelectorAll('.issue-card');
+      cards.forEach(card => {
+        const locationEl = card.querySelector('.issue-meta span:first-child');
+        if (!locationEl) return;
+        const cardLocation = locationEl.textContent.replace('📍 ', '').toLowerCase();
+        if (filterValue === 'all' || searchTerms.some(term => cardLocation.includes(term.toLowerCase()))) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      // Also filter user issues
+      document.querySelectorAll('.user-issue-card').forEach(card => {
+        const locationEl = card.querySelector('.issue-meta span:first-child');
+        if (!locationEl) return;
+        const cardLocation = locationEl.textContent.replace('📍 ', '').toLowerCase();
+        if (filterValue === 'all' || searchTerms.some(term => cardLocation.includes(term.toLowerCase()))) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       IssueGrid.loadIssues();
+      
+      // Populate area filter dropdown
+      if (typeof populateVillageSelect === 'function') {
+        const areaFilter = document.getElementById('issue-area-filter');
+        if (areaFilter) {
+          populateVillageSelect('issue-area-filter', '🌐 सभी इलाके');
+          // Re-add the "all" option at top
+          const allOpt = document.createElement('option');
+          allOpt.value = 'all';
+          allOpt.textContent = '🌐 सभी इलाके';
+          areaFilter.insertBefore(allOpt, areaFilter.firstChild);
+          areaFilter.value = 'all';
+        }
+      }
+
+      // Area filter change — use raw value key
+      const areaFilter = document.getElementById('issue-area-filter');
+      if (areaFilter) {
+        areaFilter.addEventListener('change', function() {
+          filterIssuesByArea(this.value);
+        });
+      }
+
+      // GPS Location Share button — match against village names and values
+      const shareBtn = document.getElementById('issue-share-location-btn');
+      if (shareBtn && typeof shareCurrentLocation === 'function') {
+        shareBtn.addEventListener('click', function() {
+          shareCurrentLocation(function(locationName) {
+            const areaFilter = document.getElementById('issue-area-filter');
+            const locLower = locationName.toLowerCase();
+            let found = false;
+            for (let i = 0; i < areaFilter.options.length; i++) {
+              const opt = areaFilter.options[i];
+              if (!opt.value || opt.value === 'all' || opt.value === '') continue;
+              const optLabel = opt.textContent.toLowerCase();
+              // Check if GPS location matches the option label or value
+              if (locLower.includes(opt.value.toLowerCase()) || locLower.includes(optLabel.split('(')[0].trim())) {
+                areaFilter.value = opt.value;
+                filterIssuesByArea(opt.value);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              showToast('📍 आपकी लोकेशन: ' + locationName + ' — कृपया इलाका खुद चुनें', 'info');
+            }
+            showToast('✅ लोकेशन मिल गई: ' + locationName, 'success');
+          });
+        });
+      }
     });
     
     // Global observer to restore support button states after dynamic rendering
