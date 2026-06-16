@@ -39,6 +39,7 @@ const HKANews = {
         summary: a.summary || '',
         content: a.content || a.summary || '',
         image_url: a.image_url || null,
+        image_credit: a.image_credit || '',
         category: a.category || 'Announcement',
         date: a.date || new Date().toISOString(),
         location: a.location || 'Hardoi, UP',
@@ -59,6 +60,7 @@ const HKANews = {
         summary: 'हम हरदोई के नागरिकों की आवाज़ हैं। शहर की समस्याओं को उजागर करना और बदलाव लाना हमारा मिशन है।',
         content: '<p>हरदोई की आवाज़ एक स्वतंत्र नागरिक मंच है। हम किसी भी राजनीतिक दल से संबद्ध नहीं हैं।</p><p>हमारा उद्देश्य हरदोई शहर की समस्याओं को उजागर करना, नागरिकों को एकजुट करना, और प्रशासन से समाधान की मांग करना है।</p><p>आज ही हमारे साथ जुड़ें और बदलाव का हिस्सा बनें। अपना ID Card बनवाएं, अपनी समस्या दर्ज करें, और हमारे सोशल मीडिया चैनलों से जुड़ें।</p>',
         image_url: null,
+        image_credit: '',
         category: 'Featured',
         date: new Date().toISOString(),
         location: 'Hardoi, Uttar Pradesh',
@@ -70,6 +72,7 @@ const HKANews = {
         summary: 'Hardoi ki Awaaz का Official ID Card बनवाएं और इस आंदोलन का हिस्सा बनें। फ्री में बनवाएं और डाउनलोड करें।',
         content: '<p>Hardoi ki Awaaz का Official ID Card अब बिल्कुल फ्री में बनवाएं। यह आपकी पहचान है, आपकी आवाज़ की ताकत है।</p><p>ID Card बनवाने के लिए बस अपना नाम, मोबाइल नंबर और इलाका दर्ज करें। चाहें तो फोटो भी लगा सकते हैं।</p><p><a href="id-card.html">यहाँ क्लिक करें →</a></p>',
         image_url: null,
+        image_credit: '',
         category: 'Announcement',
         date: new Date().toISOString(),
         location: 'Hardoi, UP',
@@ -81,6 +84,7 @@ const HKANews = {
         summary: 'हरदोई की आवाज़ एक नागरिक-संचालित प्लेटफॉर्म है। हमारे साथ जुड़ें और शहर को बेहतर बनाएं।',
         content: '<p>हरदोई की आवाज़ के साथ जुड़कर आप अपने शहर की बेहतरी में योगदान दे सकते हैं।</p><p>हमारे Discord, Telegram, Instagram और WhatsApp चैनलों से जुड़ें। अपनी समस्याएं साझा करें, प्रदर्शनों में हिस्सा लें, और बदलाव का हिस्सा बनें।</p><p>साथ मिलकर हम हरदोई को बेहतर बना सकते हैं।</p>',
         image_url: null,
+        image_credit: '',
         category: 'Announcement',
         date: new Date().toISOString(),
         location: 'Hardoi',
@@ -174,6 +178,7 @@ const HKANews = {
         <div class="news-detail-text">
           ${article.content}
         </div>
+        ${article.image_credit ? `<div class="news-detail-credit" style="font-size:0.7rem;color:var(--text-light);text-align:center;padding-bottom:0.5rem;border-bottom:1px solid rgba(0,0,0,0.04);margin-bottom:0.5rem;">${article.image_credit}</div>` : ''}
         <div class="news-detail-actions">
           <button class="cta-btn primary" onclick="HKANews.shareArticle()">📤 Share karein</button>
           <button class="cta-btn" style="background:var(--danger);" onclick="HKANews.closeDetail()">✕ बंद करें / Exit</button>
@@ -321,6 +326,7 @@ const HKANews = {
             <span class="news-card-location">📍 ${article.location}</span>
             <button class="news-readmore-btn" data-id="${article.id}">📖 पूरा पढ़ें →</button>
           </div>
+          ${article.image_credit ? `<div class="news-card-credit" style="font-size:0.65rem;color:var(--text-light);padding:0.3rem 1.2rem 0.5rem;line-height:1.3;">${article.image_credit}</div>` : ''}
         </div>
       </div>`;
     }).join('');

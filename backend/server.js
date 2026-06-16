@@ -59,8 +59,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "data:", "https:", "https://picsum.photos", "https://*.googleusercontent.com", "https://*.gstatic.com", "https://*.googleapis.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],            imgSrc: ["'self'", "data:", "https:", "https://picsum.photos", "https://images.unsplash.com", "https://*.googleusercontent.com", "https://*.gstatic.com", "https://*.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       connectSrc: ["'self'"],
       frameSrc: ["'none'"],
@@ -420,6 +419,7 @@ app.get('/api/status', (req, res) => {
     apiKey: GEMINI_API_KEY && GEMINI_API_KEY !== 'your_gemini_api_key_here' ? '✅' : '❌',
     apiKeyBackup: GEMINI_API_KEY_2 && GEMINI_API_KEY_2 !== 'your_gemini_api_key_here' ? '✅' : '❌',
     googleKey: process.env.GOOGLE_API_KEY ? '✅' : '❌',
+    unsplashKey: process.env.UNSPLASH_ACCESS_KEY ? '✅' : '❌',
     news: { cached: cachedNews ? cachedNews.length : 0, lastFetch: lastFetchTime.news },
     issues: { cached: cachedIssues ? cachedIssues.length : 0, lastFetch: lastFetchTime.issues },
     protests: { upcoming: cachedProtests?.upcoming?.length || 0, past: cachedProtests?.past?.length || 0, lastFetch: lastFetchTime.protests },
@@ -593,7 +593,7 @@ async function startServer() {
 ║  📊  /api/status                             ║
 ║  🔄  /api/refresh                            ║
 ║  🔑  API: ${GEMINI_API_KEY && GEMINI_API_KEY !== 'your_gemini_api_key_here' ? '✅' : '❌'}${GEMINI_API_KEY_2 && GEMINI_API_KEY_2 !== 'your_gemini_api_key_here' ? ' + Backup ✅' : ''}                      ║
-║  📸  Images: ${process.env.GOOGLE_API_KEY ? 'Google ✅ (CSE)' : '❌ — .env mein GOOGLE_API_KEY डालें!'} ║
+║  📸  Images: Unsplash ${process.env.UNSPLASH_ACCESS_KEY ? '✅' : '❌'} | Google ${process.env.GOOGLE_API_KEY ? '✅ (CSE)' : '❌'} ║
 ║  ⏰  Auto-refresh: ${REFRESH_INTERVAL / 60000} min        ║
 ╚══════════════════════════════════════════════╝
   `);

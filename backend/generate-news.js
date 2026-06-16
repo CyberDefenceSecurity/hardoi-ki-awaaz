@@ -15,10 +15,53 @@ const MODELS = [
 ];
 
 /* ============================================
-   IMAGE SEARCH — Google Custom Search (CX from search-id.txt) + content-based Picsum fallback
+   IMAGE SEARCH — Unsplash API (primary) → Google Custom Search → content-based Picsum fallback
    ============================================ */
 
 const GOOGLE_CX = '137070bc808794021';  // From search-id.txt
+
+/* ---------- Unsplash API ---------- */
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || 'Fekm_IoqEggHTdVJAl2grSd5cbY0XZzLaK85gPn5jzw';
+
+async function searchUnsplashImage(query) {
+  if (!UNSPLASH_ACCESS_KEY) return null;
+  const q = encodeURIComponent(query.replace(/[<>"']/g, ' ').substring(0, 100));
+  const url = `https://api.unsplash.com/search/photos?query=${q}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&lang=en`;
+  
+  try {
+    const resp = await fetch(url, {
+      headers: { 'Accept': 'application/json', 'User-Agent': 'HardoiKiAwaaz/1.0' }
+    });
+    if (!resp.ok) {
+      if (resp.status === 403 || resp.status === 429) {
+        console.warn('⚠️  Unsplash API rate limited or forbidden');
+        return null;
+      }
+      throw new Error(`Unsplash: HTTP ${resp.status}`);
+    }
+    const data = await resp.json();
+    
+    if (data.results && data.results.length > 0) {
+      const photo = data.results[0];
+      
+      // Trigger download tracking (required by Unsplash guidelines)
+      if (photo.links && photo.links.download_location) {
+        fetch(`${photo.links.download_location}&client_id=${UNSPLASH_ACCESS_KEY}`).catch(() => {});
+      }
+      
+      const creditText = `📷 Photo by <a href="${photo.user.links.html}?utm_source=hardoi_ki_awaaz&utm_medium=referral" target="_blank" rel="noopener">${photo.user.name}</a> on <a href="https://unsplash.com/?utm_source=hardoi_ki_awaaz&utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>`;
+      
+      return {
+        url: photo.urls.regular || photo.urls.small || null,
+        credit: creditText
+      };
+    }
+    return null;
+  } catch (err) {
+    console.warn(`⚠️  Unsplash search failed: ${err.message.substring(0, 100)}`);
+    return null;
+  }
+}
 
 /* ---------- Hindi keyword → English transliteration map ----------
    Used to create content-relevant Picsum seeds from Hindi news titles.
@@ -300,30 +343,38 @@ async function searchGoogleImage(apiKey, query) {
   return data?.items?.[0]?.link || null;
 }
 
-/* Main image search — Google → content-based Picsum fallback
-   Uses title keywords to create different Picsum images per article
-   so pollution news shows a different image than electricity news. */
+/* Main image search — Unsplash → Google → content-based Picsum fallback
+   Uses title keywords to search Unsplash for real, relevant photos.
+   Falls back to Google CSE, then Picsum with content-based seeds. */
 async function findImageForContent(category, title, location, extraKeywords, index) {
   const searchQuery = [title, location, extraKeywords, 'Hardoi Uttar Pradesh India']
     .filter(Boolean).join(' ').replace(/[<>"']/g, ' ').trim().substring(0, 200);
   
-  // Try Google Custom Search first (needs GOOGLE_API_KEY in .env)
+  // 1) Try Unsplash first (primary image source)
+  if (UNSPLASH_ACCESS_KEY) {
+    const unsplashResult = await searchUnsplashImage(searchQuery);
+    if (unsplashResult && unsplashResult.url) {
+      return unsplashResult;  // { url, credit }
+    }
+  }
+  
+  // 2) Try Google Custom Search second (needs GOOGLE_API_KEY in .env)
   const googleKey = process.env.GOOGLE_API_KEY;
   if (googleKey && GOOGLE_CX) {
     try {
-      const url = await searchGoogleImage(googleKey, searchQuery);
-      if (url) return url;
+      const googleUrl = await searchGoogleImage(googleKey, searchQuery);
+      if (googleUrl) return { url: googleUrl, credit: '' };
     } catch (err) {
       console.warn(`⚠️  Google Image search failed: ${err.message.substring(0, 100)}`);
     }
   }
   
-  // Picsum fallback with CONTENT-BASED seed — each unique topic gets its own image
-  // Instead of all "Water" articles sharing one image, each article's Hindi
-  // keywords (e.g. "paani", "nali", "bijli") create a unique Picsum seed.
+  // 3) Picsum fallback with CONTENT-BASED seed
   const contentSeed = extractContentSeed(title, extraKeywords, category, index);
-  return `https://picsum.photos/seed/${contentSeed}/800/600`;
-
+  return {
+    url: `https://picsum.photos/seed/${contentSeed}/800/600`,
+    credit: ''
+  };
 }
 
 /* ============================================
@@ -574,7 +625,8 @@ Return ONLY a valid JSON array (no markdown, no code blocks, no extra text):
     "content": "FULL Hindi article with <p> tags. 4-6 paragraphs, 200-400 words.",
     "category": "Protest|Water|Electricity|Infrastructure|Education|Health|Safety|Environment|Development|Announcement|Meeting|Success|Alert",
     "location": "Specific area in Hardoi or UP city",
-    "source": "हरदोई की आवाज़"
+    "source": "हरदोई की आवाज़",
+    "image_keywords": "English keywords for image search (e.g. 'road construction India', 'water crisis village', 'school education rural')"
   }
 ]
 
@@ -587,7 +639,8 @@ CRITICAL — JSON RULES:
 - Use real area names: Subhash Nagar, Nai Bazaar, Civil Lines, Shahganj Road, Mallawan, Shahabad, Sandi, Bilgram, Pihani, Gopamau
 - One article MUST be about a success of Hardoi ki Awaaz
 - One article MUST be about a protest or public demonstration
-- IMPORTANT: Generate DIFFERENT articles each time — do NOT repeat previous content`;
+- IMPORTANT: Generate DIFFERENT articles each time — do NOT repeat previous content
+- image_keywords MUST be in English, describe the article visually, and be relevant for Unsplash image search`;
 }
 
 async function parseNews(text) {
@@ -600,15 +653,22 @@ async function parseNews(text) {
     summary: String(a.summary || ''),
     content: String(a.content || `<p>${a.summary || ''}</p>`),
     image_url: null, // filled async below
+    image_credit: '', // filled async below
     category: String(a.category || 'Announcement'),
     date: new Date().toISOString(),
     location: String(a.location || 'Hardoi, UP'),
     source: String(a.source || 'हरदोई की आवाज़')
   }));
   
-  // Fetch real images in parallel
-  const results = await Promise.allSettled(base.map(async (a, i) => {
-    a.image_url = await findImageForContent(a.category, a.title, a.location, a.summary, i);
+  // Fetch real images in parallel — use image_keywords from Gemini if available, else fallback to title
+  await Promise.allSettled(base.map(async (a, i) => {
+    const article = articles[i]; // original parsed data with image_keywords
+    const searchKeywords = (article && article.image_keywords) 
+      ? article.image_keywords 
+      : a.title + ' ' + a.summary;
+    const imgResult = await findImageForContent(a.category, searchKeywords, a.location, a.summary, i);
+    a.image_url = imgResult.url || null;
+    a.image_credit = imgResult.credit || '';
   }));
   
   return base;
@@ -669,7 +729,9 @@ async function parseIssues(text) {
   }));
   
   await Promise.allSettled(base.map(async (a, i) => {
-    a.image_url = await findImageForContent(a.category, a.title, a.location, a.description, i);
+    const imgResult = await findImageForContent(a.category, a.title, a.location, a.description, i);
+    a.image_url = imgResult.url || null;
+    a.image_credit = imgResult.credit || '';
   }));
   
   return base;
@@ -718,29 +780,38 @@ async function parseProtests(text) {
   if (!data.upcoming || !data.past) throw new Error('Missing upcoming/past arrays');
   const now = Date.now();
   
-  const upcoming = await Promise.all(data.upcoming.map(async (a, i) => ({
-    id: `hka-protest-up-${now}-${i}`,
-    title: String(a.title || ''),
-    description: String(a.description || ''),
-    image_url: await findImageForContent('Protest', a.title, a.location, 'protest rally demonstration', i),
-    location: String(a.location || 'Hardoi'),
-    date: String(a.date || ''),
-    time: String(a.time || '10:00 AM'),
-    category: String(a.category || 'roads'),
-    type: 'upcoming'
-  })));
+  // Fetch images with Unsplash for protests
+  const upcoming = await Promise.all(data.upcoming.map(async (a, i) => {
+    const imgResult = await findImageForContent('Protest', a.title, a.location, 'protest rally demonstration', i);
+    return {
+      id: `hka-protest-up-${now}-${i}`,
+      title: String(a.title || ''),
+      description: String(a.description || ''),
+      image_url: imgResult.url || null,
+      image_credit: imgResult.credit || '',
+      location: String(a.location || 'Hardoi'),
+      date: String(a.date || ''),
+      time: String(a.time || '10:00 AM'),
+      category: String(a.category || 'roads'),
+      type: 'upcoming'
+    };
+  }));
   
-  const past = await Promise.all(data.past.map(async (a, i) => ({
-    id: `hka-protest-past-${now}-${i}`,
-    title: String(a.title || ''),
-    description: String(a.description || ''),
-    image_url: await findImageForContent('Success', a.title, a.location, 'protest success achievement', i + 10),
-    location: String(a.location || 'Hardoi'),
-    date: String(a.date || ''),
-    category: String(a.category || 'roads'),
-    outcome: 'success',
-    type: 'past'
-  })));
+  const past = await Promise.all(data.past.map(async (a, i) => {
+    const imgResult = await findImageForContent('Success', a.title, a.location, 'protest success achievement', i + 10);
+    return {
+      id: `hka-protest-past-${now}-${i}`,
+      title: String(a.title || ''),
+      description: String(a.description || ''),
+      image_url: imgResult.url || null,
+      image_credit: imgResult.credit || '',
+      location: String(a.location || 'Hardoi'),
+      date: String(a.date || ''),
+      category: String(a.category || 'roads'),
+      outcome: 'success',
+      type: 'past'
+    };
+  }));
   
   return { upcoming, past };
 }
@@ -854,10 +925,13 @@ async function moderateContent(apiKey, text, photoCount) {
    FALLBACK DATA
    ============================================ */
 
-/* Sync fallback image URL using content-based Hindi keyword seed */
-function getFallbackImageUrl(title, category, index) {
+/* Sync fallback image URL + empty credit using content-based Hindi keyword seed */
+function getFallbackImage(title, category, index) {
   const seed = extractContentSeed(title, '', category, index || 0);
-  return `https://picsum.photos/seed/${seed}/800/600`;
+  return {
+    url: `https://picsum.photos/seed/${seed}/800/600`,
+    credit: ''
+  };
 }
 
 function getFallbackNews() {
@@ -894,7 +968,8 @@ function getFallbackNews() {
     title: item.title,
     summary: item.summary,
     content: item.content,
-    image_url: getFallbackImageUrl(item.title, item.category, i),
+    image_url: getFallbackImage(item.title, item.category, i).url,
+    image_credit: '',
     category: item.category,
     date: now,
     location: item.location,
@@ -936,7 +1011,8 @@ function getFallbackIssues() {
     id: `fb-issue-${seed}-${i}`,
     title: item.title,
     description: item.description,
-    image_url: getFallbackImageUrl(item.title, item.category, i),
+    image_url: getFallbackImage(item.title, item.category, i).url,
+    image_credit: '',
     category: item.category,
     location: item.location,
     status: 'active',
@@ -988,7 +1064,8 @@ function getFallbackProtests() {
       id: `fb-protest-${seed}-${i}`,
       title: item.title,
       description: item.description,
-      image_url: getFallbackImageUrl(item.title, item.category, i),
+      image_url: getFallbackImage(item.title, item.category, i).url,
+    image_credit: '',
       location: item.location,
       date: fmt(i === 0 ? f1 : i === 1 ? f2 : f3),
       time: item.time,
@@ -999,7 +1076,8 @@ function getFallbackProtests() {
       id: `fb-protest-${seed}-${i + 3}`,
       title: item.title,
       description: item.description,
-      image_url: getFallbackImageUrl(item.title + ' success', String(item.category || 'roads'), i + 10),
+      image_url: getFallbackImage(item.title + ' success', String(item.category || 'roads'), i + 10).url,
+      image_credit: '',
       location: item.location,
       date: fmt(i === 0 ? p1 : p2),
       category: item.category,
