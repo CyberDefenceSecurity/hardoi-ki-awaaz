@@ -355,6 +355,8 @@ class PhotoUploader {
 
       // Also save locally as backup
       this.storage.addIssue(result.issue);
+      // Track ownership so user can delete later
+      this.trackOwnedIssue(result.issue.id);
 
       // Reset form
       document.getElementById('instant-upload-form').reset();
@@ -387,6 +389,8 @@ class PhotoUploader {
       };
 
       this.storage.addIssue(issue);
+      // Track ownership so user can delete later
+      this.trackOwnedIssue(issue.id);
 
       document.getElementById('instant-upload-form').reset();
       document.getElementById('photo-preview-grid').innerHTML = '';
@@ -410,6 +414,31 @@ class PhotoUploader {
       localStorage.setItem('hka_supporter_id', id);
     }
     return id;
+  }
+
+  /** Get or create a unique user ID for tracking ownership */
+  getUserToken() {
+    let token = localStorage.getItem('hka_user_token');
+    if (!token) {
+      token = 'USR-' + Date.now() + '-' + Math.random().toString(36).substr(2, 12);
+      localStorage.setItem('hka_user_token', token);
+    }
+    return token;
+  }
+
+  /** Track that this user posted a specific issue */
+  trackOwnedIssue(issueId) {
+    const token = this.getUserToken();
+    let owned = JSON.parse(localStorage.getItem('hka_owned_issues') || '{}');
+    owned[issueId] = token;
+    localStorage.setItem('hka_owned_issues', JSON.stringify(owned));
+  }
+
+  /** Check if the current user owns this issue */
+  isIssueOwner(issueId) {
+    const token = this.getUserToken();
+    const owned = JSON.parse(localStorage.getItem('hka_owned_issues') || '{}');
+    return owned[issueId] === token;
   }
 
   /** Render nested replies recursively with proper threading */
@@ -508,9 +537,9 @@ class PhotoUploader {
             <span>📍 ${this.escapeHtml(issue.location)}</span>
             <span>👤 ${this.escapeHtml(issue.name)}</span>
             <span>📅 ${issue.date}</span>
-            <span>❤️ ${supporterCount}</span>
-            <span>💬 ${totalComments}</span>
+            <span>❤️ ${supporterCount}</span>              <span>💬 ${totalComments}</span>
           </div>
+          ${this.isIssueOwner(issue.id) ? '<div style="margin-bottom:0.5rem;"><button class="delete-issue-btn" onclick="deleteUserIssue(\'' + issue.id + '\')" style="padding:0.3rem 0.7rem;border:1px solid var(--danger);background:transparent;color:var(--danger);border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;transition:0.3s;">🗑️ मेरी समस्या हटाएं</button></div>' : ''}
           <div class="issue-support-section">
             <button class="support-btn ${isSupported ? 'supported' : ''}" onclick="window.supportUserIssue('${issue.id}')" data-id="${issue.id}">
               ${isSupported ? '✅ Supported (' + supporterCount + ')' : '❤️ Support (' + supporterCount + ')'}
@@ -1087,14 +1116,16 @@ window.closeMapPicker = function() {
   }
 };
 
-// Close map on Escape key (only on pages with the upload form)
-if (document.getElementById('photo-upload-section')) {
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeMapPicker();
-    }
-  });
-}
+// Close map on Escape key — check inside DOMContentLoaded to ensure DOM exists
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('photo-upload-section')) {
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeMapPicker();
+      }
+    });
+  }
+});
 
 function shareIssue(issueId) {
   const url = window.location.href;
@@ -1105,3 +1136,47 @@ function shareIssue(issueId) {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
   }
 }
+
+// ======== DELETE USER ISSUE ========
+window.deleteUserIssue = async function(issueId) {
+  if (!confirm('क्या आप वाकई अपनी समस्या हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')) {
+    return;
+  }
+
+  const storage = new IssueStorage();
+  const token = localStorage.getItem('hka_user_token');
+  const owned = JSON.parse(localStorage.getItem('hka_owned_issues') || '{}');
+  
+  // Verify ownership
+  if (owned[issueId] !== token) {
+    showToast('आप केवल अपनी समस्या हटा सकते हैं!', 'error');
+    return;
+  }
+
+  // Try to delete from server
+  try {
+    await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    });
+  } catch (err) {
+    console.warn('Server delete failed (local only):', err.message);
+  }
+
+  // Remove from localStorage
+  const allIssues = storage.getAllIssues();
+  const filtered = allIssues.filter(i => i.id !== issueId);
+  localStorage.setItem(storage.issuesKey, JSON.stringify(filtered));
+
+  // Remove ownership tracking
+  delete owned[issueId];
+  localStorage.setItem('hka_owned_issues', JSON.stringify(owned));
+
+  showToast('✅ आपकी समस्या हटा दी गई!', 'success');
+  
+  // Reload the issues list
+  if (window.photoUploader) {
+    window.photoUploader.loadUserIssues();
+  }
+};

@@ -116,16 +116,6 @@
 
 
 
-    <!-- Area/Location Filter -->
-    <section style="padding:0 1.5rem;max-width:1100px;margin:0 auto;">
-      <div class="location-filter-bar reveal" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;padding:0.8rem;background:var(--bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.05);">
-        <span style="font-size:0.85rem;font-weight:600;color:var(--text);">📍 इलाका / Area:</span>
-        <select id="issue-area-filter" style="flex:1;min-width:200px;max-width:350px;padding:0.5rem 0.8rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.85rem;font-family:inherit;background:var(--bg);color:var(--text);cursor:pointer;">
-          <option value="all">🌐 सभी इलाके</option>
-        </select>
-      </div>
-    </section>
-
     <!-- Photo Upload Section -->
     <section id="photo-upload-section"></section>
 
@@ -276,9 +266,19 @@
                 <span>📅 ${date}</span>
               </div>
               ${issue.update ? `<p style="font-size:0.8rem;color:var(--secondary);margin-bottom:0.8rem;font-style:italic;">📢 ${issue.update}</p>` : ''}
-              <div style="display:flex;gap:0.5rem;align-items:center;">
+              <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
                 <button class="support-btn" onclick="handleSupport(this,'${issue.id}')" style="padding:0.4rem 1rem;border:2px solid var(--danger);background:transparent;color:var(--danger);border-radius:20px;cursor:pointer;font-size:0.85rem;transition:0.3s;font-family:inherit;">❤️ Support (${issue.supporters || 0})</button>
                 <button onclick="shareIssue('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">📤 Share</button>
+                <button onclick="togglePrefinedReplySection('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">💬 टिप्पणी करें</button>
+              </div>
+              <!-- Replies Section for predefined issues -->
+              <div class="replies-section" id="predefined-replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
+                <div class="replies-list" id="predefined-replies-list-${issue.id}"></div>
+                <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                  <input type="text" class="predefined-reply-name" placeholder="आपका नाम" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+                  <input type="text" class="predefined-reply-text" placeholder="इस समस्या पर अपनी टिप्पणी लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+                  <button onclick="submitPredefinedReply('${issue.id}')" style="padding:0.4rem 0.8rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;">➡️ भेजें</button>
+                </div>
               </div>
             </div>
           </div>`;
@@ -321,14 +321,21 @@
         }
         return;
       }
+      // Get the initial server-side count from the button text
+      let initialCount = 0;
+      if (btn) {
+        const match = btn.textContent.match(/\((\d+)\)/);
+        if (match) initialCount = parseInt(match[1]) || 0;
+      }
       issueStorage.supportIssue(issueId);
-      const actualCount = issueStorage.getSupportCount(issueId);
+      const localCount = issueStorage.getSupportCount(issueId);
+      const totalCount = initialCount + localCount;
       if (btn) {
         btn.classList.add('supported');
         btn.style.background = '#4caf50';
         btn.style.borderColor = '#4caf50';
         btn.style.color = '#fff';
-        btn.innerHTML = '✅ Supported (' + actualCount + ')';
+        btn.innerHTML = '✅ Supported (' + totalCount + ')';
       }
       // Show thank you modal safely
       if (typeof showThankYouStandard === 'function') {
@@ -350,101 +357,80 @@
       else { window.open('https://wa.me/?text=' + encodeURIComponent(text)); }
     }
 
-    // Reply functions for predefined issues (if needed)
-    window.toggleReplyForm = window.toggleReplyForm || function(issueId) {
-      const section = document.getElementById('replies-' + issueId);
-      if (section) section.style.display = section.style.display === 'none' ? 'block' : 'none';
-    };
-
-    window.submitReply = window.submitReply || async function(issueId) {
-      const section = document.getElementById('replies-' + issueId);
+    // Reply functions for predefined issues
+    window.togglePrefinedReplySection = function(issueId) {
+      const section = document.getElementById('predefined-replies-' + issueId);
       if (!section) return;
-      const nameInput = section.querySelector('.reply-name-input');
-      const textInput = section.querySelector('.reply-text-input');
-      if (!textInput.value.trim()) { showToast('कृपया जवाब लिखें!', 'error'); return; }
-      try {
-        const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId + '/reply', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: nameInput.value.trim() || 'Anonymous', text: textInput.value.trim() })
-        });
-        const data = await resp.json();
-        if (data.success) {
-          textInput.value = '';
-          if (window.photoUploader) window.photoUploader.loadUserIssues();
-          showToast('✅ आपका जवाब भेज दिया गया!', 'success');
-        }
-      } catch(e) {
-        showToast('जवाब भेजने में समस्या हुई।', 'error');
+      section.style.display = section.style.display === 'none' ? 'block' : 'none';
+      // Load stored replies when first opened
+      const list = document.getElementById('predefined-replies-list-' + issueId);
+      if (list && list.children.length === 0) {
+        loadPredefinedReplies(issueId);
       }
     };
 
-    // Area Filter Logic — matches against both value keys and label portions
-    function filterIssuesByArea(filterValue) {
-      // Build search terms: try value key first, then extract English name from label
-      let searchTerms = [filterValue];
-      if (filterValue !== 'all') {
-        const village = typeof HARDOI_VILLAGES !== 'undefined' && HARDOI_VILLAGES.find(v => v.value === filterValue);
-        if (village) {
-          // Add the English portion (before parenthesis)
-          const engName = village.label.split('(')[0].trim().toLowerCase();
-          if (engName) searchTerms.push(engName);
-          // Also add the value itself
-          searchTerms.push(village.value);
-        }
+    // Load replies for a predefined issue from localStorage
+    function loadPredefinedReplies(issueId) {
+      const list = document.getElementById('predefined-replies-list-' + issueId);
+      if (!list) return;
+      let allReplies = {};
+      try {
+        allReplies = JSON.parse(localStorage.getItem('hka_predefined_replies')) || {};
+      } catch(e) {
+        allReplies = {};
       }
+      const replies = allReplies[issueId] || [];
+      if (replies.length === 0) {
+        list.innerHTML = '<p style="font-size:0.8rem;color:var(--text-light);padding:0.5rem 0;">अभी तक कोई टिप्पणी नहीं। पहली टिप्पणी करें! 💬</p>';
+        return;
+      }
+      list.innerHTML = replies.map(r => 
+        '<div style="padding:0.5rem 0.6rem;border-left:2px solid var(--primary);margin-bottom:0.5rem;border-radius:0 6px 6px 0;background:rgba(0,0,0,0.02);">' +
+          '<div style="display:flex;align-items:center;gap:0.4rem;">' +
+            '<strong style="font-size:0.8rem;color:var(--primary);">' + escapeHtml(r.name) + '</strong>' +
+            '<span style="font-size:0.65rem;color:var(--text-light);">' + (r.date || '') + '</span>' +
+          '</div>' +
+          '<p style="font-size:0.85rem;margin-top:0.2rem;color:var(--text);">' + escapeHtml(r.text) + '</p>' +
+        '</div>'
+      ).join('');
+    }
 
-      const cards = document.querySelectorAll('.issue-card');
-      cards.forEach(card => {
-        const locationEl = card.querySelector('.issue-meta span:first-child');
-        if (!locationEl) return;
-        const cardLocation = locationEl.textContent.replace('📍 ', '').toLowerCase();
-        if (filterValue === 'all' || searchTerms.some(term => cardLocation.includes(term.toLowerCase()))) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      
-      // Also filter user issues
-      document.querySelectorAll('.user-issue-card').forEach(card => {
-        const locationEl = card.querySelector('.issue-meta span:first-child');
-        if (!locationEl) return;
-        const cardLocation = locationEl.textContent.replace('📍 ', '').toLowerCase();
-        if (filterValue === 'all' || searchTerms.some(term => cardLocation.includes(term.toLowerCase()))) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
+    // Submit a reply for a predefined issue
+    window.submitPredefinedReply = function(issueId) {
+      const section = document.getElementById('predefined-replies-' + issueId);
+      if (!section) return;
+      const nameInput = section.querySelector('.predefined-reply-name');
+      const textInput = section.querySelector('.predefined-reply-text');
+      if (!textInput.value.trim()) {
+        showToast('कृपया टिप्पणी लिखें!', 'error');
+        return;
+      }
+      const reply = {
+        name: nameInput.value.trim() || 'Anonymous',
+        text: textInput.value.trim(),
+        date: new Date().toLocaleDateString('hi-IN'),
+        timestamp: Date.now()
+      };
+      // Save to localStorage
+      const allReplies = JSON.parse(localStorage.getItem('hka_predefined_replies') || '{}');
+      if (!allReplies[issueId]) allReplies[issueId] = [];
+      allReplies[issueId].push(reply);
+      localStorage.setItem('hka_predefined_replies', JSON.stringify(allReplies));
+      textInput.value = '';
+      nameInput.value = '';
+      showToast('✅ आपकी टिप्पणी भेज दी गई!', 'success');
+      loadPredefinedReplies(issueId);
+    };
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       IssueGrid.loadIssues();
-      
-      // Populate area filter dropdown
-      if (typeof populateVillageSelect === 'function') {
-        const areaFilter = document.getElementById('issue-area-filter');
-        if (areaFilter) {
-          populateVillageSelect('issue-area-filter', '🌐 सभी इलाके');
-          // Re-add the "all" option at top
-          const allOpt = document.createElement('option');
-          allOpt.value = 'all';
-          allOpt.textContent = '🌐 सभी इलाके';
-          areaFilter.insertBefore(allOpt, areaFilter.firstChild);
-          areaFilter.value = 'all';
-        }
-      }
-
-      // Area filter change — use raw value key
-      const areaFilter = document.getElementById('issue-area-filter');
-      if (areaFilter) {
-        areaFilter.addEventListener('change', function() {
-          filterIssuesByArea(this.value);
-        });
-      }
-
     });
     
     // Global observer to restore support button states after dynamic rendering
@@ -456,8 +442,13 @@
             btn.style.background = '#4caf50';
             btn.style.borderColor = '#4caf50';
             btn.style.color = '#fff';
-            const num = btn.textContent.match(/\d+/);
-            if (num) btn.innerHTML = '✅ Supported (' + num[0] + ')';
+            // Parse initial count from button text + add localStorage count
+            const match = btn.textContent.match(/\((\d+)\)/);
+            let initialCount = 0;
+            if (match) initialCount = parseInt(match[1]) || 0;
+            const localCount = issueStorage.getSupportCount(id);
+            const totalCount = initialCount + localCount;
+            btn.innerHTML = '✅ Supported (' + totalCount + ')';
           }
         });
       });
