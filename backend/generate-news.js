@@ -716,6 +716,12 @@ async function moderateContent(apiKey, text, photoCount) {
    FALLBACK DATA
    ============================================ */
 
+/* Sync fallback image URL using content-based Hindi keyword seed */
+function getFallbackImageUrl(title, category, index) {
+  const seed = extractContentSeed(title, '', category, index || 0);
+  return `https://picsum.photos/seed/${seed}/800/600`;
+}
+
 function getFallbackNews() {
   const now = new Date().toISOString();
   const seed = Date.now();
@@ -750,7 +756,7 @@ function getFallbackNews() {
     title: item.title,
     summary: item.summary,
     content: item.content,
-    image_url: null,
+    image_url: getFallbackImageUrl(item.title, item.category, i),
     category: item.category,
     date: now,
     location: item.location,
@@ -792,7 +798,7 @@ function getFallbackIssues() {
     id: `fb-issue-${seed}-${i}`,
     title: item.title,
     description: item.description,
-    image_url: null,
+    image_url: getFallbackImageUrl(item.title, item.category, i),
     category: item.category,
     location: item.location,
     status: 'active',
@@ -844,7 +850,7 @@ function getFallbackProtests() {
       id: `fb-protest-${seed}-${i}`,
       title: item.title,
       description: item.description,
-      image_url: null,
+      image_url: getFallbackImageUrl(item.title, item.category, i),
       location: item.location,
       date: fmt(i === 0 ? f1 : i === 1 ? f2 : f3),
       time: item.time,
@@ -855,7 +861,7 @@ function getFallbackProtests() {
       id: `fb-protest-${seed}-${i + 3}`,
       title: item.title,
       description: item.description,
-      image_url: null,
+      image_url: getFallbackImageUrl(item.title + ' success', String(item.category || 'roads'), i + 10),
       location: item.location,
       date: fmt(i === 0 ? p1 : p2),
       category: item.category,

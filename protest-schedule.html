@@ -53,6 +53,8 @@
   <meta name="theme-color" content="#1a237e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="assets/images/logo.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="assets/images/logo.jpg">
 </head>
 <body>
   <header class="header">
@@ -298,7 +300,7 @@
         this.rsvps.push(id);
         localStorage.setItem('hka_rsvps', JSON.stringify(this.rsvps));
         btn.innerHTML = '✅ Confirmed!';
-        btn.style.background = 'var(--success)';
+        btn.style.background = '#4caf50';
         btn.style.color = '#fff';
         showToast('RSVP Confirmed! 🙏', 'success');
       },

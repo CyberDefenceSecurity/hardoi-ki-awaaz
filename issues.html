@@ -57,6 +57,8 @@
   <meta name="theme-color" content="#1a237e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="assets/images/logo.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="assets/images/logo.jpg">
 </head>
 <body>
   <header class="header">
@@ -119,7 +121,6 @@
         <select id="issue-area-filter" style="flex:1;min-width:200px;max-width:350px;padding:0.5rem 0.8rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.85rem;font-family:inherit;background:var(--bg);color:var(--text);cursor:pointer;">
           <option value="all">🌐 सभी इलाके</option>
         </select>
-        <button type="button" id="issue-share-location-btn" class="cta-btn" style="padding:0.5rem 1rem;font-size:0.8rem;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;white-space:nowrap;">📍 Share Location</button>
       </div>
     </section>
 
@@ -311,17 +312,31 @@
     const issueStorage = new IssueStorage();
     function handleSupport(btn, issueId) {
       if (issueStorage.isIssueSupported(issueId)) {
-        showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
+        if (typeof showToast === 'function') {
+          showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
+        }
         return;
       }
       issueStorage.supportIssue(issueId);
       const actualCount = issueStorage.getSupportCount(issueId);
-      btn.classList.add('supported');
-      btn.style.background = 'var(--success)';
-      btn.style.borderColor = 'var(--success)';
-      btn.style.color = '#fff';
-      btn.innerHTML = '✅ Supported (' + actualCount + ')';
-      showThankYouStandard();
+      if (btn) {
+        btn.classList.add('supported');
+        btn.style.background = '#4caf50';
+        btn.style.borderColor = '#4caf50';
+        btn.style.color = '#fff';
+        btn.innerHTML = '✅ Supported (' + actualCount + ')';
+      }
+      // Show thank you modal safely
+      if (typeof showThankYouStandard === 'function') {
+        showThankYouStandard();
+      } else {
+        // Fallback toast if modal function not available
+        if (typeof showToast === 'function') {
+          showToast('🙏 आपके समर्थन के लिए धन्यवाद!', 'success');
+        } else {
+          alert('🙏 आपके समर्थन के लिए धन्यवाद!');
+        }
+      }
     }
 
     function shareIssue(id) {
@@ -426,33 +441,6 @@
         });
       }
 
-      // GPS Location Share button — match against village names and values
-      const shareBtn = document.getElementById('issue-share-location-btn');
-      if (shareBtn && typeof shareCurrentLocation === 'function') {
-        shareBtn.addEventListener('click', function() {
-          shareCurrentLocation(function(locationName) {
-            const areaFilter = document.getElementById('issue-area-filter');
-            const locLower = locationName.toLowerCase();
-            let found = false;
-            for (let i = 0; i < areaFilter.options.length; i++) {
-              const opt = areaFilter.options[i];
-              if (!opt.value || opt.value === 'all' || opt.value === '') continue;
-              const optLabel = opt.textContent.toLowerCase();
-              // Check if GPS location matches the option label or value
-              if (locLower.includes(opt.value.toLowerCase()) || locLower.includes(optLabel.split('(')[0].trim())) {
-                areaFilter.value = opt.value;
-                filterIssuesByArea(opt.value);
-                found = true;
-                break;
-              }
-            }
-            if (!found) {
-              showToast('📍 आपकी लोकेशन: ' + locationName + ' — कृपया इलाका खुद चुनें', 'info');
-            }
-            showToast('✅ लोकेशन मिल गई: ' + locationName, 'success');
-          });
-        });
-      }
     });
     
     // Global observer to restore support button states after dynamic rendering
@@ -461,8 +449,8 @@
         document.querySelectorAll('.support-btn').forEach(btn => {
           if (btn.getAttribute('onclick')?.includes(id)) {
             btn.classList.add('supported');
-            btn.style.background = 'var(--success)';
-            btn.style.borderColor = 'var(--success)';
+            btn.style.background = '#4caf50';
+            btn.style.borderColor = '#4caf50';
             btn.style.color = '#fff';
             const num = btn.textContent.match(/\d+/);
             if (num) btn.innerHTML = '✅ Supported (' + num[0] + ')';
