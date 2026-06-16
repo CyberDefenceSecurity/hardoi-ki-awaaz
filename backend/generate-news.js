@@ -49,8 +49,12 @@ async function findImageForContent(category, title, location, extraKeywords, ind
     }
   }
   
-  // Return null — frontend will show category-relevant gradient + emoji instead of random image
-  return null;
+  // Picsum fallback with category-based seed — gives consistent real images per category
+  // Seed = category name + index, so each category gets different images across articles
+  const catSeed = (category || 'news').toLowerCase().replace(/[^a-z]/g, '') || 'news';
+  const indexSuffix = ((index || 0) * 137) % 1000;
+  return `https://picsum.photos/seed/${catSeed}${indexSuffix}/800/600`;
+
 }
 
 /* ============================================

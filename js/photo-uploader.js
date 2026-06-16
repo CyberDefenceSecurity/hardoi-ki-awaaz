@@ -3,6 +3,18 @@
    Content Moderation — Auto block inappropriate content
    ============================================ */
 
+// Ensure showToast is globally available (main.js may load later)
+if (typeof window.showToast !== 'function') {
+  window.showToast = function(message, type) {
+    var toast = document.createElement('div');
+    toast.className = 'toast toast-' + (type || 'success');
+    toast.textContent = message;
+    toast.style.cssText = 'position:fixed;bottom:80px;right:24px;padding:12px 24px;border-radius:8px;color:#fff;font-size:0.85rem;z-index:10000;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.2);background:' + (type === 'error' ? '#f44336' : type === 'info' ? '#ff9800' : '#4caf50') + ';animation:slideIn 0.3s ease;';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+  };
+}
+
 class PhotoUploader {
   constructor() {
     this.storage = new IssueStorage();
