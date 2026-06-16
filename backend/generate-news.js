@@ -15,10 +15,138 @@ const MODELS = [
 ];
 
 /* ============================================
-   IMAGE SEARCH — Sirf Google Custom Search (CX from search-id.txt)
+   IMAGE SEARCH — Google Custom Search (CX from search-id.txt) + content-based Picsum fallback
    ============================================ */
 
 const GOOGLE_CX = '137070bc808794021';  // From search-id.txt
+
+/* ---------- Hindi keyword → English transliteration map ----------
+   Used to create content-relevant Picsum seeds from Hindi news titles.
+   When a Hindi keyword is found in the title, the transliterated English
+   version is used as part of the Picsum seed URL — giving each unique
+   topic a distinct image instead of all articles in a category sharing one. */
+const HINDI_KEYWORD_MAP = {
+  'प्रदूषण': 'pradushan', 'प्रदूषित': 'pradushan',
+  'बिजली': 'bijli', 'वोल्टेज': 'voltage',
+  'पानी': 'paani', 'पेयजल': 'paani', 'जल': 'jal', 'पेय': 'paani',
+  'सड़क': 'sadak', 'सड़कें': 'sadak', 'गड्ढा': 'gadda',
+  'नाली': 'nali', 'नालियां': 'nali', 'सीवर': 'sewer',
+  'कचरा': 'kachra', 'कूड़ा': 'kachra', 'गंदगी': 'gandagi',
+  'चोरी': 'chori', 'अपराध': 'apradh', 'साइबर': 'cyber',
+  'अस्पताल': 'hospital', 'स्वास्थ्य': 'health', 'डॉक्टर': 'doctor', 'दवा': 'medicine', 'दवाइयां': 'medicine',
+  'स्कूल': 'school', 'शिक्षा': 'education', 'शिक्षक': 'teacher', 'भर्ती': 'recruitment',
+  'प्रदर्शन': 'protest', 'धरना': 'protest', 'मार्च': 'march',
+  'हादसा': 'accident', 'हादसे': 'accident', 'दुर्घटना': 'accident',
+  'मरम्मत': 'repair', 'निर्माण': 'construction',
+  'कटौती': 'cutoff',
+  'पाइप': 'pipe', 'पाइपलाइन': 'pipeline',
+  'हैंडपंप': 'handpump',
+  'पुलिस': 'police',
+  'सीसीटीवी': 'cctv', 'कैमरा': 'camera',
+  'सफाई': 'cleaning',
+  'पार्क': 'park',
+  'पेड़': 'trees', 'पौधारोपण': 'plantation',
+  'पर्यावरण': 'environment',
+  'सरकारी': 'government', 'योजना': 'scheme',
+  'विकास': 'development',
+  'जाम': 'jam',
+  'लाइट': 'light', 'स्ट्रीट': 'street',
+  'बैंक': 'bank',
+  'मोबाइल': 'mobile', 'टावर': 'tower',
+  'इंटरनेट': 'internet',
+  'बीमारी': 'disease', 'बीमारियां': 'disease',
+  'संकट': 'crisis',
+  'समाधान': 'solution',
+  'मांग': 'demand',
+  'आंदोलन': 'movement', 'आवाज़': 'voice',
+  'नागरिक': 'citizen',
+  'सफलता': 'success', 'रिकॉर्ड': 'record',
+  'चौराहा': 'crossing', 'चौराहे': 'crossing',
+  'बच्चे': 'children', 'बच्चों': 'children',
+  'पढ़ाई': 'study',
+  'कंप्यूटर': 'computer',
+  'स्मार्ट': 'smart',
+  'जांच': 'checkup',
+  'गश्त': 'patrol',
+  'अभियान': 'campaign',
+  'रैली': 'rally',
+  'बदलाव': 'change',
+  'एकजुट': 'united',
+  'शुद्ध': 'pure',
+  'गर्मी': 'heat',
+  'बारिश': 'rain',
+  'बाढ़': 'flood',
+  'सूखा': 'drought',
+  'किसान': 'farmer',
+  'मजदूर': 'labour',
+  'व्यापार': 'business',
+  'बेरोजगारी': 'unemployment',
+  'यातायात': 'traffic',
+  'ट्रैफिक': 'traffic',
+  'मीटर': 'meter',
+  'लाइब्रेरी': 'library',
+  'टूटी': 'broken', 'खराब': 'broken',
+  'बंद': 'closed',
+  'गिरा': 'collapsed', 'गिर': 'collapsed',
+  'आग': 'fire',
+  'लूट': 'robbery', 'डकैती': 'robbery',
+  'हड़ताल': 'strike',
+  'बैठक': 'meeting',
+  'सम्मेलन': 'conference',
+  'नियुक्ति': 'appointment',
+  'परीक्षा': 'exam',
+  'नतीजा': 'result', 'परिणाम': 'result',
+  'अवकाश': 'holiday', 'छुट्टी': 'holiday',
+  'समारोह': 'ceremony',
+  'उद्घाटन': 'inauguration',
+  'शिलान्यास': 'foundation',
+  'निरीक्षण': 'inspection',
+  'बढ़ोतरी': 'increase',
+  'कमी': 'shortage',
+  'गुजरिश': 'request', 'अपील': 'appeal',
+  'चेतावनी': 'warning',
+  'खतरा': 'danger'
+};
+
+/* Extract content-based seed for Picsum from Hindi/English title keywords
+   Instead of using just the broad category name (e.g. "Water" for all water
+   articles), this extracts actual topic keywords from the title to create a
+   unique Picsum seed per article — so pollution news gets a different Picsum
+   image than electricity news, even both are in the same category. */
+function extractContentSeed(title, summary, category, index) {
+  const text = (title || '') + ' ' + (summary || '');
+  
+  // Step 1: Find matching Hindi keywords in the title/summary
+  const foundKeywords = [];
+  for (const [hindiWord, translit] of Object.entries(HINDI_KEYWORD_MAP)) {
+    if (text.includes(hindiWord)) {
+      foundKeywords.push(translit);
+    }
+  }
+  
+  // Step 2: If Hindi keywords found, use them (max 3 unique, deduped)
+  if (foundKeywords.length > 0) {
+    const unique = [...new Set(foundKeywords)];
+    const keywords = unique.slice(0, 3).join('-');
+    return `${keywords}-${index || 0}`;
+  }
+  
+  // Step 3: Fallback — extract ASCII/English words from title
+  const asciiWords = (title || '')
+    .replace(/[^a-zA-Z\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 2)
+    .slice(0, 2)
+    .map(w => w.toLowerCase());
+  
+  if (asciiWords.length > 0) {
+    return `${asciiWords.join('-')}-${index || 0}`;
+  }
+  
+  // Step 4: Last resort — use category name
+  const catSeed = (category || 'news').toLowerCase().replace(/[^a-z]/g, '') || 'news';
+  return `${catSeed}-${index || 0}`;
+}
 
 async function searchGoogleImage(apiKey, query) {
   if (!apiKey) return null;
@@ -34,11 +162,14 @@ async function searchGoogleImage(apiKey, query) {
   return data?.items?.[0]?.link || null;
 }
 
-/* Main image search — Google → null (frontend shows category gradient + emoji) */
+/* Main image search — Google → content-based Picsum fallback
+   Uses title keywords to create different Picsum images per article
+   so pollution news shows a different image than electricity news. */
 async function findImageForContent(category, title, location, extraKeywords, index) {
   const searchQuery = [title, location, extraKeywords, 'Hardoi Uttar Pradesh India']
     .filter(Boolean).join(' ').replace(/[<>"']/g, ' ').trim().substring(0, 200);
   
+  // Try Google Custom Search first (needs GOOGLE_API_KEY in .env)
   const googleKey = process.env.GOOGLE_API_KEY;
   if (googleKey && GOOGLE_CX) {
     try {
@@ -49,11 +180,11 @@ async function findImageForContent(category, title, location, extraKeywords, ind
     }
   }
   
-  // Picsum fallback with category-based seed — gives consistent real images per category
-  // Seed = category name + index, so each category gets different images across articles
-  const catSeed = (category || 'news').toLowerCase().replace(/[^a-z]/g, '') || 'news';
-  const indexSuffix = ((index || 0) * 137) % 1000;
-  return `https://picsum.photos/seed/${catSeed}${indexSuffix}/800/600`;
+  // Picsum fallback with CONTENT-BASED seed — each unique topic gets its own image
+  // Instead of all "Water" articles sharing one image, each article's Hindi
+  // keywords (e.g. "paani", "nali", "bijli") create a unique Picsum seed.
+  const contentSeed = extractContentSeed(title, extraKeywords, category, index);
+  return `https://picsum.photos/seed/${contentSeed}/800/600`;
 
 }
 

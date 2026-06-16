@@ -1,286 +1,31 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>हरदोई की आवाज़ | Hardoi ki Awaaz — नागरिकों की आवाज़, बदलाव की पहचान</title>
-  <meta name="description" content="हरदोई की आवाज़ - हरदोई शहर के नागरिकों का स्वतंत्र मंच। अपनी समस्याएं दर्ज करें, ID Card बनवाएं, प्रदर्शनों में शामिल हों, और बदलाव का हिस्सा बनें।">
-  <meta name="keywords" content="Hardoi, हरदोई, Hardoi ki Awaaz, नागरिक मंच, ID Card, उत्तर प्रदेश, Uttar Pradesh, Lucknow, Kanpur, Shahjahanpur, Sitapur, Unnao, citizen platform, India, Indian democracy, नागरिक आंदोलन, शहर की समस्याएं, जनता की आवाज़, hardoi news, uttar pradesh news, hindi news">
-  <meta name="author" content="Hardoi ki Awaaz">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="/">
-  <meta property="og:title" content="हरदोई की आवाज़ | Hardoi ki Awaaz — नागरिकों की आवाज़">
-  <meta property="og:description" content="हरदोई के नागरिकों का स्वतंत्र मंच। ID Card बनवाएं, समस्याएं दर्ज करें, बदलाव लाएं।">
-  <meta property="og:image" content="/assets/images/hero-bg.svg">
-  <meta property="og:url" content="/">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="hi_IN">
-  <meta name="geo.region" content="IN-UP">
-  <meta name="geo.placename" content="Hardoi, Uttar Pradesh, India">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="हरदोई की आवाज़ | Hardoi ki Awaaz">
-  <meta name="twitter:description" content="हरदोई के नागरिकों का स्वतंत्र मंच।">
-  <meta name="twitter:image" content="/assets/images/hero-bg.svg">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#1a237e">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+    <style>
+        #navbar { display: flex; gap: 10px; }
+        .hidden { display: none; }
+        #stats { margin-top: 20px; height: 1000px; }
+    </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header class="header">
-    <div class="nav-container">
-      <a href="index.html" class="logo">
-        <div class="logo-icon"><img src="assets/images/logo.jpg" alt="Hardoi ki Awaaz" style="width:40px;height:40px;border-radius:50%;"></div>
-        <div class="logo-text">
-          <span class="main">Hardoi ki Awaaz</span>
-          <span class="sub">हरदोई की आवाज़, जनता की पहचान</span>
-        </div>
-      </a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="news.html">News</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="issues.html">Issues</a></li>
-          <li><a href="protest-schedule.html">Protests</a></li>
-          <li><a href="id-card.html">ID Card</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="manifesto.html">Manifesto</a></li>
-          <li><a href="bulletin/index.html">Bulletin</a></li>
-        </ul>
-      </nav>
-      <div class="nav-socials">
-        <a href="https://discord.gg/7fdrSaFRA" target="_blank" title="Discord"><img src="assets/icons/discord.svg" alt="Discord"></a>
-        <a href="https://instagram.com/hardoi_ki_asliyat" target="_blank" title="Instagram"><img src="assets/icons/instagram.svg" alt="Instagram"></a>
-        <a href="https://t.me/HardoiKiAsliyat" target="_blank" title="Telegram"><img src="assets/icons/telegram.svg" alt="Telegram"></a>
-        <a href="https://whatsapp.com/channel/0029VbCgTjLLtOjKqHvqm72m" target="_blank" title="WhatsApp"><img src="assets/icons/whatsapp.svg" alt="WhatsApp"></a>
-        <a href="https://youtube.com/@hardoikiasliyat?si=GDWGjxs3TuUSGqIF" target="_blank" title="YouTube">▶️</a>
-        <button id="lang-toggle" class="lang-toggle-btn" title="Toggle Language">EN</button>
-      </div>
-      <button class="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+    <div id="navbar">
+        <button id="menu-btn">Menu</button>
+        <a href="#about">About</a>
+        <button id="lang-toggle">EN</button>
     </div>
-  </header>
-
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <div class="hero-bg-pattern"></div>
-    <div class="hero-content">
-      <div class="hero-badge">📢 आवाज़ उठाओ, बदलाव लाओ</div>
-      <h1>हरदोई की <span class="highlight">आवाज़</span> — अब दबेगी नहीं!</h1>
-      <p class="tagline">हरदोई की आवाज़, जनता की पहचान — हम हरदोई के नागरिकों की आवाज़ हैं</p>
-      <div class="hero-buttons">
-        <a href="id-card.html" class="cta-btn">🪪 Get Your ID Card</a>
-        <a href="#channels" class="cta-btn secondary">✊ Join Movement</a>
-      </div>
-      <div class="stats-container">
-        <div class="stat-item">
-          <span class="stat-number" data-count="12847">0</span>
-          <span class="stat-label">ID Cards Generated</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" data-count="25000">0</span>
-          <span class="stat-label">Supporters</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" data-count="340">0</span>
-          <span class="stat-label">Issues Raised</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" data-count="35">0</span>
-          <span class="stat-label">City Coverage %</span>
-        </div>
-      </div>
+    <div id="menu" class="hidden">Links</div>
+    <div id="stats">
+        <span id="counter">0</span>
     </div>
-  </section>
-
-  <!-- LATEST NEWS TEASER -->
-  <section class="section" id="home-news-teaser"></section>
-
-  <!-- OFFICIAL CHANNELS -->
-  <section class="section bg-alt" id="channels">
-    <div class="container">
-      <div class="section-header reveal">
-        <h2 data-lang="channels.title">📢 Official Channels</h2>
-        <p class="hindi-subtitle" data-lang="channels.subtitle">हमसे जुड़ें हर प्लेटफॉर्म पर</p>
-        <div class="underline"></div>
-      </div>
-      <div class="channels-grid stagger-children">
-        <div class="channel-card">
-          <div class="channel-icon" style="background:rgba(255,0,0,0.1);color:#FF0000;">▶️</div>
-          <h3>YouTube</h3>
-          <p class="followers">@hardoikiasliyat</p>
-          <a href="https://youtube.com/@hardoikiasliyat?si=GDWGjxs3TuUSGqIF" target="_blank" class="cta-btn" style="background:#FF0000;">Subscribe</a>
-        </div>
-        <div class="channel-card">
-          <div class="channel-icon" style="background:rgba(88,101,242,0.1);color:#5865F2;">💬</div>
-          <h3>Discord</h3>
-          <p class="followers">Community Discussion</p>
-          <a href="https://discord.gg/7fdrSaFRA" target="_blank" class="cta-btn">Join Discord</a>
-        </div>
-        <div class="channel-card">
-          <div class="channel-icon" style="background:rgba(225,48,108,0.1);color:#E1306C;">📸</div>
-          <h3>Instagram</h3>
-          <p class="followers">@hardoi_ki_asliyat</p>
-          <a href="https://instagram.com/hardoi_ki_asliyat" target="_blank" class="cta-btn">Follow Us</a>
-        </div>
-        <div class="channel-card">
-          <div class="channel-icon" style="background:rgba(0,136,209,0.1);color:#0088cc;">✈️</div>
-          <h3>Telegram</h3>
-          <p class="followers">@HardoiKiAsliyat</p>
-          <a href="https://t.me/HardoiKiAsliyat" target="_blank" class="cta-btn">Join Channel</a>
-        </div>
-        <div class="channel-card">
-          <div class="channel-icon" style="background:rgba(37,211,102,0.1);color:#25d366;">📱</div>
-          <h3>WhatsApp</h3>
-          <p class="followers">WhatsApp Channel</p>
-          <a href="https://whatsapp.com/channel/0029VbCgTjLLtOjKqHvqm72m" target="_blank" class="cta-btn" style="background:#25d366;">Join Channel</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CITY DEMANDS -->
-  <section class="section" id="demands">
-    <div class="container">
-      <div class="section-header reveal">
-        <h2>🏛️ हमारी मांगें</h2>
-        <p class="hindi-subtitle">हरदोई के विकास के लिए 5 प्रमुख मांगें</p>
-        <div class="underline"></div>
-      </div>
-      <div class="demands-grid stagger-children">
-        <div class="demand-card">
-          <div class="demand-icon">🛣️</div>
-          <h3>बेहतर सड़कें</h3>
-          <p>हरदोई की सभी मुख्य सड़कों की मरम्मत और नई सड़कों का निर्माण</p>
-        </div>
-        <div class="demand-card">
-          <div class="demand-icon">💧</div>
-          <h3>शुद्ध पानी</h3>
-          <p>हर घर में स्वच्छ पेयजल की उपलब्धता सुनिश्चित करना</p>
-        </div>
-        <div class="demand-card">
-          <div class="demand-icon">⚡</div>
-          <h3>24 घंटे बिजली</h3>
-          <p>निरंतर बिजली आपूर्ति और बिजली दरों में कमी</p>
-        </div>
-        <div class="demand-card">
-          <div class="demand-icon">🏥</div>
-          <h3>स्वास्थ्य सुविधा</h3>
-          <p>अस्पतालों में बेहतर सुविधाएं और मुफ्त इलाज</p>
-        </div>
-        <div class="demand-card">
-          <div class="demand-icon">📚</div>
-          <h3>शिक्षा</h3>
-          <p>गुणवत्तापूर्ण शिक्षा और स्कूलों का आधुनिकीकरण</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA BANNER -->
-  <section class="section" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));text-align:center;color:#fff;">
-    <div class="container">
-      <h2 style="font-size:2rem;margin-bottom:1rem;">🪪 अपना Official ID Card बनवाएं!</h2>
-      <p style="font-size:1.1rem;opacity:0.9;margin-bottom:2rem;font-family:var(--font-hindi);">हरदोई की आवाज़ का सदस्य बनें और अपनी पहचान बनाएं</p>
-      <a href="id-card.html" class="cta-btn" style="font-size:1.1rem;padding:1rem 2.5rem;">Get Your ID Card Now →</a>
-    </div>
-  </section>
-
-
-  <!-- LIVE PHOTOS SECTION -->
-  <section id="live-photos-section" style="background:var(--bg-alt);"></section>
-
-  <!-- PHOTO UPLOAD CTA -->
-  <section style="padding:4rem 2rem;text-align:center;background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 70% 30%,rgba(255,111,0,0.15),transparent 60%);"></div>
-    <div style="position:relative;max-width:700px;margin:0 auto;">
-      <span style="font-size:3rem;display:block;margin-bottom:1rem;">📸</span>
-      <h2 class="reveal" style="font-size:2rem;font-weight:700;margin-bottom:0.5rem;">अपनी समस्या की फोटो भेजें!</h2>
-      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-bottom:1.5rem;font-size:1.05rem;line-height:1.6;">फोटो और मैसेज के साथ अपनी समस्या दर्ज करें।<br>दिए गए contacts पर भी अपनी problems share कर सकते हैं।</p>
-      <div class="reveal delay-2" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="issues.html" class="cta-btn primary" style="font-size:1rem;padding:0.8rem 2rem;">📸 समस्या भेजें</a>
-        <a href="https://wa.me/916393416787" target="_blank" class="cta-btn" style="background:var(--success);color:#fff;font-size:1rem;padding:0.8rem 2rem;">📱 WhatsApp करें</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div>
-        <h3>🎙️ हरदोई की आवाज़</h3>
-        <p style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:1rem;font-family:var(--font-hindi);">
-          हरदोई शहर के नागरिकों की आवाज़। हम बदलाव के लिए एक साथ खड़े हैं।<br>
-          <strong>📞 WhatsApp:</strong> WhatsApp Channel
-        </p>
-        <div class="footer-socials">
-          <a href="https://discord.gg/7fdrSaFRA" target="_blank">💬</a>
-          <a href="https://instagram.com/hardoi_ki_asliyat" target="_blank">📸</a>
-          <a href="https://t.me/HardoiKiAsliyat" target="_blank">✈️</a>
-          <a href="https://whatsapp.com/channel/0029VbCgTjLLtOjKqHvqm72m" target="_blank">📱</a>
-          <a href="https://youtube.com/@hardoikiasliyat?si=GDWGjxs3TuUSGqIF" target="_blank">▶️</a>
-        </div>
-      </div>
-      <div>
-        <h3>Quick Links</h3>
-        <a href="index.html">Home</a>
-        <a href="about.html">About Us</a>
-        <a href="issues.html">Issues</a>
-        <a href="protest-schedule.html">Protest Schedule</a>
-        <a href="manifesto.html">Manifesto</a>
-      </div>
-      <div>
-        <h3>Services</h3>
-        <a href="id-card.html">ID Card Generator</a>
-        <a href="contact.html">Report Problem</a>
-        <a href="bulletin/index.html">Bulletin</a>
-        <a href="#">Verify ID Card</a>
-      </div>
-      <div>
-        <h3>Newsletter</h3>
-        <p style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-bottom:0.5rem;">Latest updates पाएं</p>
-        <form class="newsletter-form">
-          <input type="email" placeholder="Email address" aria-label="Email">
-          <button type="submit">→</button>
-        </form>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 Hardoi ki Awaaz. Citizen Powered. | Independent citizen platform — not affiliated to any political party.</p>
-      <p style="margin-top:0.5rem;">दिए गए contacts पर भी अपनी problems share कर सकते हैं 📞</p>
-      <p class="visitor-counter" style="margin-top:0.5rem;font-size:0.75rem;opacity:0.7;"></p>
-    </div>
-  </footer>
-
-  <!-- WHATSAPP FLOAT -->
-  <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float" title="WhatsApp Contact">📱</a>
-
-  <!-- DARK MODE TOGGLE -->
-  <button class="theme-toggle" title="Toggle Dark Mode">🌙</button>
-
-  <script src="js/translations.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/counter.js"></script>
-  <script src="js/news.js"></script>
-  <script src="js/analytics.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js').then(reg => {
-          console.log('PWA: Service worker registered', reg.scope);
-        }).catch(err => {
-          console.warn('PWA: Service worker registration failed', err);
-        });
-      });
-    }
-  </script>
+    <script>
+        console.log("Page loaded");
+        document.getElementById('menu-btn').onclick = () => document.getElementById('menu').classList.toggle('hidden');
+        document.getElementById('lang-toggle').onclick = (e) => {
+            e.target.innerText = e.target.innerText === 'EN' ? 'HI' : 'EN';
+        };
+        setTimeout(() => { document.getElementById('counter').innerText = '100'; }, 1000);
+    </script>
 </body>
 </html>
