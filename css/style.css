@@ -1478,6 +1478,185 @@ body {
   box-shadow: var(--shadow);
 }
 
+/* ============================================
+   Comments / Replies Proper Box Styling
+   ============================================ */
+.replies-section {
+  background: var(--bg-alt);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.replies-list {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.replies-list::-webkit-scrollbar {
+  width: 4px;
+}
+.replies-list::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.04);
+  border-radius: 2px;
+}
+.replies-list::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 2px;
+}
+
+.reply-item {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem !important;
+  margin-bottom: 0.6rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border-left: 3px solid var(--primary);
+  transition: 0.2s;
+}
+
+.reply-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.comment-thread {
+  position: relative;
+}
+
+.comment-thread > .reply-item {
+  border-left-color: var(--primary);
+}
+
+.reply-form {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 0.8rem;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.06);
+  margin-top: 0.8rem;
+}
+
+.reply-form input,
+.reply-form .predefined-reply-name,
+.reply-form .predefined-reply-text {
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  padding: 0.5rem 0.8rem !important;
+  font-size: 0.85rem !important;
+  font-family: inherit !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  transition: border-color 0.2s;
+}
+
+.reply-form input:focus,
+.reply-form .predefined-reply-name:focus,
+.reply-form .predefined-reply-text:focus {
+  border-color: var(--primary) !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26,35,126,0.08);
+}
+
+.reply-form button[data-action="submit-reply"],
+.reply-form button[data-action="user-submit-reply"] {
+  padding: 0.5rem 1rem !important;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.reply-form button[data-action="submit-reply"]:hover,
+.reply-form button[data-action="user-submit-reply"]:hover {
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.nested-reply-btn {
+  padding: 0.2rem 0.6rem !important;
+  border: none !important;
+  background: rgba(26,35,126,0.08) !important;
+  color: var(--primary) !important;
+  border-radius: 12px !important;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.nested-reply-btn:hover {
+  background: rgba(26,35,126,0.15) !important;
+}
+
+.nested-reply-form {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin: 0.4rem 0 0.4rem 8px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.nested-reply-form input {
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 6px !important;
+  padding: 0.35rem 0.6rem !important;
+  font-size: 0.8rem !important;
+  font-family: inherit !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+.nested-reply-form input:focus {
+  border-color: var(--primary) !important;
+  outline: none;
+}
+
+/* Mobile responsive comment boxes */
+@media (max-width: 768px) {
+  .replies-section {
+    padding: 0.8rem;
+  }
+  .reply-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .reply-form input,
+  .reply-form .predefined-reply-name,
+  .reply-form .predefined-reply-text {
+    width: 100% !important;
+    flex: none !important;
+    min-width: unset !important;
+    box-sizing: border-box;
+  }
+  .reply-form button {
+    width: 100%;
+  }
+  .nested-reply-form {
+    margin-left: 0 !important;
+  }
+  .nested-reply-form input {
+    width: 100% !important;
+    flex: none !important;
+  }
+  .comment-thread {
+    margin-left: 0 !important;
+  }
+  .comment-thread[style*="margin-left"] {
+    margin-left: 8px !important;
+  }
+}
+
 
 
 

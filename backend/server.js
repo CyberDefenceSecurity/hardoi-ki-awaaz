@@ -146,6 +146,69 @@ function saveUserIssues(issues) {
 let userIssues = loadUserIssues();
 
 // ============================================
+// PREDEFINED ISSUES SUPPORT TRACKING
+// File-based persistent storage
+// ============================================
+
+const PREDEFINED_SUPPORT_FILE = path.join(__dirname, 'predefined-support-data.json');
+
+function loadPredefinedSupport() {
+  try {
+    if (fs.existsSync(PREDEFINED_SUPPORT_FILE)) {
+      const raw = fs.readFileSync(PREDEFINED_SUPPORT_FILE, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('⚠️ Could not load predefined support file:', err.message);
+  }
+  return {};
+}
+
+function savePredefinedSupport(data) {
+  try {
+    fs.writeFileSync(PREDEFINED_SUPPORT_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('⚠️ Could not save predefined support file:', err.message);
+  }
+}
+
+let predefinedSupport = loadPredefinedSupport();
+
+// GET /api/issues/predefined-support — Get support counts for all predefined issues
+app.get('/api/issues/predefined-support', (req, res) => {
+  res.json({ success: true, support: predefinedSupport });
+});
+
+// POST /api/issues/predefined-support/:id — Support a predefined issue
+app.post('/api/issues/predefined-support/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { supporterId } = req.body;
+    
+    if (!predefinedSupport[id]) {
+      predefinedSupport[id] = { count: 0, supporterIds: [] };
+    }
+    
+    // Check if already supported by this user
+    if (supporterId && predefinedSupport[id].supporterIds.includes(supporterId)) {
+      return res.json({ success: true, count: predefinedSupport[id].count, alreadySupported: true });
+    }
+    
+    predefinedSupport[id].count += 1;
+    if (supporterId) {
+      predefinedSupport[id].supporterIds.push(supporterId);
+    }
+    savePredefinedSupport(predefinedSupport);
+    
+    console.log(`❤️ Predefined issue supported: ${id} — total: ${predefinedSupport[id].count}`);
+    res.json({ success: true, count: predefinedSupport[id].count });
+  } catch (err) {
+    console.error('❌ Error supporting predefined issue:', err.message);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// ============================================
 // USER ISSUES API
 // ============================================
 

@@ -2,9 +2,10 @@
    Hardoi ki Awaaz - Main JavaScript
    ============================================ */
 
-// === CACHE BUSTER: Clear old caches on version change ===
+// === CACHE BUSTER: Force fresh content on every page load ===
 (function() {
-  const APP_VERSION = '1.0.1'; // Increment this to force cache clear on all browsers
+  // Bump version to force cache clear for existing users
+  const APP_VERSION = '2.0.0';
   const storedVersion = localStorage.getItem('hka_app_version');
   
   if (storedVersion !== APP_VERSION) {
@@ -34,13 +35,22 @@
       }
     }
     
-    // Force reload from server once (clear browser cache via no-cache)
-    // Only do this if coming from an older version, not on every refresh
     if (storedVersion !== null && storedVersion !== APP_VERSION) {
       console.log('🔄 App version changed: ' + storedVersion + ' → ' + APP_VERSION + '. Reloading fresh content.');
+      // Force reload from server to get fresh content
+      window.location.reload(true);
     }
     
     localStorage.setItem('hka_app_version', APP_VERSION);
+  }
+  
+  // Add current timestamp to service worker URL to force re-registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      registrations.forEach(function(reg) {
+        reg.update();
+      });
+    });
   }
 })();
 

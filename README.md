@@ -16,15 +16,19 @@ A citizen-powered platform for Hardoi, Uttar Pradesh — report issues, generate
 
 ## 📋 Features
 
-- **📰 News** — Auto-updating news feed with Gemini AI-generated content
-- **📜 Manifesto** — Dynamic demands with progress tracking
-- **✊ Protests** — Upcoming and past protest schedules with RSVP
-- **🔍 Issues** — City problem reporting with support/upvote system
+- **📰 News** — Auto-updating news feed with Gemini AI-generated content and Unsplash images
+- **📜 Manifesto** — Dynamic demands with progress tracking, auto-updated from news
+- **✊ Protests** — Upcoming and past protest schedules with RSVP system
+- **🔍 Issues** — City problem reporting with global support/upvote system (server-persisted counts)
+- **💬 Comments** — Threaded comments with nested replies on all issues
 - **🪪 ID Card Generator** — Generate official Hardoi ki Awaaz ID cards with photo upload
-- **📸 Photo Upload** — Upload issue photos with descriptions
+- **📸 Photo Upload** — Upload issue photos with descriptions and content moderation
+- **🗺️ Map Picker** — OpenStreetMap-based location picker for issue submission
 - **🌙 Dark Mode** — Dark/light theme toggle with persistence
-- **🌐 Bilingual** — Hindi/English language support
-- **📱 PWA** — Progressive Web App with offline service worker
+- **🌐 Bilingual** — Hindi/English language support with full translation system
+- **📱 PWA** — Progressive Web App with service worker for offline support
+- **🔒 Security** — Helmet, rate limiting, and content moderation APIs
+- **🧹 Auto Cache Clear** — Every refresh fetches fresh content; old caches auto-cleared
 
 ---
 
@@ -42,30 +46,33 @@ hardoi-ki-awaaz/
 ├── id-card.html            # ID Card Generator
 ├── bulletin/               # Bulletin board pages
 ├── js/                     # JavaScript files
-│   ├── main.js             # Core site functionality
+│   ├── main.js             # Core site functionality + cache buster
 │   ├── news.js             # News system (fetches from backend API)
-│   ├── translations.js     # i18n translations
+│   ├── translations.js     # i18n translations (Hindi/English)
 │   ├── counter.js          # Animated counters
 │   ├── analytics.js        # Page visit tracking
-│   ├── storage.js          # localStorage utilities
-│   ├── id-generator.js     # ID card generation
-│   ├── photo-uploader.js   # Photo upload system
+│   ├── storage.js          # localStorage utilities for issues, ID cards, supports
+│   ├── id-generator.js     # ID card generation with html2canvas
+│   ├── photo-uploader.js   # Photo upload system with content moderation
 │   ├── photo-finder.js     # Photo gallery
-│   └── google-cse.js       # Google Custom Search
+│   ├── google-cse.js       # Google Custom Search
+│   └── hardoi-villages.js  # Hardoi village/area data
 ├── css/                    # Stylesheets
-│   ├── style.css           # Main styles
+│   ├── style.css           # Main styles + comment boxes
 │   ├── responsive.css      # Responsive design
-│   ├── animations.css      # Animations
-│   └── id-card.css         # ID card styles
+│   ├── animations.css      # Scroll reveal and animations
+│   └── id-card.css         # ID card specific styles
 ├── assets/                 # Images, icons, SVGs
 ├── backend/                # Node.js backend
-│   ├── server.js           # Express server
+│   ├── server.js           # Express server (news, issues, protests, manifesto APIs)
 │   ├── generate-news.js    # Gemini AI content generator
 │   ├── package.json        # Backend dependencies
 │   └── .gitignore          # Backend gitignore
-├── service-worker.js       # PWA service worker
+├── service-worker.js       # PWA service worker (network-first for HTML)
 ├── manifest.json           # PWA manifest
 ├── render.yaml             # Render deployment config
+├── robots.txt              # SEO robots
+├── sitemap.xml             # SEO sitemap
 └── README.md               # This file
 ```
 
@@ -99,7 +106,7 @@ hardoi-ki-awaaz/
    - **Value:** Your Gemini API key
 5. **Create Web Service**
 
-> ⚠️ **Important:** After deployment, update the backend URL in all frontend JS files (`js/news.js`, `manifesto.html`, `protest-schedule.html`, `issues.html`) to point to your live backend URL (e.g., `https://your-backend.onrender.com`).
+> ⚠️ **Important:** After deployment, update the backend URL in all frontend JS files (`js/news.js`, `issues.html`, `manifesto.html`, `protest-schedule.html`, `js/photo-uploader.js`) to point to your live backend URL (e.g., `https://your-backend.onrender.com`).
 
 ---
 
@@ -116,6 +123,12 @@ GEMINI_API_KEY_2=your_backup_key_here
 
 # Optional: Google Custom Search API Key (for image search)
 GOOGLE_API_KEY=your_google_api_key_here
+
+# Optional: Unsplash Access Key (for high-quality news images)
+UNSPLASH_ACCESS_KEY=your_unsplash_key_here
+
+# Optional: Override CORS origin for production
+CORS_ORIGIN=https://your-frontend.com
 ```
 
 ---
@@ -128,10 +141,9 @@ cd backend
 npm install
 
 # 2. Create .env file and add your Gemini API key
-# Copy backend/.env.example to backend/.env
 cp backend/.env.example backend/.env
 # OR create a new file:
-# nano backend/.env  (then paste: GEMINI_API_KEY=your_key_here)
+# nano backend/.env  (then add: GEMINI_API_KEY=your_key_here)
 
 # 3. Start backend server
 cd backend
@@ -143,6 +155,26 @@ node server.js
 
 ---
 
+## 📡 API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/news` | GET | Fetch latest news (Gemini-generated) |
+| `/api/issues` | GET | Fetch predefined city issues |
+| `/api/protests` | GET | Fetch protest data (upcoming + past) |
+| `/api/manifesto` | GET | Fetch manifesto demands |
+| `/api/refresh` | GET | Force-refresh all content from Gemini |
+| `/api/status` | GET | Server health and cache status |
+| `/api/issues/user` | GET/POST | List/submit user-reported issues |
+| `/api/issues/user/:id/support` | POST | Support a user-reported issue |
+| `/api/issues/user/:id/reply` | POST | Reply to a user issue (supports nested) |
+| `/api/issues/user/:id` | DELETE | Delete a user issue (owner only) |
+| `/api/issues/predefined-support` | GET | Get all predefined issue support counts |
+| `/api/issues/predefined-support/:id` | POST | Support a predefined issue (persistent) |
+| `/api/moderate` | POST | Content moderation via Gemini |
+
+---
+
 ## 🤖 Tech Stack
 
 | Technology | Purpose |
@@ -151,8 +183,12 @@ node server.js
 | **Vanilla JavaScript** | Client-side logic (no frameworks) |
 | **Node.js / Express** | Backend API server |
 | **Gemini AI** | AI-generated news, issues, protests, manifesto content |
+| **Unsplash API** | Real images for news articles |
+| **OpenStreetMap / Leaflet** | Location picker map |
+| **html2canvas** | ID card image generation |
 | **Render** | Hosting (Static Site + Web Service) |
 | **PWA** | Service worker for offline support |
+| **Helmet + Rate Limit** | Backend security |
 
 ---
 

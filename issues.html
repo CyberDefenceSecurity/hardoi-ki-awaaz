@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Issues & Problems | हरदोई की आवाज़ — शहर की समस्याएं</title>
   <meta name="description" content="Hardoi शहर की समस्याएं देखें और support करें। सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा — अपनी समस्या फोटो के साथ दर्ज करें।">
   <meta name="keywords" content="Hardoi issues, हरदोई की समस्याएं, civic problems Uttar Pradesh, सड़क, पानी, बिजली, स्वास्थ्य, शिक्षा, India civic issues, Lucknow, Kanpur, Shahjahanpur, Sitapur, Unnao, नागरिक समस्याएं, उत्तर प्रदेश">
@@ -49,9 +52,9 @@
   <meta name="twitter:title" content="Issues | हरदोई की आवाज़ — शहर की समस्याएं">
   <meta name="twitter:description" content="Hardoi शहर की समस्याएं देखें और support करें।">
   <meta name="twitter:image" content="/assets/images/hero-bg.svg">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/style.css?v=2.0.0">
+  <link rel="stylesheet" href="css/responsive.css?v=2.0.0">
+  <link rel="stylesheet" href="css/animations.css?v=2.0.0">
   <!-- Leaflet CSS for Map Location Picker -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
@@ -152,14 +155,14 @@
   <a href="https://wa.me/916393416787" target="_blank" class="whatsapp-float">📱</a>
   <button class="theme-toggle">🌙</button>
 
-  <script src="js/translations.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/hardoi-villages.js"></script>
+  <script src="js/translations.js?v=2.0.0"></script>
+  <script src="js/storage.js?v=2.0.0"></script>
+  <script src="js/hardoi-villages.js?v=2.0.0"></script>
   <!-- Leaflet JS for Map Location Picker -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/photo-uploader.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/analytics.js"></script>
+  <script src="js/photo-uploader.js?v=2.0.0"></script>
+  <script src="js/main.js?v=2.0.0"></script>
+  <script src="js/analytics.js?v=2.0.0"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -354,7 +357,9 @@
       });
     });
 
-    // Support handler for predefined issues
+    // Support handler for predefined issues — uses server API for global count
+    var predefinedSupportEndpoint = 'https://hardoi-ki-awaaz-backend.onrender.com/api/issues/predefined-support';
+    
     function handleSupportPredefined(btn, issueId) {
       if (issueStorage.isIssueSupported(issueId)) {
         if (typeof showToast === 'function') {
@@ -362,22 +367,49 @@
         }
         return;
       }
-      // Get the initial server-side count from the button text
-      let initialCount = 0;
+      // Get or create supporter ID
+      var supporterId = localStorage.getItem('hka_supporter_id');
+      if (!supporterId) {
+        supporterId = 'SUP-' + Date.now() + '-' + Math.random().toString(36).substr(2, 8);
+        localStorage.setItem('hka_supporter_id', supporterId);
+      }
+      
+      // Read current count from button
+      var initialCount = 0;
       if (btn) {
-        const match = btn.textContent.match(/\((\d+)\)/);
+        var match = btn.textContent.match(/\((\d+)\)/);
         if (match) initialCount = parseInt(match[1]) || 0;
       }
+      
+      // Mark locally FIRST for instant feedback
       issueStorage.supportIssue(issueId);
-      const localCount = issueStorage.getSupportCount(issueId);
-      const totalCount = initialCount + localCount;
+      var localCount = issueStorage.getSupportCount(issueId);
+      var displayCount = initialCount + localCount;
+      
+      // Optimistically update button
       if (btn) {
         btn.classList.add('supported');
         btn.style.background = '#4caf50';
         btn.style.borderColor = '#4caf50';
         btn.style.color = '#fff';
-        btn.innerHTML = '✅ Supported (' + totalCount + ')';
+        btn.innerHTML = '✅ Supported (' + displayCount + ')';
       }
+      
+      // Send support to server in background
+      fetch(predefinedSupportEndpoint + '/' + issueId, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ supporterId: supporterId })
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        if (data.count && data.count > 0 && btn) {
+          // Update with server count
+          var totalFromServer = data.count;
+          btn.innerHTML = '✅ Supported (' + totalFromServer + ')';
+        }
+      }).catch(function(err) {
+        console.warn('Predefined support API error (local only):', err.message);
+      });
+      
       // Show thank you modal safely
       if (typeof showThankYouStandard === 'function') {
         showThankYouStandard();
@@ -466,24 +498,44 @@
       return div.innerHTML;
     }
     
-    // Restore support button states after dynamic rendering
+    // Restore support button states after dynamic rendering — now fetches server counts
     function restorePredefinedSupportStates() {
-      const supportedIds = issueStorage.getSupportedList();
-      if (!supportedIds.length) return;
-      supportedIds.forEach(function(id) {
-        var btns = document.querySelectorAll('.issue-card .support-btn[data-issue-id="' + id + '"]');
-        btns.forEach(function(btn) {
-          btn.classList.add('supported');
-          btn.style.background = '#4caf50';
-          btn.style.borderColor = '#4caf50';
-          btn.style.color = '#fff';
-          var match = btn.textContent.match(/\((\d+)\)/);
-          var initialCount = 0;
-          if (match) initialCount = parseInt(match[1]) || 0;
-          var localCount = issueStorage.getSupportCount(id);
-          btn.innerHTML = '✅ Supported (' + (initialCount + localCount) + ')';
+      // First fetch server-side support counts
+      fetch(predefinedSupportEndpoint, { cache: 'no-cache' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var serverCounts = data.support || {};
+          var supportedIds = issueStorage.getSupportedList();
+          supportedIds.forEach(function(id) {
+            var btns = document.querySelectorAll('.issue-card .support-btn[data-issue-id="' + id + '"]');
+            btns.forEach(function(btn) {
+              btn.classList.add('supported');
+              btn.style.background = '#4caf50';
+              btn.style.borderColor = '#4caf50';
+              btn.style.color = '#fff';
+              // Use server count if available, otherwise local
+              var serverCount = serverCounts[id] ? serverCounts[id].count : 0;
+              var localCount = issueStorage.getSupportCount(id);
+              var total = Math.max(serverCount, localCount);
+              btn.innerHTML = '✅ Supported (' + total + ')';
+            });
+          });
+        })
+        .catch(function() {
+          // Fallback: just use local counts
+          var supportedIds = issueStorage.getSupportedList();
+          supportedIds.forEach(function(id) {
+            var btns = document.querySelectorAll('.issue-card .support-btn[data-issue-id="' + id + '"]');
+            btns.forEach(function(btn) {
+              btn.classList.add('supported');
+              btn.style.background = '#4caf50';
+              btn.style.borderColor = '#4caf50';
+              btn.style.color = '#fff';
+              var localCount = issueStorage.getSupportCount(id);
+              btn.innerHTML = '✅ Supported (' + localCount + ')';
+            });
+          });
         });
-      });
     }
   </script>
 </body>

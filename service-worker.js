@@ -3,7 +3,7 @@
    PWA: caches core files for offline access
    ============================================ */
 
-const CACHE_NAME = 'hka-cache-v4';
+const CACHE_NAME = 'hka-cache-v5';
 
 // Core files to cache immediately on install
 const PRECACHE_URLS = [
@@ -59,35 +59,69 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch — serve from cache first, fallback to network
+// Fetch — Network-first for HTML, cache-first for static assets
+// This ensures fresh content on every page refresh
 self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+  
   // Skip API calls — always fetch fresh from network
-  if (event.request.url.includes('/api/')) {
+  if (url.includes('/api/')) {
     return;
   }
 
+  // For HTML pages — always fetch from network first (cache-fallback)
+  if (event.request.mode === 'navigate' || url.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Cache a copy for offline use
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          // Offline: serve cached version
+          return caches.match(event.request).then(function(cached) {
+            if (cached) return cached;
+            // For navigation, fallback to index.html
+            if (event.request.mode === 'navigate') {
+              return caches.match('/index.html');
+            }
+            return new Response('Offline', { status: 503 });
+          });
+        })
+    );
+    return;
+  }
+
+  // For static assets (CSS, JS, images) — cache-first for speed
   event.respondWith(
     caches.match(event.request)
       .then((cachedResponse) => {
         if (cachedResponse) {
+          // Return cached, but update cache in background
+          fetch(event.request).then((response) => {
+            if (response && response.status === 200) {
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            }
+          }).catch(() => {});
           return cachedResponse;
         }
         return fetch(event.request).then((response) => {
-          // Don't cache non-successful responses
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-          // Cache the fetched file for next time
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
           });
           return response;
         }).catch(() => {
-          // Offline fallback — return cached index.html for navigation
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
           return new Response('Offline', { status: 503 });
         });
       })
