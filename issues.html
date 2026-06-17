@@ -276,10 +276,10 @@
               <!-- Replies Section for predefined issues -->
               <div class="replies-section" id="predefined-replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
                 <div class="replies-list" id="predefined-replies-list-${issue.id}"></div>
-                <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;">
-                  <input type="text" class="predefined-reply-name" placeholder="${typeof Translations !== 'undefined' ? Translations.t('comments.nameplaceholder') : 'आपका नाम'}" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                  <input type="text" class="predefined-reply-text" placeholder="${typeof Translations !== 'undefined' ? Translations.t('issues.reply.placeholder') : 'इस समस्या पर अपनी टिप्पणी लिखें...'}" style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                  <button data-issue-id="${issue.id}" data-action="submit-reply" style="padding:0.4rem 0.8rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;">${typeof Translations !== 'undefined' ? Translations.t('btn.send') : '➡️ भेजें'}</button>
+                <div class="reply-form" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.8rem;align-items:stretch;">
+                  <input type="text" class="predefined-reply-name" placeholder="${typeof Translations !== 'undefined' ? Translations.t('comments.nameplaceholder') : 'आपका नाम'}" style="flex:0 0 90px;min-width:70px;padding:0.5rem 0.7rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.85rem;font-family:inherit;box-sizing:border-box;">
+                  <input type="text" class="predefined-reply-text" placeholder="${typeof Translations !== 'undefined' ? Translations.t('issues.reply.placeholder') : 'इस समस्या पर अपनी टिप्पणी लिखें...'}" style="flex:1 1 120px;min-width:100px;padding:0.5rem 0.7rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.85rem;font-family:inherit;box-sizing:border-box;">
+                  <button data-issue-id="${issue.id}" data-action="submit-reply" style="padding:0.5rem 1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.8rem;font-family:inherit;white-space:nowrap;flex:0 0 auto;">${typeof Translations !== 'undefined' ? Translations.t('btn.send') : '➡️ भेजें'}</button>
                 </div>
               </div>
             </div>

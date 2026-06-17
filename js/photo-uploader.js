@@ -107,14 +107,14 @@ class PhotoUploader {
             <input type="text" id="issue-reporter-name" placeholder="${T('upload.name.placeholder')}" class="form-input" data-lang="upload.name.placeholder">
             <select id="issue-upload-category" class="form-select">
               <option value="" data-lang="upload.category.placeholder">समस्या का प्रकार चुनें</option>
-              <option value="roads">🛤️ ${T('cat.roads')}</option>
-              <option value="water">💧 ${T('cat.water')}</option>
-              <option value="electricity">⚡ ${T('cat.electricity')}</option>
-              <option value="health">🏥 ${T('cat.health')}</option>
-              <option value="education">📚 ${T('cat.education')}</option>
-              <option value="safety">🛡️ ${T('cat.safety')}</option>
-              <option value="garbage">🗑️ ${T('cat.garbage')}</option>
-              <option value="other">📝 ${T('cat.other')}</option>
+              <option value="roads" data-lang="cat.roads">🛤️ ${T('cat.roads')}</option>
+              <option value="water" data-lang="cat.water">💧 ${T('cat.water')}</option>
+              <option value="electricity" data-lang="cat.electricity">⚡ ${T('cat.electricity')}</option>
+              <option value="health" data-lang="cat.health">🏥 ${T('cat.health')}</option>
+              <option value="education" data-lang="cat.education">📚 ${T('cat.education')}</option>
+              <option value="safety" data-lang="cat.safety">🛡️ ${T('cat.safety')}</option>
+              <option value="garbage" data-lang="cat.garbage">🗑️ ${T('cat.garbage')}</option>
+              <option value="other" data-lang="cat.other">📝 ${T('cat.other')}</option>
             </select>
             <textarea id="issue-upload-message" placeholder="${T('upload.message.placeholder')}" rows="3" class="form-textarea" data-lang="upload.message.placeholder"></textarea>
             <select id="issue-upload-location" class="form-select">
