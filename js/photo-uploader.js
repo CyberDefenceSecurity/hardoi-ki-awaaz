@@ -523,7 +523,7 @@ class PhotoUploader {
     container.innerHTML = issues.map(issue => {
       const isSupported = supportedInStorage.includes(issue.id);
       const photoHTML = issue.photos && issue.photos.length > 0
-        ? `<div class="issue-photos" style="cursor:pointer;" onclick="expandIssuePhoto(this)"><img src="${issue.photos[0]}" alt="Issue Photo" loading="lazy" style="max-height:250px;width:100%;object-fit:cover;border-radius:12px;">${issue.photos.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:12px;font-size:0.75rem;">+${issue.photos.length - 1}</span>` : ''}</div>`
+        ? `<div class="issue-photos" style="cursor:pointer;" onclick="expandIssuePhoto(this)"><img src="${issue.photos[0]}" alt="Issue Photo" loading="lazy" style="max-height:300px;width:100%;object-fit:contain;border-radius:12px;background:var(--bg-alt);">${issue.photos.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:12px;font-size:0.75rem;">+${issue.photos.length - 1}</span>` : ''}</div>`
         : '';
       const status = issue.status || 'active';
       const replies = issue.replies || [];
@@ -926,12 +926,9 @@ window.openMapPicker = function() {
   const defaultLat = 27.3939;
   const defaultLng = 80.1323;
 
-  // Check Leaflet availability
-  if (typeof L === 'undefined') {
-    showToast(__T('map.notfound'), 'error');
-    return;
-  }
-
+  // ====== FIX: Create modal FIRST, before checking Leaflet ======
+  // This ensures the modal always opens even if Leaflet is slow to load
+  
   // Create modal
   const modal = document.createElement('div');
   modal.id = 'map-picker-modal';
@@ -962,9 +959,9 @@ window.openMapPicker = function() {
   document.body.appendChild(modal);
   
   // Animate in
-  setTimeout(() => {
+  setTimeout(function() {
     modal.style.opacity = '1';
-    const container = modal.querySelector('.map-picker-container');
+    var container = modal.querySelector('.map-picker-container');
     if (container) container.style.transform = 'scale(1)';
   }, 50);
 
@@ -977,29 +974,45 @@ window.openMapPicker = function() {
     map: null
   };
 
-  // Close button click
-  document.getElementById('map-close-btn').addEventListener('click', closeMapPicker);
-  // Locate button click
-  document.getElementById('map-picker-locate-btn').addEventListener('click', locateOnMap);
-  // Confirm button click
-  document.getElementById('map-picker-confirm-btn').addEventListener('click', confirmMapLocation);
+  // ====== FIX: Use safe DOM queries with null checks ======
+  var closeBtn = document.getElementById('map-close-btn');
+  var locateBtn = document.getElementById('map-picker-locate-btn');
+  var confirmBtn = document.getElementById('map-picker-confirm-btn');
+  var infoEl = document.getElementById('map-picker-info');
+  
+  if (closeBtn) closeBtn.addEventListener('click', closeMapPicker);
+  if (locateBtn) locateBtn.addEventListener('click', locateOnMap);
+  if (confirmBtn) confirmBtn.addEventListener('click', confirmMapLocation);
 
   // Initialize Leaflet map after a short delay to ensure container is rendered
-  setTimeout(() => {
-    const mapEl = document.getElementById('map-picker-map');
-    if (!mapEl || typeof L === 'undefined') {
-      document.getElementById('map-picker-info').textContent = __T('map.notfound');
+  setTimeout(function() {
+    if (typeof L === 'undefined') {
+      // ====== FIX: Show error in modal instead of blocking ======
+      if (infoEl) infoEl.textContent = '⚠️ ' + __T('map.notfound');
+      // Try again after a longer delay (CDN might still be loading)
+      setTimeout(function() {
+        if (typeof L !== 'undefined' && document.getElementById('map-picker-map')) {
+          initPickerMap();
+        }
+      }, 3000);
       return;
     }
-
-    // Make sure container is visible and has dimensions
-    const mapContainer = mapEl;
-    mapContainer.style.height = '400px';
-    mapContainer.style.width = '100%';
-    mapContainer.style.minHeight = '300px';
-
+    initPickerMap();
+  }, 500); // Longer wait for container + CDN
+  
+  var initPickerMap = function() {
+    var mapEl = document.getElementById('map-picker-map');
+    if (!mapEl || typeof L === 'undefined') {
+      if (infoEl) infoEl.textContent = '⚠️ ' + __T('map.notfound');
+      return;
+    }
+    
     try {
-      const map = L.map(mapContainer, {
+      mapEl.style.height = '400px';
+      mapEl.style.width = '100%';
+      mapEl.style.minHeight = '300px';
+      
+      var map = L.map(mapEl, {
         center: [defaultLat, defaultLng],
         zoom: 13,
         zoomControl: true,
@@ -1007,44 +1020,32 @@ window.openMapPicker = function() {
       });
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; OpenStreetMap',
         maxZoom: 19
       }).addTo(map);
 
-      // Store map reference
-      window._mapPickerState.map = map;
+      if (window._mapPickerState) window._mapPickerState.map = map;
 
-      // Add click handler to place marker — use both click and dblclick for reliability
       map.on('click', function(e) {
         try {
-          const latlng = e.latlng;
-          if (latlng && typeof latlng.lat === 'number' && typeof latlng.lng === 'number') {
-            window.placeMapMarker(latlng.lat, latlng.lng);
+          if (e.latlng && typeof e.latlng.lat === 'number') {
+            window.placeMapMarker(e.latlng.lat, e.latlng.lng);
           }
         } catch(err) {
-          console.error('Map click handler error:', err);
+          console.error('Map click error:', err);
         }
       });
 
-      // Force map to invalidate size after animation completes
-      var invalidateTimer = setInterval(function() {
-        try {
-          map.invalidateSize();
-          // Stop after a few tries or when scale animation is done
-          clearInterval(invalidateTimer);
-        } catch(e) { /* ignore */ }
-      }, 100);
+      // Invalidate size after animation
+      setTimeout(function() { try { map.invalidateSize(); } catch(e) {} }, 200);
+      setTimeout(function() { try { map.invalidateSize(); } catch(e) {} }, 800);
       
-      // Also invalidate after known delay
-      setTimeout(function() {
-        try { map.invalidateSize(); } catch(e) {}
-      }, 500);
-
+      if (infoEl) infoEl.textContent = '🖱️ ' + __T('map.click');
     } catch(err) {
-      console.error('Map initialization error:', err);
-      document.getElementById('map-picker-info').textContent = __T('map.notfound');
+      console.error('Map init error:', err);
+      if (infoEl) infoEl.textContent = '⚠️ ' + __T('map.notfound');
     }
-  }, 300); // Wait longer for container to be fully rendered
+  }
 };
 
 // Place/set marker on the map and reverse geocode

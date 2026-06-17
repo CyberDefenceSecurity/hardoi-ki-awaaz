@@ -1151,7 +1151,7 @@ body {
 
 .photo-preview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 0.8rem;
   margin-bottom: 1rem;
 }
@@ -1159,11 +1159,19 @@ body {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  aspect-ratio: 1;
+  min-height: 120px;
+  max-height: 160px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: var(--bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .photo-preview-item img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .remove-photo {
   position: absolute;
@@ -1219,10 +1227,20 @@ body {
   max-height: 250px;
   overflow: hidden;
 }
+.user-issue-card .issue-photos {
+  width: 100%;
+  max-height: 300px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-alt);
+}
 .user-issue-card .issue-photos img {
   width: 100%;
-  height: 250px;
-  object-fit: cover;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
 }
 .user-issue-content { padding: 1.2rem; }
 .issue-category-badge {
