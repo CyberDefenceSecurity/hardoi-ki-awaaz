@@ -89,13 +89,13 @@
   <main style="padding-top:80px;">
     <!-- Hero -->
     <section style="background:linear-gradient(135deg,var(--primary-dark),var(--primary),#283593);padding:3rem 2rem;text-align:center;color:#fff;">
-      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;">📞 संपर्क करें</h1>
-      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-top:0.5rem;">अपनी समस्या भेजें | सवाल पूछें | जुड़ें</p>
+      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;" data-lang="contact.title">📞 संपर्क करें</h1>
+      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-top:0.5rem;" data-lang="contact.subtitle">अपनी समस्या भेजें | सवाल पूछें | जुड़ें</p>
     </section>
 
     <!-- Direct Contact Cards -->
     <section style="padding:2rem 1.5rem;max-width:1100px;margin:0 auto;">
-      <div class="section-header reveal"><h2>📱 सीधे संपर्क करें</h2><div class="underline"></div></div>
+      <div class="section-header reveal"><h2 data-lang="contact.direct">📱 सीधे संपर्क करें</h2><div class="underline"></div></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1.5rem;">
         <a href="https://wa.me/916393416787" target="_blank" class="reveal delay-1" style="display:flex;align-items:center;gap:1rem;padding:1.2rem;background:var(--bg);border-radius:var(--radius);box-shadow:var(--shadow);text-decoration:none;color:var(--text);transition:0.3s;border-left:4px solid #25d366;">
           <span style="font-size:2.5rem;">📱</span>
@@ -126,36 +126,36 @@
 
     <!-- Contact Form -->
     <section style="padding:2rem 1.5rem;max-width:700px;margin:0 auto;">
-      <div class="section-header reveal"><h2>📝 संदेश भेजें</h2><div class="underline"></div></div>
+      <div class="section-header reveal"><h2 data-lang="contact.form.title">📝 संदेश भेजें</h2><div class="underline"></div></div>
       <form id="contact-form" class="reveal delay-1" style="background:var(--bg);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);margin-top:1.5rem;">
         <div style="display:flex;flex-direction:column;gap:0.8rem;">
-          <input type="text" placeholder="आपका नाम *" required style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;">
-          <input type="tel" placeholder="मोबाइल नंबर *" required pattern="[0-9]{10}" style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;">
-          <input type="text" placeholder="इलाका / Area" style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;">
+          <input type="text" placeholder="आपका नाम *" required style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;" data-lang="contact.form.name">
+          <input type="tel" placeholder="मोबाइल नंबर *" required pattern="[0-9]{10}" style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;" data-lang="contact.form.mobile">
+          <input type="text" placeholder="इलाका / Area" style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;" data-lang="contact.form.area">
           <select style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;">
-            <option value="">समस्या का प्रकार</option>
-            <option value="roads">🛤️ सड़क/रास्ते</option>
-            <option value="water">💧 पानी/नाली</option>
-            <option value="electricity">⚡ बिजली</option>
-            <option value="health">🏥 स्वास्थ्य</option>
-            <option value="education">📚 शिक्षा</option>
-            <option value="safety">🛡️ सुरक्षा</option>
-            <option value="other">📝 अन्य</option>
+            <option value="" data-lang="contact.form.category">समस्या का प्रकार</option>
+            <option value="roads" data-lang="cat.roads">🛤️ सड़क/रास्ते</option>
+            <option value="water" data-lang="cat.water">💧 पानी/नाली</option>
+            <option value="electricity" data-lang="cat.electricity">⚡ बिजली</option>
+            <option value="health" data-lang="cat.health">🏥 स्वास्थ्य</option>
+            <option value="education" data-lang="cat.education">📚 शिक्षा</option>
+            <option value="safety" data-lang="cat.safety">🛡️ सुरक्षा</option>
+            <option value="other" data-lang="cat.other">📝 अन्य</option>
           </select>
-          <textarea placeholder="अपनी समस्या विस्तार से बताएं..." rows="4" required style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;resize:vertical;min-height:100px;"></textarea>
-          <button type="submit" class="cta-btn primary" style="width:100%;font-size:1rem;padding:0.9rem;">📤 संदेश भेजें</button>
+          <textarea placeholder="अपनी समस्या विस्तार से बताएं..." rows="4" required style="padding:0.8rem 1rem;border:2px solid #e0e0e0;border-radius:var(--radius);font-size:0.95rem;font-family:inherit;background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;resize:vertical;min-height:100px;" data-lang="contact.form.message"></textarea>
+          <button type="submit" class="cta-btn primary" style="width:100%;font-size:1rem;padding:0.9rem;" data-lang="contact.form.submit">📤 संदेश भेजें</button>
         </div>
-        <p style="font-size:0.8rem;color:var(--text-light);text-align:center;margin-top:0.8rem;">दिए गए contacts पर भी अपनी problems share कर सकते हैं 📱</p>
+        <p style="font-size:0.8rem;color:var(--text-light);text-align:center;margin-top:0.8rem;" data-lang="contact.form.hint">दिए गए contacts पर भी अपनी problems share कर सकते हैं 📱</p>
       </form>
     </section>
 
     <!-- Map placeholder -->
     <section style="padding:2rem 1.5rem;max-width:1100px;margin:0 auto;">
-      <div class="section-header reveal"><h2>🗺️ Hardoi, Uttar Pradesh</h2><div class="underline"></div></div>
+      <div class="section-header reveal"><h2 data-lang="contact.map.title">🗺️ Hardoi, Uttar Pradesh</h2><div class="underline"></div></div>
       <div class="reveal delay-1" style="margin-top:1.5rem;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--bg-alt);height:300px;display:flex;align-items:center;justify-content:center;">
         <div style="text-align:center;">
           <span style="font-size:4rem;">🗺️</span>
-          <p style="margin-top:0.5rem;color:var(--text-light);">Hardoi City Map — 27.19°N, 80.13°E</p>
+          <p style="margin-top:0.5rem;color:var(--text-light);" data-lang="contact.map.desc">Hardoi City Map — 27.19°N, 80.13°E</p>
           <a href="https://maps.google.com/?q=Hardoi,Uttar+Pradesh" target="_blank" class="cta-btn" style="margin-top:0.5rem;font-size:0.85rem;">📍 Google Maps पर देखें</a>
         </div>
       </div>
@@ -194,7 +194,15 @@
       setTimeout(() => {
         btn.textContent = '✅ भेज दिया गया!';
         this.reset();
-        setTimeout(() => { btn.textContent = '📤 संदेश भेजें'; btn.disabled = false; }, 2000);
+        btn.disabled = false;
+        setTimeout(() => { 
+          if (typeof Translations !== 'undefined') {
+            btn.textContent = Translations.t('contact.form.submit');
+          } else {
+            btn.textContent = '📤 संदेश भेजें';
+          }
+          btn.disabled = false; 
+        }, 2000);
       }, 1500);
     });
   </script>

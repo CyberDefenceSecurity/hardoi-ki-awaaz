@@ -95,22 +95,22 @@
   <main style="padding-top:80px;">
     <!-- Hero -->
     <section style="background:linear-gradient(135deg,var(--primary-dark),var(--primary),#283593);padding:3rem 2rem;text-align:center;color:#fff;">
-      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;">🔍 शहर की समस्याएं</h1>
-      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-top:0.5rem;">अपनी समस्या फोटो के साथ भेजें | Support करें | बदलाव लाएं</p>
+      <h1 class="reveal" style="font-size:2.5rem;font-weight:800;" data-lang="issues.title">🔍 शहर की समस्याएं</h1>
+      <p class="reveal delay-1" style="color:rgba(255,255,255,0.8);margin-top:0.5rem;" data-lang="issues.subtitle">अपनी समस्या फोटो के साथ भेजें | Support करें | बदलाव लाएं</p>
     </section>
 
     <!-- Filters -->
     <section style="padding:1.5rem;max-width:1100px;margin:0 auto;">
       <div class="filter-bar reveal" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;">
-        <button class="filter-btn active" data-cat="all">🌐 सभी</button>
-        <button class="filter-btn" data-cat="roads">🛤️ सड़क</button>
-        <button class="filter-btn" data-cat="water">💧 पानी</button>
-        <button class="filter-btn" data-cat="electricity">⚡ बिजली</button>
-        <button class="filter-btn" data-cat="health">🏥 स्वास्थ्य</button>
-        <button class="filter-btn" data-cat="education">📚 शिक्षा</button>
-        <button class="filter-btn" data-cat="safety">🛡️ सुरक्षा</button>
-        <button class="filter-btn" data-cat="garbage">🗑️ कचरा</button>
-        <button class="filter-btn" data-cat="user">📸 User Issues</button>
+        <button class="filter-btn active" data-cat="all" data-lang="issues.filter.all">🌐 सभी</button>
+        <button class="filter-btn" data-cat="roads" data-lang="issues.filter.roads">🛤️ सड़क</button>
+        <button class="filter-btn" data-cat="water" data-lang="issues.filter.water">💧 पानी</button>
+        <button class="filter-btn" data-cat="electricity" data-lang="issues.filter.electricity">⚡ बिजली</button>
+        <button class="filter-btn" data-cat="health" data-lang="issues.filter.health">🏥 स्वास्थ्य</button>
+        <button class="filter-btn" data-cat="education" data-lang="issues.filter.education">📚 शिक्षा</button>
+        <button class="filter-btn" data-cat="safety" data-lang="issues.filter.safety">🛡️ सुरक्षा</button>
+        <button class="filter-btn" data-cat="garbage" data-lang="issues.filter.garbage">🗑️ कचरा</button>
+        <button class="filter-btn" data-cat="user" data-lang="issues.filter.user">📸 User Issues</button>
       </div>
     </section>
 
@@ -122,22 +122,22 @@
     <!-- Pre-defined Issues Grid -->
     <section style="padding:1rem 1.5rem 3rem;max-width:1100px;margin:0 auto;">
       <div class="section-header reveal">
-        <h2>📋 शहर की प्रमुख समस्याएं</h2>
+        <h2 data-lang="issues.section.prominent">📋 शहर की प्रमुख समस्याएं</h2>
         <div class="underline"></div>
       </div>
       <div style="margin-top:1.5rem;">
         <div class="news-loading" id="issues-loading">
           <div class="news-loading-spinner"></div>
-          <p>🔍 Issues load ho rahe hain...</p>
+          <p data-lang="issues.loading">🔍 Issues load ho rahe hain...</p>
         </div>
       </div>
       <div class="issues-grid" id="issues-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;margin-top:1.5rem;"></div>
 
       <!-- User-submitted issues will render here -->
       <div class="section-header reveal" style="margin-top:3rem;">
-        <h2>📸 जनता द्वारा भेजी गई समस्याएं</h2>
+        <h2 data-lang="issues.section.user">📸 जनता द्वारा भेजी गई समस्याएं</h2>
         <div class="underline"></div>
-        <p style="color:var(--text-light);margin-top:0.5rem;font-size:0.9rem;">फोटो और मैसेज के साथ दर्ज की गई समस्याएं</p>
+        <p style="color:var(--text-light);margin-top:0.5rem;font-size:0.9rem;" data-lang="issues.section.user.desc">फोटो और मैसेज के साथ दर्ज की गई समस्याएं</p>
       </div>
       <div id="user-issues-list" style="margin-top:1.5rem;"></div>
     </section>
@@ -248,15 +248,17 @@
           const icon = this.categoryIcons[cat] || '📋';
           const bg = this.categoryColors[cat] || 'linear-gradient(135deg,#37474f,#455a64)';
           const date = issue.date ? new Date(issue.date).toLocaleDateString('en-IN', { day:"numeric", month:"short", year:"numeric" }) : 'N/A';
-          const imgCss = issue.image_url
-            ? `${bg};background-image:url(${issue.image_url});background-size:cover;background-position:center;background-blend-mode:overlay;`
-            : `${bg};`;
+          // Generate Picsum fallback URL for issue images
+          var issueImgFallback = 'https://picsum.photos/seed/' + encodeURIComponent((issue.title || 'issue') + '-' + i) + '/800/600';
+          var imgCss = issue.image_url
+            ? bg + ';background-image:url(' + issue.image_url + ');background-size:cover;background-position:center;background-blend-mode:overlay;'
+            : bg + ';background-image:url(' + issueImgFallback + ');background-size:cover;background-position:center;background-blend-mode:overlay;';
 
           return `
           <div class="issue-card reveal delay-${(i % 6) + 1}" data-category="${cat}">
             <div class="issue-card-img" style="height:180px;background:${imgCss}display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
               ${!issue.image_url ? `<span style="font-size:4rem;">${icon}</span>` : ''}
-              <div class="issue-status-badge" style="position:absolute;top:10px;right:10px;background:var(--danger);color:#fff;padding:0.2rem 0.8rem;border-radius:20px;font-size:0.75rem;">⚠️ ${issue.status === 'resolved' ? 'Resolved' : 'Active'}</div>
+              <div class="issue-status-badge" style="position:absolute;top:10px;right:10px;background:var(--danger);color:#fff;padding:0.2rem 0.8rem;border-radius:20px;font-size:0.75rem;">${typeof Translations !== 'undefined' ? (issue.status === 'resolved' ? Translations.t('issues.status.resolved') : Translations.t('issues.status.active')) : (issue.status === 'resolved' ? '✅ Resolved' : '⚠️ Active')}</div>
             </div>
             <div style="padding:1.2rem;">
               <h3 style="font-size:1.1rem;margin-bottom:0.5rem;color:var(--text);">${issue.title}</h3>
@@ -267,17 +269,17 @@
               </div>
               ${issue.update ? `<p style="font-size:0.8rem;color:var(--secondary);margin-bottom:0.8rem;font-style:italic;">📢 ${issue.update}</p>` : ''}
               <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-                <button class="support-btn" onclick="handleSupport(this,'${issue.id}')" style="padding:0.4rem 1rem;border:2px solid var(--danger);background:transparent;color:var(--danger);border-radius:20px;cursor:pointer;font-size:0.85rem;transition:0.3s;font-family:inherit;">❤️ Support (${issue.supporters || 0})</button>
-                <button onclick="shareIssue('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">📤 Share</button>
-                <button onclick="togglePrefinedReplySection('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">💬 टिप्पणी करें</button>
+                <button class="support-btn" data-issue-id="${issue.id}" data-action="support" style="padding:0.4rem 1rem;border:2px solid var(--danger);background:transparent;color:var(--danger);border-radius:20px;cursor:pointer;font-size:0.85rem;transition:0.3s;font-family:inherit;">❤️ Support (${issue.supporters || 0})</button>
+                <button data-issue-id="${issue.id}" data-action="share" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">📤 Share</button>
+                <button data-issue-id="${issue.id}" data-action="reply-toggle" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.85rem;color:var(--text);font-family:inherit;">💬 टिप्पणी करें</button>
               </div>
               <!-- Replies Section for predefined issues -->
               <div class="replies-section" id="predefined-replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
                 <div class="replies-list" id="predefined-replies-list-${issue.id}"></div>
                 <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;">
-                  <input type="text" class="predefined-reply-name" placeholder="आपका नाम" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                  <input type="text" class="predefined-reply-text" placeholder="इस समस्या पर अपनी टिप्पणी लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-                  <button onclick="submitPredefinedReply('${issue.id}')" style="padding:0.4rem 0.8rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;">➡️ भेजें</button>
+                  <input type="text" class="predefined-reply-name" placeholder="${typeof Translations !== 'undefined' ? Translations.t('comments.nameplaceholder') : 'आपका नाम'}" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+                  <input type="text" class="predefined-reply-text" placeholder="${typeof Translations !== 'undefined' ? Translations.t('issues.reply.placeholder') : 'इस समस्या पर अपनी टिप्पणी लिखें...'}" style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+                  <button data-issue-id="${issue.id}" data-action="submit-reply" style="padding:0.4rem 0.8rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;">${typeof Translations !== 'undefined' ? Translations.t('btn.send') : '➡️ भेजें'}</button>
                 </div>
               </div>
             </div>
@@ -312,12 +314,51 @@
       });
     });
 
-    // Support handler
+    // ===== EVENT DELEGATION for predefined issues grid =====
+    // This replaces onclick handlers and fixes scope issues
     const issueStorage = new IssueStorage();
-    window.handleSupport = function(btn, issueId) {
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Event delegation on the issues grid
+      const grid = document.getElementById('issues-grid');
+      if (grid) {
+        grid.addEventListener('click', function(e) {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const issueId = btn.getAttribute('data-issue-id');
+          const action = btn.getAttribute('data-action');
+          if (!issueId || !action) return;
+          
+          if (action === 'support') {
+            e.preventDefault();
+            e.stopPropagation();
+            handleSupportPredefined(btn, issueId);
+          } else if (action === 'share') {
+            e.preventDefault();
+            shareIssue(issueId);
+          } else if (action === 'reply-toggle') {
+            e.preventDefault();
+            togglePredefinedReply(issueId);
+          } else if (action === 'submit-reply') {
+            e.preventDefault();
+            submitPredefinedReply(issueId);
+          }
+        });
+      }
+      
+      // Load issues
+      IssueGrid.loadIssues().then(function() {
+        restorePredefinedSupportStates();
+      }).catch(function(err) {
+        console.error('IssueGrid load failed:', err);
+      });
+    });
+
+    // Support handler for predefined issues
+    function handleSupportPredefined(btn, issueId) {
       if (issueStorage.isIssueSupported(issueId)) {
         if (typeof showToast === 'function') {
-          showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
+          showToast(typeof Translations !== 'undefined' ? Translations.t('toast.supported') : 'आप पहले ही support कर चुके हैं! 🙏', 'info');
         }
         return;
       }
@@ -340,16 +381,14 @@
       // Show thank you modal safely
       if (typeof showThankYouStandard === 'function') {
         showThankYouStandard();
+      } else if (typeof showToast === 'function') {
+        showToast('🙏 आपके समर्थन के लिए धन्यवाद!', 'success');
       } else {
-        // Fallback toast if modal function not available
-        if (typeof showToast === 'function') {
-          showToast('🙏 आपके समर्थन के लिए धन्यवाद!', 'success');
-        } else {
-          alert('🙏 आपके समर्थन के लिए धन्यवाद!');
-        }
+        alert('🙏 आपके समर्थन के लिए धन्यवाद!');
       }
     }
 
+    // Global share function (also used by user issues)
     window.shareIssue = function(id) {
       const url = window.location.href;
       const text = 'Hardoi ki Awaaz पर एक समस्या देखें - ' + url;
@@ -357,20 +396,19 @@
       else { window.open('https://wa.me/?text=' + encodeURIComponent(text)); }
     }
 
-    // Reply functions for predefined issues
-    window.togglePredefinedReplySection = window.togglePrefinedReplySection = function(issueId) {
+    // Toggle reply section for predefined issues
+    function togglePredefinedReply(issueId) {
       const section = document.getElementById('predefined-replies-' + issueId);
       if (!section) return;
       section.style.display = section.style.display === 'none' ? 'block' : 'none';
-      // Load stored replies when first opened
       const list = document.getElementById('predefined-replies-list-' + issueId);
       if (list && list.children.length === 0) {
         loadPredefinedReplies(issueId);
       }
-    };
+    }
 
     // Load replies for a predefined issue from localStorage
-    window.loadPredefinedReplies = function(issueId) {
+    function loadPredefinedReplies(issueId) {
       const list = document.getElementById('predefined-replies-list-' + issueId);
       if (!list) return;
       let allReplies = {};
@@ -381,28 +419,28 @@
       }
       const replies = allReplies[issueId] || [];
       if (replies.length === 0) {
-        list.innerHTML = '<p style="font-size:0.8rem;color:var(--text-light);padding:0.5rem 0;">अभी तक कोई टिप्पणी नहीं। पहली टिप्पणी करें! 💬</p>';
+        list.innerHTML = '<p style="font-size:0.8rem;color:var(--text-light);padding:0.5rem 0;">' + (typeof Translations !== 'undefined' ? Translations.t('issues.nocomments') : 'अभी तक कोई टिप्पणी नहीं। पहली टिप्पणी करें! 💬') + '</p>';
         return;
       }
-      list.innerHTML = replies.map(r => 
-        '<div style="padding:0.5rem 0.6rem;border-left:2px solid var(--primary);margin-bottom:0.5rem;border-radius:0 6px 6px 0;background:rgba(0,0,0,0.02);">' +
+      list.innerHTML = replies.map(function(r) { 
+        return '<div style="padding:0.5rem 0.6rem;border-left:2px solid var(--primary);margin-bottom:0.5rem;border-radius:0 6px 6px 0;background:rgba(0,0,0,0.02);">' +
           '<div style="display:flex;align-items:center;gap:0.4rem;">' +
             '<strong style="font-size:0.8rem;color:var(--primary);">' + escapeHtml(r.name) + '</strong>' +
             '<span style="font-size:0.65rem;color:var(--text-light);">' + (r.date || '') + '</span>' +
           '</div>' +
           '<p style="font-size:0.85rem;margin-top:0.2rem;color:var(--text);">' + escapeHtml(r.text) + '</p>' +
-        '</div>'
-      ).join('');
+        '</div>';
+      }).join('');
     }
 
     // Submit a reply for a predefined issue
-    window.submitPredefinedReply = function(issueId) {
+    function submitPredefinedReply(issueId) {
       const section = document.getElementById('predefined-replies-' + issueId);
       if (!section) return;
       const nameInput = section.querySelector('.predefined-reply-name');
       const textInput = section.querySelector('.predefined-reply-text');
       if (!textInput.value.trim()) {
-        showToast('कृपया टिप्पणी लिखें!', 'error');
+        showToast(typeof Translations !== 'undefined' ? Translations.t('toast.reply.required') : 'कृपया टिप्पणी लिखें!', 'error');
         return;
       }
       const reply = {
@@ -418,46 +456,32 @@
       localStorage.setItem('hka_predefined_replies', JSON.stringify(allReplies));
       textInput.value = '';
       nameInput.value = '';
-      showToast('✅ आपकी टिप्पणी भेज दी गई!', 'success');
+      showToast(typeof Translations !== 'undefined' ? Translations.t('toast.reply.sent') : '✅ आपकी टिप्पणी भेज दी गई!', 'success');
       loadPredefinedReplies(issueId);
-    };
+    }
 
-    window.escapeHtml = function(text) {
+    function escapeHtml(text) {
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
-    }    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      IssueGrid.loadIssues().then(() => {
-        // Restore support button states after issues are loaded
-        if (typeof restoreSupportButtonStates === 'function') {
-          restoreSupportButtonStates();
-        }
-      }).catch(function(err) {
-        console.error('IssueGrid load failed:', err);
-      });
-    });
+    }
     
     // Restore support button states after dynamic rendering
-    // NOTE: Called manually after loadIssues — no MutationObserver to avoid infinite recursion
-    function restoreSupportButtonStates() {
+    function restorePredefinedSupportStates() {
       const supportedIds = issueStorage.getSupportedList();
       if (!supportedIds.length) return;
-      supportedIds.forEach(id => {
-        document.querySelectorAll('.support-btn').forEach(btn => {
-          if (btn.getAttribute('onclick')?.includes(id)) {
-            btn.classList.add('supported');
-            btn.style.background = '#4caf50';
-            btn.style.borderColor = '#4caf50';
-            btn.style.color = '#fff';
-            // Parse initial count from button text + add localStorage count
-            const match = btn.textContent.match(/\((\d+)\)/);
-            let initialCount = 0;
-            if (match) initialCount = parseInt(match[1]) || 0;
-            const localCount = issueStorage.getSupportCount(id);
-            const totalCount = initialCount + localCount;
-            btn.innerHTML = '✅ Supported (' + totalCount + ')';
-          }
+      supportedIds.forEach(function(id) {
+        var btns = document.querySelectorAll('.issue-card .support-btn[data-issue-id="' + id + '"]');
+        btns.forEach(function(btn) {
+          btn.classList.add('supported');
+          btn.style.background = '#4caf50';
+          btn.style.borderColor = '#4caf50';
+          btn.style.color = '#fff';
+          var match = btn.textContent.match(/\((\d+)\)/);
+          var initialCount = 0;
+          if (match) initialCount = parseInt(match[1]) || 0;
+          var localCount = issueStorage.getSupportCount(id);
+          btn.innerHTML = '✅ Supported (' + (initialCount + localCount) + ')';
         });
       });
     }

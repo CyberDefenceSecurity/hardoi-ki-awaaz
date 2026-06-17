@@ -3,6 +3,11 @@
    Content Moderation — Auto block inappropriate content
    ============================================ */
 
+// Translation helper
+function __T(key) {
+  return (typeof Translations !== 'undefined' && Translations.t) ? Translations.t(key) : key;
+}
+
 // Ensure showToast is globally available (main.js may load later)
 if (typeof window.showToast !== 'function') {
   window.showToast = function(message, type) {
@@ -75,58 +80,62 @@ class PhotoUploader {
   createUploadSection() {
     const container = document.getElementById('photo-upload-section');
     if (!container) return;
+    
+    var T = function(key) {
+      return (typeof Translations !== 'undefined') ? Translations.t(key) : key;
+    };
 
     container.innerHTML = `
       <div class="upload-card">
         <div class="upload-header">
           <span class="upload-icon">📸</span>
-          <h3>📢 अपनी समस्या दर्ज करें</h3>
-          <p class="upload-subtitle">Photo और Message भेजें — हमारा सिस्टम जाँच करेगा कि यह वास्तविक समस्या है या नहीं</p>
+          <h3 data-lang="upload.title">📢 अपनी समस्या दर्ज करें</h3>
+          <p class="upload-subtitle" data-lang="upload.subtitle">Photo और Message भेजें — हमारा सिस्टम जाँच करेगा कि यह वास्तविक समस्या है या नहीं</p>
         </div>
         <form id="instant-upload-form" class="upload-form">
           <div class="upload-dropzone" id="dropzone">
             <div class="dropzone-content">
               <span class="dropzone-icon">📷</span>
-              <p>फोटो यहाँ खींचें या क्लिक करें</p>
-              <p class="dropzone-hint">JPG, PNG, WebP (Max 5MB) — अश्लील/अनुचित फोटो तुरंत ब्लॉक होंगे</p>
+              <p data-lang="upload.dropzone">फोटो यहाँ खींचें या क्लिक करें</p>
+              <p class="dropzone-hint" data-lang="upload.dropzone.hint">JPG, PNG, WebP (Max 5MB) — अश्लील/अनुचित फोटो तुरंत ब्लॉक होंगे</p>
             </div>
             <input type="file" id="photo-input" accept="image/*" multiple hidden>
           </div>
           <div id="moderation-status" style="display:none;padding:0.8rem;border-radius:8px;margin-bottom:0.8rem;font-size:0.9rem;"></div>
           <div id="photo-preview-grid" class="photo-preview-grid"></div>
           <div class="upload-form-fields">
-            <input type="text" id="issue-reporter-name" placeholder="आपका नाम (Optional)" class="form-input">
+            <input type="text" id="issue-reporter-name" placeholder="${T('upload.name.placeholder')}" class="form-input" data-lang="upload.name.placeholder">
             <select id="issue-upload-category" class="form-select">
-              <option value="">समस्या का प्रकार चुनें</option>
-              <option value="roads">🛤️ सड़क/रास्ते</option>
-              <option value="water">💧 पानी/नाली</option>
-              <option value="electricity">⚡ बिजली</option>
-              <option value="health">🏥 स्वास्थ्य</option>
-              <option value="education">📚 शिक्षा</option>
-              <option value="safety">🛡️ सुरक्षा</option>
-              <option value="garbage">🗑️ कचरा/सफाई</option>
-              <option value="other">📝 अन्य</option>
+              <option value="" data-lang="upload.category.placeholder">समस्या का प्रकार चुनें</option>
+              <option value="roads">🛤️ ${T('cat.roads')}</option>
+              <option value="water">💧 ${T('cat.water')}</option>
+              <option value="electricity">⚡ ${T('cat.electricity')}</option>
+              <option value="health">🏥 ${T('cat.health')}</option>
+              <option value="education">📚 ${T('cat.education')}</option>
+              <option value="safety">🛡️ ${T('cat.safety')}</option>
+              <option value="garbage">🗑️ ${T('cat.garbage')}</option>
+              <option value="other">📝 ${T('cat.other')}</option>
             </select>
-            <textarea id="issue-upload-message" placeholder="अपनी समस्या विस्तार से बताएं... (कम से कम 10 शब्द)" rows="3" class="form-textarea"></textarea>
+            <textarea id="issue-upload-message" placeholder="${T('upload.message.placeholder')}" rows="3" class="form-textarea" data-lang="upload.message.placeholder"></textarea>
             <select id="issue-upload-location" class="form-select">
-              <option value="">📍 समस्या का स्थान चुनें — गाँव/इलाका</option>
+              <option value="" data-lang="upload.location.placeholder">📍 समस्या का स्थान चुनें — गाँव/इलाका</option>
             </select>
             <div id="issue-upload-location-custom-group" style="display:none;margin-top:0.3rem;">
-              <input type="text" id="issue-upload-location-custom" placeholder="अपने गाँव/इलाके का नाम लिखें" class="form-input">
+              <input type="text" id="issue-upload-location-custom" placeholder="${T('upload.location.custom')}" class="form-input" data-lang="upload.location.custom">
             </div>
             <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
-              <button type="button" onclick="openMapPicker()" style="padding:0.4rem 0.8rem;font-size:0.8rem;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;flex:1;transition:0.3s;">🗺️ मैप से लोकेशन चुनें</button>
-              <button type="button" onclick="document.getElementById('issue-upload-location').value='others';document.getElementById('issue-upload-location-custom-group').style.display='block';" style="padding:0.35rem 0.7rem;font-size:0.75rem;background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:var(--radius);cursor:pointer;">✏️ खुद लिखें</button>
+              <button type="button" onclick="openMapPicker()" style="padding:0.4rem 0.8rem;font-size:0.8rem;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;flex:1;transition:0.3s;" data-lang="upload.map.btn">🗺️ मैप से लोकेशन चुनें</button>
+              <button type="button" onclick="document.getElementById('issue-upload-location').value='others';document.getElementById('issue-upload-location-custom-group').style.display='block';" style="padding:0.35rem 0.7rem;font-size:0.75rem;background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:var(--radius);cursor:pointer;" data-lang="upload.custom.btn">✏️ खुद लिखें</button>
             </div>
             <div id="moderation-check-box" style="margin:0.5rem 0;">
               <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--text-light);">
                 <input type="checkbox" id="agree-check"> 
-                ✅ मैं पुष्टि करता हूँ कि यह एक वास्तविक समस्या है और कोई अनुचित सामग्री नहीं है
+                <span data-lang="upload.agree">✅ मैं पुष्टि करता हूँ कि यह एक वास्तविक समस्या है और कोई अनुचित सामग्री नहीं है</span>
               </label>
             </div>
             <button type="submit" id="submit-issue-btn" class="cta-btn primary">
-              <span class="btn-text">📤 समस्या भेजें</span>
-              <span class="btn-loading" style="display:none;">⏳ जाँच की जा रही है...</span>
+              <span class="btn-text" data-lang="upload.submit">📤 समस्या भेजें</span>
+              <span class="btn-loading" style="display:none;" data-lang="upload.checking">⏳ जाँच की जा रही है...</span>
             </button>
           </div>
         </form>
@@ -176,11 +185,11 @@ class PhotoUploader {
 
     Array.from(files).forEach(file => {
       if (!this.allowedTypes.includes(file.type)) {
-        this.showToast('केवल JPG, PNG, WebP images allowed!', 'error');
+        this.showToast(__T('upload.invalid.type'), 'error');
         return;
       }
       if (file.size > this.maxFileSize) {
-        this.showToast('File 5MB से बड़ी है!', 'error');
+        this.showToast(__T('upload.file.too.large'), 'error');
         return;
       }
 
@@ -236,7 +245,7 @@ class PhotoUploader {
     const statusDiv = document.getElementById('moderation-status');
     if (statusDiv) {
       statusDiv.style.display = 'block';
-      statusDiv.innerHTML = '🔍 सामग्री जाँच की जा रही है...';
+      statusDiv.innerHTML = '🔍 ' + __T('upload.checking');
       statusDiv.style.background = 'rgba(255,152,0,0.1)';
       statusDiv.style.color = '#e65100';
     }
@@ -280,7 +289,7 @@ class PhotoUploader {
 
     const agree = document.getElementById('agree-check')?.checked;
     if (!agree) {
-      this.showToast('कृपया पुष्टि करें कि यह एक वास्तविक समस्या है!', 'error');
+      this.showToast(__T('toast.issue.submitted.check'), 'error');
       return;
     }
 
@@ -296,16 +305,16 @@ class PhotoUploader {
     }
 
     if (!location) {
-      this.showToast('कृपया समस्या का स्थान चुनें (गाँव/इलाका)!', 'error');
+      this.showToast(__T('toast.issue.location'), 'error');
       return;
     }
 
     if (!category) {
-      this.showToast('कृपया समस्या का प्रकार चुनें!', 'error');
+      this.showToast(__T('toast.issue.category'), 'error');
       return;
     }
     if (!message || message.trim().split(/\s+/).length < 10) {
-      this.showToast('कृपया समस्या विस्तार से लिखें (कम से कम 10 शब्द)!', 'error');
+      this.showToast(__T('toast.issue.detail'), 'error');
       return;
     }
 
@@ -325,12 +334,12 @@ class PhotoUploader {
       btnText.style.display = 'inline';
       btnLoading.style.display = 'none';
       btn.disabled = false;
-      this.showToast('🚫 ' + (moderationResult.reason || 'अनुचित सामग्री ब्लॉक की गई!'), 'error');
+      this.showToast('🚫 ' + (moderationResult.reason || __T('upload.blocked')), 'error');
       return;
     }
 
     // Safety check passed — save to server
-    btnLoading.textContent = '⏳ भेजा जा रहा है...';
+    btnLoading.textContent = '⏳ ' + __T('upload.sending');
 
     try {
       const issueData = {
@@ -369,7 +378,7 @@ class PhotoUploader {
       btnLoading.textContent = '⏳ जाँच की जा रही है...';
       btn.disabled = false;
 
-      this.showToast('✅ आपकी समस्या दर्ज हो गई! अब सभी लोग देख सकते हैं 🙏', 'success');
+      this.showToast(__T('toast.issue.submitted'), 'success');
       this.loadUserIssues();
     } catch (err) {
       console.error('Submit error:', err);
@@ -402,7 +411,7 @@ class PhotoUploader {
       btnLoading.textContent = '⏳ जाँच की जा रही है...';
       btn.disabled = false;
 
-      this.showToast('✅ समस्या दर्ज हो गई (local backup) 🙏', 'success');
+      this.showToast(__T('toast.issue.submitted.local'), 'success');
       this.loadUserIssues();
     }
   }
@@ -444,7 +453,7 @@ class PhotoUploader {
   /** Render nested replies recursively with proper threading */
   renderReplies(replies, issueId, depth = 0) {
     if (!replies || replies.length === 0) {
-      return '<p style="font-size:0.8rem;color:var(--text-light);padding:0.5rem 0;">अभी तक कोई जवाब नहीं। पहले जवाब दें! 💬</p>';
+      return '<p style="font-size:0.8rem;color:var(--text-light);padding:0.5rem 0;">' + __T('issues.noreplies') + '</p>';
     }
     
     // Sort top-level by time
@@ -461,16 +470,16 @@ class PhotoUploader {
             <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
               <strong style="font-size:0.8rem;color:var(--primary);">${this.escapeHtml(r.name)}</strong>
               <span style="font-size:0.65rem;color:var(--text-light);">${r.date || ''}</span>
-              <button class="nested-reply-btn" onclick="event.stopPropagation();showNestedReplyForm('${issueId}', '${r.id}')" style="font-size:0.7rem;padding:0.15rem 0.5rem;border:none;background:rgba(26,35,126,0.08);color:var(--primary);border-radius:12px;cursor:pointer;margin-left:auto;font-family:inherit;">↩️ जवाब दें</button>
+              <button class="nested-reply-btn" data-action="nested-reply-toggle" data-issue-id="${issueId}" data-reply-id="${r.id}" style="font-size:0.7rem;padding:0.15rem 0.5rem;border:none;background:rgba(26,35,126,0.08);color:var(--primary);border-radius:12px;cursor:pointer;margin-left:auto;font-family:inherit;">${__T('comments.replybtn')}</button>
             </div>
             <p style="font-size:${fontSize};margin-top:0.3rem;color:var(--text);line-height:1.4;">${this.escapeHtml(r.text)}</p>
           </div>
           <!-- Nested reply form (hidden) -->
           <div class="nested-reply-form" id="nested-reply-${issueId}-${r.id}" style="display:none;margin:4px 0 4px 8px;">
             <div style="display:flex;gap:0.3rem;align-items:center;flex-wrap:wrap;">
-              <input type="text" class="nested-reply-name" placeholder="आपका नाम" style="flex:0 0 80px;padding:0.3rem 0.5rem;border:2px solid #e0e0e0;border-radius:6px;font-size:0.75rem;font-family:inherit;">
-              <input type="text" class="nested-reply-text" placeholder="जवाब लिखें..." style="flex:1;min-width:120px;padding:0.3rem 0.5rem;border:2px solid #e0e0e0;border-radius:6px;font-size:0.75rem;font-family:inherit;">
-              <button class="cta-btn primary" onclick="submitNestedReply('${issueId}', '${r.id}')" style="padding:0.3rem 0.6rem;font-size:0.7rem;">➡️ भेजें</button>
+              <input type="text" class="nested-reply-name" placeholder="${__T('comments.nameplaceholder')}" style="flex:0 0 80px;padding:0.3rem 0.5rem;border:2px solid #e0e0e0;border-radius:6px;font-size:0.75rem;font-family:inherit;">
+              <input type="text" class="nested-reply-text" placeholder="${__T('comments.replyplaceholder')}" style="flex:1;min-width:120px;padding:0.3rem 0.5rem;border:2px solid #e0e0e0;border-radius:6px;font-size:0.75rem;font-family:inherit;">
+              <button class="cta-btn primary" data-action="nested-reply-submit" data-issue-id="${issueId}" data-reply-id="${r.id}" style="padding:0.3rem 0.6rem;font-size:0.7rem;">${__T('btn.send')}</button>
             </div>
           </div>
           <!-- Recursive nested replies -->
@@ -493,20 +502,21 @@ class PhotoUploader {
       roads: '🛤️', water: '💧', electricity: '⚡', health: '🏥',
       education: '📚', safety: '🛡️', garbage: '🗑️', other: '📝'
     };
+    var _cat = function(k) { return __T(k); };
     const categoryNames = {
-      roads: 'सड़क/रास्ते', water: 'पानी/नाली', electricity: 'बिजली',
-      health: 'स्वास्थ्य', education: 'शिक्षा', safety: 'सुरक्षा',
-      garbage: 'कचरा/सफाई', other: 'अन्य'
+      roads: _cat('cat.roads'), water: _cat('cat.water'), electricity: _cat('cat.electricity'),
+      health: _cat('cat.health'), education: _cat('cat.education'), safety: _cat('cat.safety'),
+      garbage: _cat('cat.garbage'), other: _cat('cat.other')
     };
     const statusEmoji = {
       active: '🟡', 'in-progress': '🟠', resolved: '✅'
     };
     const statusText = {
-      active: 'सक्रिय', 'in-progress': 'प्रगति में', resolved: 'हल हो गई'
+      active: _cat('status.active'), 'in-progress': _cat('status.inprogress'), resolved: _cat('status.resolved')
     };
 
     if (issues.length === 0) {
-      container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:2rem;">अभी तक कोई समस्या दर्ज नहीं हुई। पहले व्यक्ति बनें! 💪</p>';
+      container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:2rem;">' + __T('issues.empty') + '</p>';
       return;
     }
 
@@ -539,13 +549,13 @@ class PhotoUploader {
             <span>📅 ${issue.date}</span>
             <span>❤️ ${supporterCount}</span>              <span>💬 ${totalComments}</span>
           </div>
-          ${this.isIssueOwner(issue.id) ? '<div style="margin-bottom:0.5rem;"><button class="delete-issue-btn" onclick="deleteUserIssue(\'' + issue.id + '\')" style="padding:0.3rem 0.7rem;border:1px solid var(--danger);background:transparent;color:var(--danger);border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;transition:0.3s;">🗑️ मेरी समस्या हटाएं</button></div>' : ''}
+          ${this.isIssueOwner(issue.id) ? '<div style="margin-bottom:0.5rem;"><button class="delete-issue-btn" data-action="delete-issue" data-issue-id="' + issue.id + '" style="padding:0.3rem 0.7rem;border:1px solid var(--danger);background:transparent;color:var(--danger);border-radius:8px;cursor:pointer;font-size:0.75rem;font-family:inherit;transition:0.3s;">' + __T('issues.delete.btn') + '</button></div>' : ''}
           <div class="issue-support-section">
-            <button class="support-btn ${isSupported ? 'supported' : ''}" onclick="window.supportUserIssue('${issue.id}')" data-id="${issue.id}">
-              ${isSupported ? '✅ Supported (' + supporterCount + ')' : '❤️ Support (' + supporterCount + ')'}
+            <button class="support-btn ${isSupported ? 'supported' : ''}" data-action="user-support" data-issue-id="${issue.id}">
+              ${isSupported ? '✅ ' + __T('issues.supported') + ' (' + supporterCount + ')' : '❤️ ' + __T('issues.support.btn') + ' (' + supporterCount + ')'}
             </button>
-            <button class="share-issue-btn" onclick="shareIssue('${issue.id}')">📤 Share</button>
-            <button class="reply-toggle-btn" onclick="toggleReplySection('${issue.id}')" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.8rem;color:var(--text);font-family:inherit;">💬 टिप्पणियाँ (${totalComments})</button>
+            <button class="share-issue-btn" data-action="user-share" data-issue-id="${issue.id}">📤 ${__T('share.issue')}</button>
+            <button class="reply-toggle-btn" data-action="user-reply-toggle" data-issue-id="${issue.id}" style="padding:0.4rem 0.8rem;border:1px solid #e0e0e0;background:transparent;border-radius:20px;cursor:pointer;font-size:0.8rem;color:var(--text);font-family:inherit;">${__T('issues.comments')} (${totalComments})</button>
           </div>
           <!-- Replies Section (Threaded) -->
           <div class="replies-section" id="replies-${issue.id}" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.06);">
@@ -554,9 +564,9 @@ class PhotoUploader {
             </div>
             <!-- Top-level comment form -->
             <div class="reply-form" style="display:flex;gap:0.5rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid rgba(0,0,0,0.04);">
-              <input type="text" class="reply-name-input" placeholder="आपका नाम" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-              <input type="text" class="reply-text-input" placeholder="इस समस्या पर अपनी टिप्पणी लिखें..." style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
-              <button class="cta-btn primary" onclick="submitReply('${issue.id}')" style="padding:0.4rem 0.8rem;font-size:0.75rem;">➡️ भेजें</button>
+              <input type="text" class="reply-name-input" placeholder="${__T('comments.nameplaceholder')}" style="flex:0 0 90px;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+              <input type="text" class="reply-text-input" placeholder="${__T('issues.reply.placeholder')}" style="flex:1;padding:0.4rem 0.6rem;border:2px solid #e0e0e0;border-radius:8px;font-size:0.8rem;font-family:inherit;">
+              <button class="cta-btn primary" data-action="user-submit-reply" data-issue-id="${issue.id}" style="padding:0.4rem 0.8rem;font-size:0.75rem;">${__T('btn.send')}</button>
             </div>
           </div>
         </div>
@@ -569,7 +579,7 @@ class PhotoUploader {
     const container = document.getElementById('user-issues-list');
     if (!container) return;
 
-    container.innerHTML = '<div class="news-loading"><div class="news-loading-spinner"></div><p>Issues load ho rahe hain...</p></div>';
+    container.innerHTML = '<div class="news-loading"><div class="news-loading-spinner"></div>          <p>' + __T('issues.loading') + '</p></div>';
 
     let issues = [];
     let fromServer = false;
@@ -601,6 +611,12 @@ class PhotoUploader {
         }
       });
     }
+    
+    // Filter out deleted issues (from tracking list)
+    var deletedIds = JSON.parse(localStorage.getItem('hka_deleted_issues') || '[]');
+    if (deletedIds.length > 0) {
+      issues = issues.filter(function(issue) { return !deletedIds.includes(issue.id); });
+    }
 
     this.renderIssuesList(issues, container);
 
@@ -624,7 +640,7 @@ class PhotoUploader {
     
     // Check locally first
     if (this.storage.isIssueSupported(issueId)) {
-      this.showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
+      this.showToast(__T('toast.supported'), 'info');
       return;
     }
 
@@ -657,11 +673,11 @@ class PhotoUploader {
     modal.innerHTML = `
       <div class="modal-content thank-you-modal">
         <div class="modal-animation"><div class="heart-animation">❤️</div></div>
-        <h2>🙏 धन्यवाद!</h2>
-        <p class="thank-you-msg">आपके support के लिए शुक्रिया।</p>
-        <p class="thank-you-sub">हम जल्द ही बेहतर होंगे! 💪</p>
-        <p class="thank-you-detail">आपका सहयोग अनमोल है। Hardoi ki Awaaz आपके साथ है। साथ मिलकर हम हरदोई को बेहतर बनाएंगे।</p>
-        <button class="cta-btn primary" onclick="document.getElementById('thank-you-modal').remove()">🙏 बंद करें</button>
+        <h2>${__T('thankyou.title')}</h2>
+        <p class="thank-you-msg">${__T('thankyou.msg')}</p>
+        <p class="thank-you-sub">${__T('thankyou.sub')}</p>
+        <p class="thank-you-detail">${__T('thankyou.detail')}</p>
+        <button class="cta-btn primary" onclick="document.getElementById('thank-you-modal').remove()">${__T('thankyou.close')}</button>
       </div>
     `;
     document.body.appendChild(modal);
@@ -690,11 +706,12 @@ class PhotoUploader {
 
 // ======== GLOBAL SUPPORT FUNCTION — Enhanced with proper localStorage handling ========
 
+// Global support function for user issues (used by event delegation)
 window.supportUserIssue = async function(issueId) {
   const storage = new IssueStorage();
   
   if (storage.isIssueSupported(issueId)) {
-    showToast('आप पहले ही support कर चुके हैं! 🙏', 'info');
+    showToast(__T('toast.supported'), 'info');
     return;
   }
 
@@ -705,7 +722,7 @@ window.supportUserIssue = async function(issueId) {
     localStorage.setItem('hka_supporter_id', supporterId);
   }
 
-  const btn = document.querySelector(`.support-btn[data-id="${issueId}"]`);
+  const btn = document.querySelector(`.support-btn[data-issue-id="${issueId}"]`);
 
   // Save support locally FIRST — works even if backend is down
   storage.supportIssue(issueId);
@@ -725,21 +742,18 @@ window.supportUserIssue = async function(issueId) {
       body: JSON.stringify({ supporterId })
     });
     const data = await resp.json();
-
-    // Update with server count if higher
     if (data.supporters && data.supporters > localCount && btn) {
       btn.innerHTML = '✅ Supported (' + data.supporters + ')';
     }
   } catch (err) {
     console.warn('Support API error (local only):', err.message);
-    // Already saved locally above — no need to show error
   }
 
   // Always show thank you
   showThankYouStandard();
 };
 
-// ======== GLOBAL REPLY FUNCTIONS ========
+// ======== GLOBAL REPLY FUNCTIONS (used by event delegation) ========
 
 // Toggle the entire comments section for an issue
 window.toggleReplySection = function(issueId) {
@@ -749,7 +763,6 @@ window.toggleReplySection = function(issueId) {
   }
 };
 
-// Keep backward compatibility
 window.toggleReplyForm = window.toggleReplySection;
 
 // Submit a top-level comment on an issue
@@ -761,7 +774,7 @@ window.submitReply = async function(issueId) {
   const textInput = section.querySelector('.reply-text-input');
   
   if (!textInput.value.trim()) {
-    showToast('कृपया जवाब लिखें!', 'error');
+    showToast(__T('toast.reply.required'), 'error');
     return;
   }
 
@@ -781,32 +794,30 @@ window.submitReply = async function(issueId) {
 
     if (data.success) {
       textInput.value = '';
-      showToast('✅ आपकी टिप्पणी भेज दी गई!', 'success');
+      showToast(__T('toast.reply.sent'), 'success');
       if (window.photoUploader) {
-        window.photoUploader.loadUserIssues(() => {
-          const sec = document.getElementById('replies-' + issueId);
+        window.photoUploader.loadUserIssues(function() {
+          var sec = document.getElementById('replies-' + issueId);
           if (sec) sec.style.display = 'block';
         });
       }
     }
   } catch (err) {
     console.error('Reply error:', err);
-    showToast('टिप्पणी भेजने में समस्या हुई। बाद में प्रयास करें।', 'error');
+    showToast(__T('toast.reply.error'), 'error');
   }
 };
 
 // Show the nested reply form for a specific comment
 window.showNestedReplyForm = function(issueId, replyId) {
-  // Hide all other nested reply forms first
-  document.querySelectorAll('.nested-reply-form').forEach(el => {
+  document.querySelectorAll('.nested-reply-form').forEach(function(el) {
     el.style.display = 'none';
   });
   const form = document.getElementById('nested-reply-' + issueId + '-' + replyId);
   if (form) {
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    // Focus the text input
-    const input = form.querySelector('.nested-reply-text');
-    if (input && form.style.display === 'block') setTimeout(() => input.focus(), 200);
+    var input = form.querySelector('.nested-reply-text');
+    if (input && form.style.display === 'block') setTimeout(function() { input.focus(); }, 200);
   }
 };
 
@@ -819,7 +830,7 @@ window.submitNestedReply = async function(issueId, parentReplyId) {
   const textInput = form.querySelector('.nested-reply-text');
   
   if (!textInput.value.trim()) {
-    showToast('कृपया जवाब लिखें!', 'error');
+    showToast(__T('toast.reply.required'), 'error');
     return;
   }
 
@@ -841,17 +852,17 @@ window.submitNestedReply = async function(issueId, parentReplyId) {
       textInput.value = '';
       nameInput.value = '';
       form.style.display = 'none';
-      showToast('✅ आपका जवाब भेज दिया गया!', 'success');
+      showToast(__T('toast.reply.sent'), 'success');
       if (window.photoUploader) {
-        window.photoUploader.loadUserIssues(() => {
-          const sec = document.getElementById('replies-' + issueId);
+        window.photoUploader.loadUserIssues(function() {
+          var sec = document.getElementById('replies-' + issueId);
           if (sec) sec.style.display = 'block';
         });
       }
     }
   } catch (err) {
     console.error('Nested reply error:', err);
-    showToast('जवाब भेजने में समस्या हुई। बाद में प्रयास करें।', 'error');
+    showToast(__T('toast.reply.error'), 'error');
   }
 };
 
@@ -884,11 +895,11 @@ window.showThankYouStandard = function() {
   modal.innerHTML = `
     <div class="modal-content thank-you-modal">
       <div class="modal-animation"><div class="heart-animation">❤️</div></div>
-      <h2>🙏 धन्यवाद!</h2>
-      <p class="thank-you-msg">आपके support के लिए शुक्रिया।</p>
-      <p class="thank-you-sub">हम जल्द ही बेहतर होंगे! 💪</p>
-      <p class="thank-you-detail">आपका सहयोग अनमोल है। Hardoi ki Awaaz आपके साथ है। साथ मिलकर हम हरदोई को बेहतर बनाएंगे।</p>
-      <button class="cta-btn primary" onclick="this.closest('.modal-overlay').remove()" style="margin-top:1rem;">🙏 बंद करें</button>
+      <h2>${__T('thankyou.title')}</h2>
+      <p class="thank-you-msg">${__T('thankyou.msg')}</p>
+      <p class="thank-you-sub">${__T('thankyou.sub')}</p>
+      <p class="thank-you-detail">${__T('thankyou.detail')}</p>
+      <button class="cta-btn primary" onclick="this.closest('.modal-overlay').remove()" style="margin-top:1rem;">${__T('thankyou.close')}</button>
     </div>
   `;
   document.body.appendChild(modal);
@@ -915,6 +926,12 @@ window.openMapPicker = function() {
   const defaultLat = 27.3939;
   const defaultLng = 80.1323;
 
+  // Check Leaflet availability
+  if (typeof L === 'undefined') {
+    showToast(__T('map.notfound'), 'error');
+    return;
+  }
+
   // Create modal
   const modal = document.createElement('div');
   modal.id = 'map-picker-modal';
@@ -924,19 +941,19 @@ window.openMapPicker = function() {
     <div class="map-picker-container" style="background:var(--bg);border-radius:20px;overflow:hidden;width:90%;max-width:600px;max-height:90vh;box-shadow:0 25px 80px rgba(0,0,0,0.4);transform:scale(0.9);transition:transform 0.3s ease;">
       <!-- Header -->
       <div style="padding:1rem 1.2rem;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-weight:600;font-size:1rem;">🗺️ अपनी लोकेशन चुनें</span>
-        <button onclick="closeMapPicker()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+        <span style="font-weight:600;font-size:1rem;">${__T('map.title')}</span>
+        <button id="map-close-btn" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">✕</button>
       </div>
       <!-- Map container -->
       <div id="map-picker-map" style="height:400px;width:100%;"></div>
       <!-- Info + Actions -->
       <div style="padding:1rem 1.2rem;">
         <div id="map-picker-info" style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.8rem;text-align:center;">
-          🖱️ मैप पर क्लिक करके अपनी लोकेशन चुनें
+          ${__T('map.click')}
         </div>
         <div style="display:flex;gap:0.5rem;">
-          <button id="map-picker-locate-btn" onclick="locateOnMap()" style="flex:1;padding:0.6rem;border:2px solid var(--primary);background:transparent;color:var(--primary);border-radius:12px;cursor:pointer;font-size:0.85rem;font-family:inherit;font-weight:600;transition:0.3s;">📍 मेरी लोकेशन</button>
-          <button id="map-picker-confirm-btn" onclick="confirmMapLocation()" style="flex:1;padding:0.6rem;background:var(--primary);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:0.85rem;font-family:inherit;font-weight:600;transition:0.3s;" disabled>✅ चुनें</button>
+          <button id="map-picker-locate-btn" style="flex:1;padding:0.6rem;border:2px solid var(--primary);background:transparent;color:var(--primary);border-radius:12px;cursor:pointer;font-size:0.85rem;font-family:inherit;font-weight:600;transition:0.3s;">${__T('map.locate')}</button>
+          <button id="map-picker-confirm-btn" style="flex:1;padding:0.6rem;background:var(--primary);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:0.85rem;font-family:inherit;font-weight:600;transition:0.3s;" disabled>${__T('map.confirm')}</button>
         </div>
       </div>
     </div>
@@ -951,55 +968,83 @@ window.openMapPicker = function() {
     if (container) container.style.transform = 'scale(1)';
   }, 50);
 
-  // Store selected coordinates
+  // Store selected coordinates and map instance
   window._mapPickerState = {
     lat: null,
     lng: null,
     locationName: '',
-    marker: null
+    marker: null,
+    map: null
   };
+
+  // Close button click
+  document.getElementById('map-close-btn').addEventListener('click', closeMapPicker);
+  // Locate button click
+  document.getElementById('map-picker-locate-btn').addEventListener('click', locateOnMap);
+  // Confirm button click
+  document.getElementById('map-picker-confirm-btn').addEventListener('click', confirmMapLocation);
 
   // Initialize Leaflet map after a short delay to ensure container is rendered
   setTimeout(() => {
     const mapEl = document.getElementById('map-picker-map');
     if (!mapEl || typeof L === 'undefined') {
-      document.getElementById('map-picker-info').textContent = '⚠️ मैप लोड नहीं हो पाया। कृपया पुनः प्रयास करें।';
+      document.getElementById('map-picker-info').textContent = __T('map.notfound');
       return;
     }
 
-    const map = L.map('map-picker-map', {
-      center: [defaultLat, defaultLng],
-      zoom: 13,
-      zoomControl: true
-    });
+    // Make sure container is visible and has dimensions
+    const mapContainer = mapEl;
+    mapContainer.style.height = '400px';
+    mapContainer.style.width = '100%';
+    mapContainer.style.minHeight = '300px';
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19
-    }).addTo(map);
+    try {
+      const map = L.map(mapContainer, {
+        center: [defaultLat, defaultLng],
+        zoom: 13,
+        zoomControl: true,
+        attributionControl: true
+      });
 
-    // Store map reference
-    window._mapPickerState.map = map;
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+      }).addTo(map);
 
-    // Add click handler to place marker
-    map.on('click', function(e) {
-      try {
-        const latlng = e.latlng;
-        if (latlng && typeof latlng.lat === 'number' && typeof latlng.lng === 'number') {
-          if (typeof window.placeMapMarker === 'function') {
+      // Store map reference
+      window._mapPickerState.map = map;
+
+      // Add click handler to place marker — use both click and dblclick for reliability
+      map.on('click', function(e) {
+        try {
+          const latlng = e.latlng;
+          if (latlng && typeof latlng.lat === 'number' && typeof latlng.lng === 'number') {
             window.placeMapMarker(latlng.lat, latlng.lng);
           }
+        } catch(err) {
+          console.error('Map click handler error:', err);
         }
-      } catch(err) {
-        console.error('Map click handler error:', err);
-      }
-    });
+      });
 
-    // Force map to invalidate size after animation
-    setTimeout(() => {
-      try { map.invalidateSize(); } catch(e) { /* ignore */ }
-    }, 300);
-  }, 200);
+      // Force map to invalidate size after animation completes
+      var invalidateTimer = setInterval(function() {
+        try {
+          map.invalidateSize();
+          // Stop after a few tries or when scale animation is done
+          clearInterval(invalidateTimer);
+        } catch(e) { /* ignore */ }
+      }, 100);
+      
+      // Also invalidate after known delay
+      setTimeout(function() {
+        try { map.invalidateSize(); } catch(e) {}
+      }, 500);
+
+    } catch(err) {
+      console.error('Map initialization error:', err);
+      document.getElementById('map-picker-info').textContent = __T('map.notfound');
+    }
+  }, 300); // Wait longer for container to be fully rendered
 };
 
 // Place/set marker on the map and reverse geocode
@@ -1029,7 +1074,7 @@ window.placeMapMarker = function(lat, lng) {
   // Show loading
   const info = document.getElementById('map-picker-info');
   const confirmBtn = document.getElementById('map-picker-confirm-btn');
-  if (info) info.textContent = '⏳ लोकेशन की जानकारी लाई जा रही है...';
+  if (info) info.textContent = __T('map.loading');
   if (confirmBtn) confirmBtn.disabled = true;
 
   // Reverse geocode via Nominatim
@@ -1063,27 +1108,27 @@ window.locateOnMap = function() {
   if (!state || !state.map) return;
 
   if (!navigator.geolocation) {
-    showToast('आपके ब्राउज़र में GPS की सुविधा नहीं है।', 'error');
+    showToast(__T('map.locate.error'), 'error');
     return;
   }
 
   const btn = document.getElementById('map-picker-locate-btn');
-  if (btn) { btn.textContent = '⏳ खोज रहा है...'; btn.disabled = true; }
+  if (btn) { btn.textContent = __T('map.locating'); btn.disabled = true; }
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { latitude, longitude } = position.coords;
       state.map.setView([latitude, longitude], 16);
       placeMapMarker(latitude, longitude);
-      if (btn) { btn.textContent = '📍 मेरी लोकेशन'; btn.disabled = false; }
+      if (btn) { btn.textContent = __T('map.locate'); btn.disabled = false; }
     },
     (error) => {
-      let msg = 'लोकेशन नहीं मिल पाई। GPS चालू करें या मैप पर क्लिक करें।';
+      let msg = __T('map.locate.fail');
       if (error.code === error.PERMISSION_DENIED) {
-        msg = '📍 लोकेशन की अनुमति नहीं दी गई। कृपया मैप पर क्लिक करके लोकेशन चुनें।';
+        msg = __T('map.permission.denied');
       }
       showToast(msg, 'error');
-      if (btn) { btn.textContent = '📍 मेरी लोकेशन'; btn.disabled = false; }
+      if (btn) { btn.textContent = __T('map.locate'); btn.disabled = false; }
     },
     { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
   );
@@ -1093,7 +1138,7 @@ window.locateOnMap = function() {
 window.confirmMapLocation = function() {
   const state = window._mapPickerState;
   if (!state || !state.lat) {
-    showToast('कृपया मैप पर अपनी लोकेशन चुनें!', 'error');
+    showToast(__T('map.select.error'), 'error');
     return;
   }
 
@@ -1108,7 +1153,7 @@ window.confirmMapLocation = function() {
   if (customGroup) customGroup.style.display = 'block';
   if (customInput) customInput.value = locationName;
 
-  showToast('✅ लोकेशन चुन ली गई: ' + locationName, 'success');
+  showToast(__T('map.selected') + ' ' + locationName, 'success');
   
   // Close the map
   closeMapPicker();
@@ -1137,12 +1182,80 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// shareIssue is now defined in issues.html as window.shareIssue
-// Removing duplicate from here to avoid confusion
+// ========== EVENT DELEGATION for user issues list ==========
+// Set up event delegation after DOM is ready
+(function() {
+  function setupUserIssuesDelegation() {
+    var container = document.getElementById('user-issues-list');
+    if (!container) return;
+    // Remove old listener if any
+    if (container._hkaDelegationSet) return;
+    container._hkaDelegationSet = true;
+    
+    container.addEventListener('click', function(e) {
+      var btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      var issueId = btn.getAttribute('data-issue-id');
+      var action = btn.getAttribute('data-action');
+      var replyId = btn.getAttribute('data-reply-id');
+      if (!issueId || !action) return;
+      
+      if (action === 'user-support') {
+        e.preventDefault();
+        e.stopPropagation();
+        window.supportUserIssue(issueId);
+      } else if (action === 'user-share') {
+        e.preventDefault();
+        window.shareIssue(issueId);
+      } else if (action === 'user-reply-toggle') {
+        e.preventDefault();
+        window.toggleReplySection(issueId);
+      } else if (action === 'user-submit-reply') {
+        e.preventDefault();
+        window.submitReply(issueId);
+      } else if (action === 'delete-issue') {
+        e.preventDefault();
+        window.deleteUserIssue(issueId);
+      } else if (action === 'nested-reply-toggle') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (window.showNestedReplyForm && replyId) {
+          window.showNestedReplyForm(issueId, replyId);
+        }
+      } else if (action === 'nested-reply-submit') {
+        e.preventDefault();
+        if (window.submitNestedReply && replyId) {
+          window.submitNestedReply(issueId, replyId);
+        }
+      }
+    });
+  }
+  
+  // Setup on DOMContentLoaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupUserIssuesDelegation);
+  } else {
+    setupUserIssuesDelegation();
+  }
+  
+  // Also setup after photoUploader loads issues (since content is dynamic)
+  var origLoad = window.PhotoUploader && PhotoUploader.prototype.loadUserIssues;
+  // Monkey-patch loadUserIssues to re-attach delegation after rendering
+  var origRender = PhotoUploader && PhotoUploader.prototype.renderIssuesList;
+  if (origRender) {
+    var origFn = PhotoUploader.prototype.renderIssuesList;
+    PhotoUploader.prototype.renderIssuesList = function(issues, container) {
+      origFn.call(this, issues, container);
+      setupUserIssuesDelegation();
+    };
+  }
+})();
+
+// shareIssue is defined in issues.html as window.shareIssue
 
 // ======== DELETE USER ISSUE ========
 window.deleteUserIssue = async function(issueId) {
-  if (!confirm('क्या आप वाकई अपनी समस्या हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')) {
+  if (!confirm(__T('issues.delete.confirm'))) {
     return;
   }
 
@@ -1152,17 +1265,20 @@ window.deleteUserIssue = async function(issueId) {
   
   // Verify ownership
   if (owned[issueId] !== token) {
-    showToast('आप केवल अपनी समस्या हटा सकते हैं!', 'error');
+    showToast(__T('issues.delete.denied'), 'error');
     return;
   }
 
   // Try to delete from server
   try {
-    await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId, {
+    const resp = await fetch('https://hardoi-ki-awaaz-backend.onrender.com/api/issues/user/' + issueId, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token })
     });
+    if (!resp.ok) {
+      console.warn('Server delete returned:', resp.status);
+    }
   } catch (err) {
     console.warn('Server delete failed (local only):', err.message);
   }
@@ -1175,8 +1291,15 @@ window.deleteUserIssue = async function(issueId) {
   // Remove ownership tracking
   delete owned[issueId];
   localStorage.setItem('hka_owned_issues', JSON.stringify(owned));
+  
+  // Add to deleted issues tracking list so loadUserIssues can filter it out
+  var deletedList = JSON.parse(localStorage.getItem('hka_deleted_issues') || '[]');
+  if (!deletedList.includes(issueId)) {
+    deletedList.push(issueId);
+    localStorage.setItem('hka_deleted_issues', JSON.stringify(deletedList));
+  }
 
-  showToast('✅ आपकी समस्या हटा दी गई!', 'success');
+  showToast(__T('issues.deleted'), 'success');
   
   // Reload the issues list
   if (window.photoUploader) {

@@ -130,22 +130,26 @@ const HKANews = {
 
   /* ---------- Show Loading ---------- */
   showLoading(container) {
+    var loadingMsg = (typeof Translations !== 'undefined') ? Translations.t('news.loading') : '📰 News load ho rahi hai...';
     container.innerHTML = `
       <div class="news-loading">
         <div class="news-loading-spinner"></div>
-        <p>📰 News load ho rahi hai...</p>
+        <p>${loadingMsg}</p>
       </div>
     `;
   },
 
   /* ---------- Show Error ---------- */
   showError(container) {
+    var reloadBtn = (typeof Translations !== 'undefined') ? Translations.t('news.retry') : '🔄 Dobara try karein';
+    var errTitle = (typeof Translations !== 'undefined') ? Translations.t('news.error') : 'News fetch nahi ho paai';
+    var errDesc = (typeof Translations !== 'undefined') ? Translations.t('news.error.desc') : 'Backend API se konekt nahi ho paaya.';
     container.innerHTML = `
       <div class="news-error">
         <span style="font-size:3rem;display:block;margin-bottom:0.5rem;">⚠️</span>
-        <h3>News fetch nahi ho paai</h3>
-        <p style="color:var(--text-light);">Backend API se konekt nahi ho paaya. Ensure karein ki aapka API endpoint sahi hai.</p>
-        <button onclick="HKANews.loadNews()" class="cta-btn" style="margin-top:1rem;">🔄 Dobara try karein</button>
+        <h3>${errTitle}</h3>
+        <p style="color:var(--text-light);">${errDesc}</p>
+        <button onclick="HKANews.loadNews()" class="cta-btn" style="margin-top:1rem;">${reloadBtn}</button>
       </div>
     `;
   },
@@ -159,10 +163,19 @@ const HKANews = {
 
     const style = this.getCategoryStyle(article.category);
     const date = this.formatDate(article.date);
+    
+    // Generate Picsum fallback URL for detail image
+    var detailImgStyle = style.bg;
+    if (article.image_url) {
+      var picsumSeed = encodeURIComponent((article.title || 'news') + '-detail');
+      var fallbackPicsum = 'https://picsum.photos/seed/' + picsumSeed + '/800/600';
+      detailImgStyle = style.bg + ';background-image:url(' + article.image_url + ');background-size:cover;background-position:center;background-blend-mode:overlay;';
+      // Add fallback via a small inline script
+    }
 
     content.innerHTML = `
       <button class="news-detail-close" onclick="HKANews.closeDetail()">✕</button>
-      <div class="news-detail-image" style="background:${article.image_url ? `${style.bg};background-image:url(${article.image_url});background-size:cover;background-position:center;background-blend-mode:overlay` : style.bg};">
+      <div class="news-detail-image" id="detail-img-${article.id}" style="background:${detailImgStyle};">
         ${!article.image_url ? `<span class="news-detail-img-emoji">${style.emoji}</span>` : ''}
         <div class="news-detail-img-overlay">
           <span class="news-detail-category">${article.category}</span>
@@ -202,6 +215,24 @@ const HKANews = {
 
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+    
+    // Add image onerror fallback for detail image
+    var detailImgContainer = document.getElementById('detail-img-' + article.id);
+    if (detailImgContainer && article.image_url) {
+      detailImgContainer.addEventListener('error', function() {
+        var seed = encodeURIComponent((article.title || 'news') + '-detail');
+        this.style.backgroundImage = 'url(https://picsum.photos/seed/' + seed + '/800/600)';
+      });
+      // Also try loading img to detect error
+      var imgTester = new Image();
+      imgTester.onerror = function() {
+        if (detailImgContainer) {
+          var seed = encodeURIComponent((article.title || 'news') + '-detail');
+          detailImgContainer.style.backgroundImage = 'url(https://picsum.photos/seed/' + seed + '/800/600)';
+        }
+      };
+      if (article.image_url) imgTester.src = article.image_url;
+    }
     
     // Load existing comments for this article
     this.loadComments(article.id);
@@ -304,18 +335,24 @@ const HKANews = {
       return;
     }
 
+    // Helper to generate a Picsum fallback URL
+    const getPicsumFallback = function(title, index) {
+      var seed = encodeURIComponent((title || 'news') + '-' + (index || 0));
+      return 'https://picsum.photos/seed/' + seed + '/800/600';
+    };
+
     const cardsHtml = articles.map((article, i) => {
       const style = this.getCategoryStyle(article.category);
       const date = this.formatDate(article.date);
-      // Use gradient as fallback so image load failure doesn't show blank
-      const imgHtml = article.image_url
-        ? `style="background:${style.bg};background-image:url(${article.image_url});background-size:cover;background-position:center;background-blend-mode:overlay;"`
-        : `style="background:${style.bg};"`;
+
+      // Always use a background image — try primary URL first, fallback to Picsum
+      var imgUrl = article.image_url || getPicsumFallback(article.title, i);
+      var imgSection = '<div class="news-card-img" style="background:' + style.bg + ';background-image:url(' + imgUrl + ');background-size:cover;background-position:center;background-blend-mode:overlay;">';
 
       return `
       <div class="news-card reveal delay-${(i % 5) + 1}">
-        <div class="news-card-img" ${imgHtml}>
-          ${!article.image_url ? `<span class="news-card-icon">${style.emoji}</span>` : ''}
+        ${imgSection}
+          ${!article.image_url ? `<span class="news-card-icon">${style.emoji}</span>` : `<span style="display:none;">${style.emoji}</span>`}
           <span class="news-card-category">${article.category}</span>
         </div>
         <div class="news-card-body">
@@ -332,6 +369,25 @@ const HKANews = {
     }).join('');
 
     container.innerHTML = `<div class="daily-news-scroll">${cardsHtml}</div>`;
+
+    // Preload images for news cards — if any fail, replace with Picsum fallback
+    var self = this;
+    container.querySelectorAll('.news-card-img').forEach(function(imgDiv, idx) {
+      var bgImage = imgDiv.style.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        var urlMatch = bgImage.match(/url\(["']?([^"')"]+)["']?\)/);
+        if (urlMatch && urlMatch[1] && !urlMatch[1].includes('picsum.photos')) {
+          var tester = new Image();
+          var origUrl = urlMatch[1];
+          tester.onerror = function() {
+            var articleData = self.articles && self.articles[idx];
+            var fallbackUrl = getPicsumFallback(articleData ? articleData.title : 'fallback', idx);
+            imgDiv.style.backgroundImage = 'url(' + fallbackUrl + ')';
+          };
+          tester.src = origUrl;
+        }
+      }
+    });
 
     // Bind read more buttons
     container.querySelectorAll('.news-readmore-btn').forEach(btn => {
@@ -361,9 +417,13 @@ const HKANews = {
     // Build teaser cards with data attributes instead of onclick
     const teaserCards = top3.map((article, i) => {
       const style = this.getCategoryStyle(article.category);
-      const teaserBg = article.image_url
-        ? `background:${style.bg};background-image:url(${article.image_url});background-size:cover;background-position:center;background-blend-mode:overlay;`
-        : `background:${style.bg};`;
+      var teaserFallbackUrl = 'https://picsum.photos/seed/' + encodeURIComponent((article.title || 'teaser') + '-' + i) + '/800/600';
+      var teaserBg = 'background:' + style.bg + ';';
+      if (article.image_url) {
+        teaserBg = 'background:' + style.bg + ';background-image:url(' + article.image_url + ');background-size:cover;background-position:center;background-blend-mode:overlay;';
+      } else {
+        teaserBg = 'background:' + style.bg + ';background-image:url(' + teaserFallbackUrl + ');background-size:cover;background-position:center;background-blend-mode:overlay;';
+      }
       return `
       <div class="home-news-teaser-card reveal delay-${(i % 3) + 1}" data-teaser-id="${article.id}">
         <div class="home-news-teaser-img" style="${teaserBg}">
